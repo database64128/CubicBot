@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net5.0</TargetFramework>
+    <AssemblyName>cubic-bot-telegram</AssemblyName>
+    <Nullable>enable</Nullable>
+    <PackageId>CubicBot.Telegram</PackageId>
+    <Authors>database64128</Authors>
+    <Product>Cubic Telegram Bot</Product>
+    <Description>A stupid and annoying chatbot for your group chats.</Description>
+    <Copyright>© 2021 database64128</Copyright>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageProjectUrl>https://github.com/database64128/CubicBot</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/database64128/CubicBot</RepositoryUrl>
+    <RepositoryType>Public</RepositoryType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.CommandLine" Version="2.0.0-beta1.21227.1" />
+    <PackageReference Include="System.Interactive.Async" Version="5.0.0" />
+    <PackageReference Include="System.Linq.Async" Version="5.0.0" />
+    <PackageReference Include="Telegram.Bot" Version="16.0.0-ci.216" />
+    <PackageReference Include="Telegram.Bot.Extensions.Polling" Version="0.2.0" />
+  </ItemGroup>
+
+</Project>
