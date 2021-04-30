@@ -27,7 +27,7 @@
     <PackageReference Include="System.CommandLine" Version="2.0.0-beta1.21227.1" />
     <PackageReference Include="System.Interactive.Async" Version="5.0.0" />
     <PackageReference Include="System.Linq.Async" Version="5.0.0" />
-    <PackageReference Include="Telegram.Bot" Version="16.0.0-ci.216" />
+    <PackageReference Include="Telegram.Bot" Version="16.0.0-ci.206" />
     <PackageReference Include="Telegram.Bot.Extensions.Polling" Version="0.2.0" />
   </ItemGroup>
 

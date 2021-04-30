@@ -111,14 +111,14 @@ namespace CubicBot.Telegram.Commands
             if (message.ReplyToMessage is Message targetMessage)
             {
                 return botClient.SendTextMessageAsync(message.Chat.Id,
-                                                      ChatHelper.EscapePlaintextAsMarkdownV2($"{message.From.FirstName} drank {targetMessage.From.FirstName}! 🥤🤤"),
+                                                      $"{message.From.FirstName} drank {targetMessage.From.FirstName}! 🥤🤤",
                                                       replyToMessageId: targetMessage.MessageId,
                                                       cancellationToken: cancellationToken);
             }
             else if (argument is string targetName)
             {
                 return botClient.SendTextMessageAsync(message.Chat.Id,
-                                                      ChatHelper.EscapePlaintextAsMarkdownV2($"{message.From.FirstName} drank {targetName}! 🥤🤤"),
+                                                      $"{message.From.FirstName} drank {targetName}! 🥤🤤",
                                                       cancellationToken: cancellationToken);
             }
             else
@@ -137,14 +137,14 @@ namespace CubicBot.Telegram.Commands
             if (message.ReplyToMessage is Message targetMessage)
             {
                 return botClient.SendTextMessageAsync(message.Chat.Id,
-                                                      ChatHelper.EscapePlaintextAsMarkdownV2($"{message.From.FirstName} ate {targetMessage.From.FirstName}! 🍴😋"),
+                                                      $"{message.From.FirstName} ate {targetMessage.From.FirstName}! 🍴😋",
                                                       replyToMessageId: targetMessage.MessageId,
                                                       cancellationToken: cancellationToken);
             }
             else if (argument is string targetName)
             {
                 return botClient.SendTextMessageAsync(message.Chat.Id,
-                                                      ChatHelper.EscapePlaintextAsMarkdownV2($"{message.From.FirstName} ate {targetName}! 🍴😋"),
+                                                      $"{message.From.FirstName} ate {targetName}! 🍴😋",
                                                       cancellationToken: cancellationToken);
             }
             else
@@ -178,7 +178,7 @@ namespace CubicBot.Telegram.Commands
             else if (argument is string targetName)
             {
                 return botClient.SendTextMessageAsync(message.Chat.Id,
-                                                      ChatHelper.EscapePlaintextAsMarkdownV2($"🖕 {targetName}"),
+                                                      $"🖕 {targetName}",
                                                       cancellationToken: cancellationToken);
             }
             else
@@ -195,20 +195,20 @@ namespace CubicBot.Telegram.Commands
             if (message.ReplyToMessage is Message targetMessage)
             {
                 return botClient.SendTextMessageAsync(message.Chat.Id,
-                                                      ChatHelper.EscapePlaintextAsMarkdownV2($"Thank you so much, {targetMessage.From.FirstName}! 😊"),
+                                                      $"Thank you so much, {targetMessage.From.FirstName}! 😊",
                                                       replyToMessageId: targetMessage.MessageId,
                                                       cancellationToken: cancellationToken);
             }
             else if (argument is string targetName)
             {
                 return botClient.SendTextMessageAsync(message.Chat.Id,
-                                                      ChatHelper.EscapePlaintextAsMarkdownV2($"Thank you so much, {targetName}! 😊"),
+                                                      $"Thank you so much, {targetName}! 😊",
                                                       cancellationToken: cancellationToken);
             }
             else
             {
                 return botClient.SendTextMessageAsync(message.Chat.Id,
-                                                      @"You must either reply to a message or specify someone to thank\!",
+                                                      "You must either reply to a message or specify someone to thank!",
                                                       replyToMessageId: message.MessageId,
                                                       cancellationToken: cancellationToken);
             }
@@ -216,7 +216,7 @@ namespace CubicBot.Telegram.Commands
 
         public static Task SayThanksAsync(ITelegramBotClient botClient, Message message, string? argument, CancellationToken cancellationToken = default)
             => botClient.SendTextMessageAsync(message.Chat.Id,
-                                              @"You're welcome\! 🦾",
+                                              "You're welcome! 🦾",
                                               replyToMessageId: message.MessageId,
                                               cancellationToken: cancellationToken);
     }
