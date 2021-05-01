@@ -29,7 +29,7 @@ namespace CubicBot.Telegram.Commands
             if (int.TryParse(argument, out var specifiedCount) && specifiedCount is > 0 and <= 7)
                 return specifiedCount;
             else
-                return _random.Next(1, 3);
+                return _random.Next(1, 4);
         }
 
         public Task SendDiceAsync(ITelegramBotClient botClient, Message message, string? argument, CancellationToken cancellationToken = default)

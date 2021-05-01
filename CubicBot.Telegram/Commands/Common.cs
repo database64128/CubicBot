@@ -61,11 +61,11 @@ namespace CubicBot.Telegram.Commands
         public Task CallCopsAsync(ITelegramBotClient botClient, Message message, string? argument, CancellationToken cancellationToken = default)
         {
             var sb = new StringBuilder($"📱9️⃣1️⃣1️⃣📲📞👌{Environment.NewLine}");
-            var count = _random.Next(24, 96);
+            var count = _random.Next(24, 97);
 
             for (var i = 0; i < count; i++)
             {
-                var type = _random.Next(3);
+                var type = _random.Next(4);
                 switch (type)
                 {
                     case 0:
@@ -160,7 +160,7 @@ namespace CubicBot.Telegram.Commands
 
         public Task FuckAsync(ITelegramBotClient botClient, Message message, string? argument, CancellationToken cancellationToken = default)
         {
-            var index = _random.Next(1);
+            var index = _random.Next(2);
             var symbol = index switch
             {
                 0 => "🍑",
