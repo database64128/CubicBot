@@ -38,6 +38,12 @@ A stupid and annoying chatbot for your group chats.
 
 - `/interrogate`: 🔫 开门，查水表！
 
+#### 4. Chinese Tasks
+
+- `/ok`: 👌 好的，没问题！
+- `/assign`: 📛 交给你了！
+- `/unassign`: 💢 不干了！
+
 ### Stats
 
 #### 1. Grass

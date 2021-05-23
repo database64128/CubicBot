@@ -38,6 +38,12 @@ namespace CubicBot.Telegram.Commands
                 var chinese = new Chinese(random);
                 Commands.AddRange(chinese.Commands);
             }
+
+            if (config.EnableChineseTasks)
+            {
+                var chineseTasks = new ChineseTasks(random);
+                Commands.AddRange(chineseTasks.Commands);
+            }
         }
 
         public Task HandleAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken = default)
