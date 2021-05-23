@@ -37,6 +37,9 @@ namespace CubicBot.Telegram.Commands
             "嗯！",
             "嗯嗯",
             "嗯嗯！",
+            "🉑",
+            "👌",
+            "🆗",
         };
 
         public BotCommandWithHandler[] Commands => new BotCommandWithHandler[]
