@@ -80,7 +80,7 @@ namespace CubicBot.Telegram.Commands
                 var randomOKAnswer = OKAnswers[randomIndex];
 
                 await botClient.SendTextMessageAsync(message.Chat.Id,
-                                                     $"{message.From.FirstName}: {randomOKAnswer}",
+                                                     $"{message.ReplyToMessage.From.FirstName}: {randomOKAnswer}",
                                                      replyToMessageId: message.MessageId,
                                                      cancellationToken: cancellationToken);
             }
