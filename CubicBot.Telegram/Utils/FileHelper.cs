@@ -2,7 +2,6 @@
 using System.IO;
 using System.Text.Encodings.Web;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -12,8 +11,8 @@ namespace CubicBot.Telegram.Utils
     {
         public static readonly JsonSerializerOptions commonJsonSerializerOptions = new()
         {
-            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault,
             Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+            IgnoreReadOnlyProperties = true,
             WriteIndented = true,
         };
 
