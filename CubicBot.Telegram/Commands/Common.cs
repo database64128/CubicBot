@@ -45,7 +45,7 @@ namespace CubicBot.Telegram.Commands
 
         public static string[] CooksAndFood => new string[]
         {
-            "👩‍🍳", "🧑‍🍳", "👨‍🍳", "🍳", "⏲", "🥘", "🍕",
+            "👩‍🍳", "🧑‍🍳", "👨‍🍳", "🍳", "🥘", "🍕",
         };
 
         public BotCommandWithHandler[] Commands => new BotCommandWithHandler[]
@@ -115,7 +115,7 @@ namespace CubicBot.Telegram.Commands
 
         public Task CookAsync(ITelegramBotClient botClient, Message message, string? argument, CancellationToken cancellationToken = default)
         {
-            var actionIndex = _random.Next(10);
+            var actionIndex = _random.Next(11);
             var actionMiddle = actionIndex switch
             {
                 0 => " cooked ",
@@ -128,6 +128,7 @@ namespace CubicBot.Telegram.Commands
                 7 => " milked ",
                 8 => " made tea with ",
                 9 => " fired ",
+                10 => " introduced ",
                 _ => $"❌ Error: Unexpected action index {actionIndex}",
             };
             var actionEnd = actionIndex switch
@@ -142,6 +143,7 @@ namespace CubicBot.Telegram.Commands
                 7 => "! 🥛",
                 8 => "! 🫖",
                 9 => " from this chat! 🔥",
+                10 => " to Tim Cook and they had a threesome. 💋",
                 _ => $"❌ Error: Unexpected action index {actionIndex}",
             };
 
