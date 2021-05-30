@@ -108,13 +108,12 @@ namespace CubicBot.Telegram.Commands
             var replyBuilder = new StringBuilder();
             var count = leaderboard.Length > 10 ? 10 : leaderboard.Length;
             var maxNameLength = leaderboard.Max(x => x.FirstName.Length);
-            var minGrassGrown = leaderboard.Last().GrassGrown;
 
             replyBuilder.AppendLine("```");
 
             for (var i = 0; i < count; i++)
             {
-                var barsCount = leaderboard[i].GrassGrown / minGrassGrown;
+                var barsCount = leaderboard[i].GrassGrown / leaderboard[0].GrassGrown * 10UL;
                 var bars = new string('█', Convert.ToInt32(barsCount));
                 replyBuilder.AppendLine($"{i + 1,2}. {ChatHelper.EscapeMarkdownV2CodeBlock(leaderboard[i].FirstName).PadRight(maxNameLength)} {leaderboard[i].GrassGrown,10} {bars}");
             }
