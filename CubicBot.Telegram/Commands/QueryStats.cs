@@ -113,7 +113,7 @@ namespace CubicBot.Telegram.Commands
 
             for (var i = 0; i < count; i++)
             {
-                var barsCount = leaderboard[i].GrassGrown / leaderboard[0].GrassGrown * 10UL;
+                var barsCount = 10UL * leaderboard[i].GrassGrown / leaderboard[0].GrassGrown;
                 var bars = new string('█', Convert.ToInt32(barsCount));
                 replyBuilder.AppendLine($"{i + 1,2}. {ChatHelper.EscapeMarkdownV2CodeBlock(leaderboard[i].FirstName).PadRight(maxNameLength)} {leaderboard[i].GrassGrown,10} {bars}");
             }
