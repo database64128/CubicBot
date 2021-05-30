@@ -52,6 +52,7 @@ namespace CubicBot.Telegram.Commands
             new("fuck", "😍 Feeling horny as fuck?", FuckAsync),
             new("thank", "🦃 Reply to or mention the name of the person you would like to thank.", SayThankAsync),
             new("thanks", "😊 Say thanks to me!", SayThanksAsync),
+            new("vax", "💉 Gen Z also got the vax!", VaccinateAsync),
         };
 
         private readonly Random _random;
@@ -218,6 +219,12 @@ namespace CubicBot.Telegram.Commands
             => botClient.SendTextMessageAsync(message.Chat.Id,
                                               "You're welcome! 🦾",
                                               replyToMessageId: message.MessageId,
+                                              cancellationToken: cancellationToken);
+
+        public static Task VaccinateAsync(ITelegramBotClient botClient, Message message, string? argument, CancellationToken cancellationToken = default)
+            => botClient.SendTextMessageAsync(message.Chat.Id,
+                                              "💉",
+                                              replyToMessageId: message.ReplyToMessage?.MessageId ?? 0,
                                               cancellationToken: cancellationToken);
     }
 }
