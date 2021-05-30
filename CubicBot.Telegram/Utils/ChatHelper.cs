@@ -49,7 +49,7 @@ namespace CubicBot.Telegram.Utils
             {
                 var filename = parseMode switch
                 {
-                    ParseMode.Default => "long-message.md",
+                    ParseMode.Default => "long-message.txt",
                     ParseMode.Markdown => "long-message.md",
                     ParseMode.Html => "long-message.html",
                     ParseMode.MarkdownV2 => "long-message.md",

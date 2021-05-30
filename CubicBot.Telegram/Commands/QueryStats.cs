@@ -91,8 +91,10 @@ namespace CubicBot.Telegram.Commands
                                                                     replyToMessageId: message.MessageId,
                                                                     cancellationToken: cancellationToken);
 
-            var getChatMemberTasks = groupData.Members.Select(async x => ((await botClient.GetChatMemberAsync(message.Chat.Id, x.Key, cancellationToken)).User.FirstName, x.Value.GrassGrown));
-            var leaderboard = (await Task.WhenAll(getChatMemberTasks)).OrderByDescending(x => x.GrassGrown).ToArray();
+            var generateLeaderboardTasks = groupData.Members.OrderByDescending(x => x.Value.GrassGrown)
+                                                            .Take(10)
+                                                            .Select(async x => (await GetChatMemberFirstName(botClient, message.Chat.Id, x.Key, cancellationToken), x.Value.GrassGrown));
+            (string firstName, ulong grassGrown)[]? leaderboard = (await Task.WhenAll(generateLeaderboardTasks)).ToArray();
             var dummyReply = await sendDummyReplyTask;
 
             if (leaderboard.Length == 0)
@@ -106,16 +108,15 @@ namespace CubicBot.Telegram.Commands
             }
 
             var replyBuilder = new StringBuilder();
-            var count = leaderboard.Length > 10 ? 10 : leaderboard.Length;
-            var maxNameLength = leaderboard.Max(x => x.FirstName.Length);
+            var maxNameLength = leaderboard.Max(x => x.firstName.Length);
 
             replyBuilder.AppendLine("```");
 
-            for (var i = 0; i < count; i++)
+            for (var i = 0; i < leaderboard.Length; i++)
             {
-                var barsCount = 10UL * leaderboard[i].GrassGrown / leaderboard[0].GrassGrown;
+                var barsCount = 10UL * leaderboard[i].grassGrown / leaderboard[0].grassGrown;
                 var bars = new string('█', Convert.ToInt32(barsCount));
-                replyBuilder.AppendLine($"{i + 1,2}. {ChatHelper.EscapeMarkdownV2CodeBlock(leaderboard[i].FirstName).PadRight(maxNameLength)} {leaderboard[i].GrassGrown,10} {bars}");
+                replyBuilder.AppendLine($"{i + 1,2}. {ChatHelper.EscapeMarkdownV2CodeBlock(leaderboard[i].firstName).PadRight(maxNameLength)} {leaderboard[i].grassGrown,10} {bars}");
             }
 
             replyBuilder.AppendLine("```");
@@ -125,6 +126,23 @@ namespace CubicBot.Telegram.Commands
                                                  replyBuilder.ToString(),
                                                  ParseMode.MarkdownV2,
                                                  cancellationToken: cancellationToken);
+        }
+
+        private static async Task<string> GetChatMemberFirstName(ITelegramBotClient botClient, ChatId chatId, long userId, CancellationToken cancellationToken = default)
+        {
+            string firstName;
+
+            try
+            {
+                var chatMember = await botClient.GetChatMemberAsync(chatId, userId, cancellationToken);
+                firstName = chatMember.User.FirstName;
+            }
+            catch
+            {
+                firstName = "";
+            }
+
+            return firstName;
         }
     }
 }
