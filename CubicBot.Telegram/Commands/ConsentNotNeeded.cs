@@ -13,9 +13,19 @@ namespace CubicBot.Telegram.Commands
             "👩‍🍳", "🧑‍🍳", "👨‍🍳", "🍳", "🥘", "🍕",
         };
 
+        public static string[] ForcedToDo => new string[]
+        {
+            "give up",
+            "eat 💩",
+            "surrender",
+            "strip naked",
+        };
+
         public BotCommandWithHandler[] Commands => new BotCommandWithHandler[]
         {
             new("cook", "😋 Who cooks the best food in the world? Me!", CookAsync),
+            new("force", "☮️ Use of force not recommended.", ForceAsync),
+            new("touch", "🥲 No touching.", TouchAsync),
             new("fuck", "😍 Feeling horny as fuck?", FuckAsync),
         };
 
@@ -57,34 +67,70 @@ namespace CubicBot.Telegram.Commands
                 _ => $"❌ Error: Unexpected action index {actionIndex}",
             };
 
+            var cooksAndFoodIndex = _random.Next(CooksAndFood.Length);
+            var cookOrFood = CooksAndFood[cooksAndFoodIndex];
+
+            return DoActionAsync(botClient, message, argument, actionMiddle, actionEnd, cookOrFood, cancellationToken);
+        }
+
+        public Task ForceAsync(ITelegramBotClient botClient, Message message, string? argument, CancellationToken cancellationToken = default)
+        {
+            var index = _random.Next(ForcedToDo.Length);
+            var forcedToDo = argument ?? ForcedToDo[index];
+
             if (message.ReplyToMessage is Message targetMessage)
             {
                 return botClient.SendTextMessageAsync(message.Chat.Id,
-                                                      $"{message.From.FirstName}{actionMiddle}{targetMessage.From.FirstName}{actionEnd}",
+                                                      $"{message.From.FirstName} forced {targetMessage.From.FirstName} to {forcedToDo}.",
                                                       replyToMessageId: targetMessage.MessageId,
-                                                      cancellationToken: cancellationToken);
-            }
-            else if (argument is string targetName)
-            {
-                return botClient.SendTextMessageAsync(message.Chat.Id,
-                                                      $"{message.From.FirstName}{actionMiddle}{targetName}{actionEnd}",
                                                       cancellationToken: cancellationToken);
             }
             else
             {
-                var cooksAndFoodIndex = _random.Next(CooksAndFood.Length);
-                var cookOrFood = CooksAndFood[cooksAndFoodIndex];
                 return botClient.SendTextMessageAsync(message.Chat.Id,
-                                                      cookOrFood,
-                                                      replyToMessageId: message.MessageId,
+                                                      $"{message.From.FirstName} was forced to {forcedToDo}.",
                                                       cancellationToken: cancellationToken);
             }
         }
 
+        public Task TouchAsync(ITelegramBotClient botClient, Message message, string? argument, CancellationToken cancellationToken = default)
+        {
+            var actionIndex = _random.Next(6);
+            var actionMiddle = actionIndex switch
+            {
+                0 => " patted ",
+                1 => " patted ",
+                2 => " touched ",
+                3 => " held ",
+                4 => " was scared and held ",
+                5 => " touched ",
+                _ => $"❌ Error: Unexpected action index {actionIndex}",
+            };
+            var actionEnd = actionIndex switch
+            {
+                0 => " on the head. 😃",
+                1 => " on the shoulder. 😃",
+                2 => "'s hand in delight. 🖐️",
+                3 => "'s hand in delight. 🤲",
+                4 => "'s hand. 😨",
+                5 => "'s body with passion. 😍",
+                _ => $"❌ Error: Unexpected action index {actionIndex}",
+            };
+
+            var selfEmoji = _random.Next(4) switch
+            {
+                0 => "💦",
+                1 => "💧",
+                2 => "👋",
+                _ => "🍆",
+            };
+
+            return DoActionAsync(botClient, message, argument, actionMiddle, actionEnd, selfEmoji, cancellationToken);
+        }
+
         public Task FuckAsync(ITelegramBotClient botClient, Message message, string? argument, CancellationToken cancellationToken = default)
         {
-            var index = _random.Next(2);
-            var symbol = index switch
+            var symbol = _random.Next(3) switch
             {
                 0 => "🍑",
                 1 => "🍆",
@@ -108,6 +154,30 @@ namespace CubicBot.Telegram.Commands
             {
                 return botClient.SendTextMessageAsync(message.Chat.Id,
                                                       symbol,
+                                                      replyToMessageId: message.MessageId,
+                                                      cancellationToken: cancellationToken);
+            }
+        }
+
+        private static Task DoActionAsync(ITelegramBotClient botClient, Message message, string? argument, string actionMiddle, string actionEnd, string selfEmoji, CancellationToken cancellationToken = default)
+        {
+            if (message.ReplyToMessage is Message targetMessage)
+            {
+                return botClient.SendTextMessageAsync(message.Chat.Id,
+                                                      $"{message.From.FirstName}{actionMiddle}{targetMessage.From.FirstName}{actionEnd}",
+                                                      replyToMessageId: targetMessage.MessageId,
+                                                      cancellationToken: cancellationToken);
+            }
+            else if (argument is string targetName)
+            {
+                return botClient.SendTextMessageAsync(message.Chat.Id,
+                                                      $"{message.From.FirstName}{actionMiddle}{targetName}{actionEnd}",
+                                                      cancellationToken: cancellationToken);
+            }
+            else
+            {
+                return botClient.SendTextMessageAsync(message.Chat.Id,
+                                                      selfEmoji,
                                                       replyToMessageId: message.MessageId,
                                                       cancellationToken: cancellationToken);
             }
