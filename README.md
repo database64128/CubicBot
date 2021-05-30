@@ -17,13 +17,11 @@ A stupid and annoying chatbot for your group chats.
 
 #### 1. Common
 
-- `/call_cops`: 📞 Hello, this is 911. What's your emergency?
 - `/chant`: 🗣 Say it out loud!
 - `/drink`: 🥤 I'm thirsty!
-- `/eat`: ☃️ Do you want to eat a snowman?
-- `/fuck`: 😍 Feeling horny as fuck?
 - `/thank`: 🦃 Reply to or mention the name of the person you would like to thank.
 - `/thanks`: 😊 Say thanks to me!
+- `/vax`: 💉 Gen Z also got the vax!
 
 #### 2. Dice
 
@@ -34,11 +32,31 @@ A stupid and annoying chatbot for your group chats.
 - `/roll`: 🎰 Feeling unlucky as hell?
 - `/bowl`: 🎳 Can you knock them all down?
 
-#### 3. Chinese
+#### 3. Consent Not Needed
+
+- `/cook`: 😋 Who cooks the best food in the world? Me!
+- `/fuck`: 😍 Feeling horny as fuck?
+
+#### 4. Not A Vegan
+
+- `/eat`: ☃️ Do you want to eat a snowman?
+
+#### 5. Law Enforcement
+
+- `/call_cops`: 📞 Hello, this is 911. What's your emergency?
+- `/arrest`: 🚓 Do I still have the right to remain silent?
+- `/guilty_or_not`: 🧑‍⚖️ Yes, your honor.
+
+#### 6. Public Services
+
+- `/call_ambulance`: 🚑 Busy saving lives?
+- `/call_fire_dept`: 🚒 The flames! Beautiful, aren't they?
+
+#### 7. Chinese
 
 - `/interrogate`: 🔫 开门，查水表！
 
-#### 4. Chinese Tasks
+#### 8. Chinese Tasks
 
 - `/ok`: 👌 好的，没问题！
 - `/assign`: 📛 交给你了！
@@ -48,9 +66,9 @@ A stupid and annoying chatbot for your group chats.
 
 #### 1. Grass
 
-The Chinese charater "草" is commonly seen in Chinese text messages. It could mean "Damn it!", "Oh shit!", "Fuck!", or simply "Awesome!".
+The Chinese charater "草" is commonly seen in Chinese text messages. It could mean "Damn.", "Shit.", "Fuck!", or simply "Awesome!".
 
-This stats counter counts each individual's usage of "草" in group chats and generates usage rankings. Say it so many times to unlock achievements.
+This stats counter counts each individual's usage of "草" in group chats and generates usage rankings. Say it when you feel like it to unlock achievements.
 
 The counter also recognizes common typos like "cao", "艹", "c奥", "c嗷", etc.
 

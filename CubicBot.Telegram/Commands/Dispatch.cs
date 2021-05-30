@@ -33,6 +33,30 @@ namespace CubicBot.Telegram.Commands
                 Commands.AddRange(dice.Commands);
             }
 
+            if (config.EnableConsentNotNeeded)
+            {
+                var consentNotNeeded = new ConsentNotNeeded(random);
+                Commands.AddRange(consentNotNeeded.Commands);
+            }
+
+            if (config.EnableNonVegan)
+            {
+                var nonVegan = new NonVegan(random);
+                Commands.AddRange(nonVegan.Commands);
+            }
+
+            if (config.EnableLawEnforcement)
+            {
+                var lawEnforcement = new LawEnforcement(random);
+                Commands.AddRange(lawEnforcement.Commands);
+            }
+
+            if (config.EnablePublicServices)
+            {
+                var publicServices = new PublicServices(random);
+                Commands.AddRange(publicServices.Commands);
+            }
+
             if (config.EnableChinese)
             {
                 var chinese = new Chinese(random);
