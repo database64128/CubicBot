@@ -42,7 +42,7 @@ namespace CubicBot.Telegram.Commands
             "🆗",
         };
 
-        public BotCommandWithHandler[] Commands => new BotCommandWithHandler[]
+        public CubicBotCommand[] Commands => new CubicBotCommand[]
         {
             new("ok", "👌 好的，没问题！", OKAsync),
             new("assign", "📛 交给你了！", AssignAsync),
@@ -53,7 +53,7 @@ namespace CubicBot.Telegram.Commands
 
         public ChineseTasks(Random random) => _random = random;
 
-        public Task OKAsync(ITelegramBotClient botClient, Message message, string? argument, CancellationToken cancellationToken = default)
+        public Task OKAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
         {
             var randomIndex = _random.Next(OKAnswers.Length);
             var randomOKAnswer = OKAnswers[randomIndex];
@@ -64,7 +64,7 @@ namespace CubicBot.Telegram.Commands
                                                   cancellationToken: cancellationToken);
         }
 
-        public async Task AssignAsync(ITelegramBotClient botClient, Message message, string? argument, CancellationToken cancellationToken = default)
+        public async Task AssignAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
         {
             if (message.ReplyToMessage is null) // self assign
             {
@@ -89,7 +89,7 @@ namespace CubicBot.Telegram.Commands
             }
         }
 
-        public static Task UnassignAsync(ITelegramBotClient botClient, Message message, string? argument, CancellationToken cancellationToken = default)
+        public static Task UnassignAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
         {
             var targetName = message.ReplyToMessage?.From?.FirstName ?? message.From.FirstName;
             return botClient.SendTextMessageAsync(message.Chat.Id,

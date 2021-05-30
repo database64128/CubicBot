@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace CubicBot.Telegram.Data
+namespace CubicBot.Telegram.Stats
 {
     public class GroupData
     {

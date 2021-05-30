@@ -33,7 +33,7 @@ namespace CubicBot.Telegram.Commands
             "🚒", "🧯", "🔥", "❤️‍🔥", "💥", "🚨", "⛑",
         };
 
-        public BotCommandWithHandler[] Commands => new BotCommandWithHandler[]
+        public CubicBotCommand[] Commands => new CubicBotCommand[]
         {
             new("call_ambulance", "🚑 Busy saving lives?", CallAmbulance),
             new("call_fire_dept", "🚒 The flames! Beautiful, aren't they?", CallFireDeptAsync),
@@ -43,7 +43,7 @@ namespace CubicBot.Telegram.Commands
 
         public PublicServices(Random random) => _random = random;
 
-        public Task CallAmbulance(ITelegramBotClient botClient, Message message, string? argument, CancellationToken cancellationToken = default)
+        public Task CallAmbulance(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
         {
             var sb = new StringBuilder($"📱9️⃣1️⃣1️⃣📲📞👌{Environment.NewLine}");
             var count = _random.Next(24, 97);
@@ -69,7 +69,7 @@ namespace CubicBot.Telegram.Commands
             return botClient.SendTextMessageAsync(message.Chat.Id, sb.ToString(), cancellationToken: cancellationToken);
         }
 
-        public Task CallFireDeptAsync(ITelegramBotClient botClient, Message message, string? argument, CancellationToken cancellationToken = default)
+        public Task CallFireDeptAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
         {
             var sb = new StringBuilder($"📱9️⃣1️⃣1️⃣📲📞👌{Environment.NewLine}");
             var count = _random.Next(24, 97);

@@ -77,8 +77,16 @@ namespace CubicBot.Telegram.Utils
         /// </summary>
         /// <param name="plaintext">The plaintext to be escaped.</param>
         /// <returns>An escaped string.</returns>
-        public static string EscapePlaintextAsMarkdownV2(string plaintext)
+        public static string EscapeMarkdownV2Plaintext(string plaintext)
             => Regex.Replace(plaintext, @"[_*[\]()~`>#+\-=|{}.!]", @"\$&");
+
+        /// <summary>
+        /// Escapes the code per the MarkdownV2 requirements.
+        /// </summary>
+        /// <param name="code">The code to be escaped.</param>
+        /// <returns>The escaped code.</returns>
+        public static string EscapeMarkdownV2CodeBlock(string code)
+            => Regex.Replace(code, @"[`\\]", @"\$&");
 
         /// <summary>
         /// Parses a text message into a command and an argument if applicable.

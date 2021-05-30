@@ -1,9 +1,10 @@
-﻿using CubicBot.Telegram.Utils;
+﻿using CubicBot.Telegram.Stats;
+using CubicBot.Telegram.Utils;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace CubicBot.Telegram.Data
+namespace CubicBot.Telegram
 {
     public class Data
     {

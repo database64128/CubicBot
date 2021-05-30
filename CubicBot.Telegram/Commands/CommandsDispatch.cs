@@ -9,64 +9,74 @@ using Telegram.Bot.Types;
 
 namespace CubicBot.Telegram.Commands
 {
-    public class Dispatch : IDispatch
+    public class CommandsDispatch : IDispatch
     {
+        private readonly Config _config;
+        private readonly Data _data;
         private readonly string _botUsername;
 
-        public List<BotCommandWithHandler> Commands { get; } = new();
+        public List<CubicBotCommand> Commands { get; } = new();
 
-        public Dispatch(Config config, string botUsername)
+        public CommandsDispatch(Config config, Data data, string botUsername)
         {
+            _config = config;
+            _data = data;
             _botUsername = botUsername;
 
             var random = new Random();
 
-            if (config.EnableCommon)
+            if (config.Commands.EnableCommon)
             {
                 var common = new Common(random);
                 Commands.AddRange(common.Commands);
             }
 
-            if (config.EnableDice)
+            if (config.Commands.EnableDice)
             {
                 var dice = new Dice(random);
                 Commands.AddRange(dice.Commands);
             }
 
-            if (config.EnableConsentNotNeeded)
+            if (config.Commands.EnableConsentNotNeeded)
             {
                 var consentNotNeeded = new ConsentNotNeeded(random);
                 Commands.AddRange(consentNotNeeded.Commands);
             }
 
-            if (config.EnableNonVegan)
+            if (config.Commands.EnableNonVegan)
             {
                 var nonVegan = new NonVegan(random);
                 Commands.AddRange(nonVegan.Commands);
             }
 
-            if (config.EnableLawEnforcement)
+            if (config.Commands.EnableLawEnforcement)
             {
                 var lawEnforcement = new LawEnforcement(random);
                 Commands.AddRange(lawEnforcement.Commands);
             }
 
-            if (config.EnablePublicServices)
+            if (config.Commands.EnablePublicServices)
             {
                 var publicServices = new PublicServices(random);
                 Commands.AddRange(publicServices.Commands);
             }
 
-            if (config.EnableChinese)
+            if (config.Commands.EnableChinese)
             {
                 var chinese = new Chinese(random);
                 Commands.AddRange(chinese.Commands);
             }
 
-            if (config.EnableChineseTasks)
+            if (config.Commands.EnableChineseTasks)
             {
                 var chineseTasks = new ChineseTasks(random);
                 Commands.AddRange(chineseTasks.Commands);
+            }
+
+            if (config.EnableStats)
+            {
+                var queryStats = new QueryStats(config.Stats);
+                Commands.AddRange(queryStats.Commands);
             }
         }
 
@@ -78,9 +88,22 @@ namespace CubicBot.Telegram.Commands
 
             var filteredCommands = Commands.Where(x => x.Command == command);
             if (filteredCommands.Any())
-                return filteredCommands.First().Handler(botClient, message, argument, cancellationToken);
+            {
+                var filteredCommand = filteredCommands.First();
+                if (_config.EnableStats && _config.Stats.EnableCommandStats && filteredCommand.StatsCollector is not null)
+                {
+                    return Task.WhenAll(filteredCommand.Handler(botClient, message, argument, _config, _data, cancellationToken),
+                                        filteredCommand.StatsCollector(botClient, message, argument, _config, _data, cancellationToken));
+                }
+                else
+                {
+                    return filteredCommand.Handler(botClient, message, argument, _config, _data, cancellationToken);
+                }
+            }
             else
+            {
                 return Task.CompletedTask;
+            }
         }
     }
 }

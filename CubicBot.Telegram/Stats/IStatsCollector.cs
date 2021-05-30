@@ -7,6 +7,6 @@ namespace CubicBot.Telegram.Stats
 {
     public interface IStatsCollector
     {
-        public Task CollectAsync(ITelegramBotClient botClient, Message message, Data.Data data, CancellationToken cancellationToken = default);
+        public Task CollectAsync(ITelegramBotClient botClient, Message message, Data data, CancellationToken cancellationToken = default);
     }
 }

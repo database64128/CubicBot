@@ -16,7 +16,7 @@ namespace CubicBot.Telegram.Commands
             "🍺", "🍻", "🥂", "🧉", "🏺", "🚰", "🧋", "🧃",
         };
 
-        public BotCommandWithHandler[] Commands => new BotCommandWithHandler[]
+        public CubicBotCommand[] Commands => new CubicBotCommand[]
         {
             new("chant", "🗣 Say it out loud!", ChantAsync),
             new("drink", "🥤 I'm thirsty!", DrinkAsync),
@@ -29,7 +29,7 @@ namespace CubicBot.Telegram.Commands
 
         public Common(Random random) => _random = random;
 
-        public static Task ChantAsync(ITelegramBotClient botClient, Message message, string? argument, CancellationToken cancellationToken = default)
+        public static Task ChantAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
         {
             // Assign default sentence if empty
             if (string.IsNullOrEmpty(argument))
@@ -40,7 +40,7 @@ namespace CubicBot.Telegram.Commands
                 argument = $"{argument}!";
 
             // CONVERT TO UPPERCASE and escape
-            argument = ChatHelper.EscapePlaintextAsMarkdownV2(argument.ToUpper());
+            argument = ChatHelper.EscapeMarkdownV2Plaintext(argument.ToUpper());
 
             // Apply bold format and repeat
             argument = $"*{argument}*{Environment.NewLine}*{argument}*{Environment.NewLine}*{argument}*";
@@ -51,7 +51,7 @@ namespace CubicBot.Telegram.Commands
                                                   cancellationToken: cancellationToken);
         }
 
-        public Task DrinkAsync(ITelegramBotClient botClient, Message message, string? argument, CancellationToken cancellationToken = default)
+        public Task DrinkAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
         {
             if (message.ReplyToMessage is Message targetMessage)
             {
@@ -77,7 +77,7 @@ namespace CubicBot.Telegram.Commands
             }
         }
 
-        public static Task SayThankAsync(ITelegramBotClient botClient, Message message, string? argument, CancellationToken cancellationToken = default)
+        public static Task SayThankAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
         {
             if (message.ReplyToMessage is Message targetMessage)
             {
@@ -101,13 +101,13 @@ namespace CubicBot.Telegram.Commands
             }
         }
 
-        public static Task SayThanksAsync(ITelegramBotClient botClient, Message message, string? argument, CancellationToken cancellationToken = default)
+        public static Task SayThanksAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
             => botClient.SendTextMessageAsync(message.Chat.Id,
                                               "You're welcome! 🦾",
                                               replyToMessageId: message.MessageId,
                                               cancellationToken: cancellationToken);
 
-        public static Task VaccinateAsync(ITelegramBotClient botClient, Message message, string? argument, CancellationToken cancellationToken = default)
+        public static Task VaccinateAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
             => botClient.SendTextMessageAsync(message.Chat.Id,
                                               "💉",
                                               replyToMessageId: message.ReplyToMessage?.MessageId ?? 0,

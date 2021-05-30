@@ -7,12 +7,12 @@ using Telegram.Bot.Types;
 
 namespace CubicBot.Telegram.Stats
 {
-    public class Dispatch : IDispatch
+    public class StatsDispatch : IDispatch
     {
-        private readonly Data.Data _data;
+        private readonly Data _data;
         private readonly List<IStatsCollector> _collectors = new();
 
-        public Dispatch(Config config, Data.Data data)
+        public StatsDispatch(StatsConfig config, Data data)
         {
             _data = data;
 

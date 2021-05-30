@@ -30,7 +30,7 @@ namespace CubicBot.Telegram.Commands
             "making too much noise during sex 💋",
         };
 
-        public BotCommandWithHandler[] Commands => new BotCommandWithHandler[]
+        public CubicBotCommand[] Commands => new CubicBotCommand[]
         {
             new("call_cops", "📞 Hello, this is 911. What's your emergency?", CallCopsAsync),
             new("arrest", "🚓 Do I still have the right to remain silent?", ArrestAsync),
@@ -41,7 +41,7 @@ namespace CubicBot.Telegram.Commands
 
         public LawEnforcement(Random random) => _random = random;
 
-        public Task CallCopsAsync(ITelegramBotClient botClient, Message message, string? argument, CancellationToken cancellationToken = default)
+        public Task CallCopsAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
         {
             var sb = new StringBuilder($"📱9️⃣1️⃣1️⃣📲📞👌{Environment.NewLine}");
             var count = _random.Next(24, 97);
@@ -67,7 +67,7 @@ namespace CubicBot.Telegram.Commands
             return botClient.SendTextMessageAsync(message.Chat.Id, sb.ToString(), cancellationToken: cancellationToken);
         }
 
-        public Task ArrestAsync(ITelegramBotClient botClient, Message message, string? argument, CancellationToken cancellationToken = default)
+        public Task ArrestAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
         {
             var reasonIndex = _random.Next(ReasonsForArrest.Length);
             var reason = argument ?? ReasonsForArrest[reasonIndex];
@@ -87,7 +87,7 @@ namespace CubicBot.Telegram.Commands
             }
         }
 
-        public Task GuiltyOrNotAsync(ITelegramBotClient botClient, Message message, string? argument, CancellationToken cancellationToken = default)
+        public Task GuiltyOrNotAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
         {
             var verdict = _random.Next(3) switch
             {

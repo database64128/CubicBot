@@ -35,6 +35,8 @@ A stupid and annoying chatbot for your group chats.
 #### 3. Consent Not Needed
 
 - `/cook`: 😋 Who cooks the best food in the world? Me!
+- `/force`: ☮️ Use of force not recommended.
+- `/touch`: 🥲 No touching.
 - `/fuck`: 😍 Feeling horny as fuck?
 
 #### 4. Not A Vegan
@@ -61,6 +63,12 @@ A stupid and annoying chatbot for your group chats.
 - `/ok`: 👌 好的，没问题！
 - `/assign`: 📛 交给你了！
 - `/unassign`: 💢 不干了！
+
+#### 9. Query Stats
+
+- `/my_stats`: 🤳 View your stats in this chat.
+- `/leaderboard_command`: ⌨️ View command usage rankings in this chat.
+- `/leaderboard_grass`: 🍀 View grass growth rankings in this chat.
 
 ### Stats
 

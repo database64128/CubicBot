@@ -22,7 +22,7 @@ namespace CubicBot.Telegram.Commands
             "🍫", "🍿", "🍩", "🍪", "🌰", "🥜", "🍯",
         };
 
-        public BotCommandWithHandler[] Commands => new BotCommandWithHandler[]
+        public CubicBotCommand[] Commands => new CubicBotCommand[]
         {
             new("eat", "☃️ Do you want to eat a snowman?", EatAsync),
         };
@@ -31,7 +31,7 @@ namespace CubicBot.Telegram.Commands
 
         public NonVegan(Random random) => _random = random;
 
-        public Task EatAsync(ITelegramBotClient botClient, Message message, string? argument, CancellationToken cancellationToken = default)
+        public Task EatAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
         {
             if (message.ReplyToMessage is Message targetMessage)
             {

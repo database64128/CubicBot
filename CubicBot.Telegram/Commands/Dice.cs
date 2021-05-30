@@ -10,7 +10,7 @@ namespace CubicBot.Telegram.Commands
 {
     public class Dice
     {
-        public BotCommandWithHandler[] Commands => new BotCommandWithHandler[]
+        public CubicBotCommand[] Commands => new CubicBotCommand[]
         {
             new("dice", "🎲 Dice it!", SendDiceAsync),
             new("dart", "🎯 Oh shoot!", SendDartAsync),
@@ -32,7 +32,7 @@ namespace CubicBot.Telegram.Commands
                 return _random.Next(1, 4);
         }
 
-        public Task SendDiceAsync(ITelegramBotClient botClient, Message message, string? argument, CancellationToken cancellationToken = default)
+        public Task SendDiceAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
         {
             var count = GetCountFromArgument(argument);
             var tasks = new List<Task>();
@@ -43,7 +43,7 @@ namespace CubicBot.Telegram.Commands
             return Task.WhenAll(tasks);
         }
 
-        public Task SendDartAsync(ITelegramBotClient botClient, Message message, string? argument, CancellationToken cancellationToken = default)
+        public Task SendDartAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
         {
             var count = GetCountFromArgument(argument);
             var tasks = new List<Task>();
@@ -54,7 +54,7 @@ namespace CubicBot.Telegram.Commands
             return Task.WhenAll(tasks);
         }
 
-        public Task SendBasketballAsync(ITelegramBotClient botClient, Message message, string? argument, CancellationToken cancellationToken = default)
+        public Task SendBasketballAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
         {
             var count = GetCountFromArgument(argument);
             var tasks = new List<Task>();
@@ -65,7 +65,7 @@ namespace CubicBot.Telegram.Commands
             return Task.WhenAll(tasks);
         }
 
-        public Task SendSoccerBallAsync(ITelegramBotClient botClient, Message message, string? argument, CancellationToken cancellationToken = default)
+        public Task SendSoccerBallAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
         {
             var count = GetCountFromArgument(argument);
             var tasks = new List<Task>();
@@ -76,7 +76,7 @@ namespace CubicBot.Telegram.Commands
             return Task.WhenAll(tasks);
         }
 
-        public Task SendSlotMachineAsync(ITelegramBotClient botClient, Message message, string? argument, CancellationToken cancellationToken = default)
+        public Task SendSlotMachineAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
         {
             var count = GetCountFromArgument(argument);
             var tasks = new List<Task>();
@@ -87,7 +87,7 @@ namespace CubicBot.Telegram.Commands
             return Task.WhenAll(tasks);
         }
 
-        public Task SendBowlingBallAsync(ITelegramBotClient botClient, Message message, string? argument, CancellationToken cancellationToken = default)
+        public Task SendBowlingBallAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
         {
             var count = GetCountFromArgument(argument);
             var tasks = new List<Task>();

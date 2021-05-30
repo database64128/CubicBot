@@ -1,4 +1,6 @@
-﻿using System;
+﻿using CubicBot.Telegram.Commands;
+using CubicBot.Telegram.Stats;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -16,18 +18,18 @@ namespace CubicBot.Telegram
 
         public IEnumerable<BotCommand> Commands { get; } = Array.Empty<BotCommand>();
 
-        public UpdateHandler(string botUsername, Config config, Data.Data data)
+        public UpdateHandler(string botUsername, Config config, Data data)
         {
             if (config.EnableCommands)
             {
-                var commandsDispatch = new Commands.Dispatch(config.Commands, botUsername);
+                var commandsDispatch = new CommandsDispatch(config, data, botUsername);
                 Commands = commandsDispatch.Commands;
                 _dispatches.Add(commandsDispatch);
             }
 
             if (config.EnableStats)
             {
-                var statsDispatch = new Stats.Dispatch(config.Stats, data);
+                var statsDispatch = new StatsDispatch(config.Stats, data);
                 _dispatches.Add(statsDispatch);
             }
         }

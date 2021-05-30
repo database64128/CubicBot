@@ -1,4 +1,6 @@
-﻿using CubicBot.Telegram.Utils;
+﻿using CubicBot.Telegram.Commands;
+using CubicBot.Telegram.Stats;
+using CubicBot.Telegram.Utils;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -36,12 +38,12 @@ namespace CubicBot.Telegram
         /// <summary>
         /// Gets or sets the config object for commands.
         /// </summary>
-        public Commands.Config Commands { get; set; } = new();
+        public CommandsConfig Commands { get; set; } = new();
 
         /// <summary>
         /// Gets or sets the config object for stats.
         /// </summary>
-        public Stats.Config Stats { get; set; } = new();
+        public StatsConfig Stats { get; set; } = new();
 
         /// <summary>
         /// Loads config from config.json.

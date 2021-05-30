@@ -21,7 +21,7 @@ namespace CubicBot.Telegram.Commands
             "你要破坏什么？",
         };
 
-        public BotCommandWithHandler[] Commands => new BotCommandWithHandler[]
+        public CubicBotCommand[] Commands => new CubicBotCommand[]
         {
             new("interrogate", "🔫 开门，查水表！", InterrogateAsync),
         };
@@ -30,7 +30,7 @@ namespace CubicBot.Telegram.Commands
 
         public Chinese(Random random) => _random = random;
 
-        public Task InterrogateAsync(ITelegramBotClient botClient, Message message, string? argument, CancellationToken cancellationToken = default)
+        public Task InterrogateAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
         {
             var randomIndex = _random.Next(Questions.Length);
             var randomQuestion = Questions[randomIndex];

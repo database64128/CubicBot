@@ -1,6 +1,6 @@
 ﻿namespace CubicBot.Telegram.Commands
 {
-    public class Config
+    public class CommandsConfig
     {
         public bool EnableCommon { get; set; } = true;
         public bool EnableDice { get; set; } = true;

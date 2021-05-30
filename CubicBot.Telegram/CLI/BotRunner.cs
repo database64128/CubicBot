@@ -19,7 +19,7 @@ namespace CubicBot.Telegram.CLI
                 return 1;
             }
 
-            (var data, var loadDataErrMsg) = await Data.Data.LoadDataAsync(cancellationToken);
+            (var data, var loadDataErrMsg) = await Data.LoadDataAsync(cancellationToken);
             if (loadDataErrMsg is not null)
             {
                 Console.WriteLine(loadDataErrMsg);
@@ -74,7 +74,7 @@ namespace CubicBot.Telegram.CLI
                 Console.WriteLine(ex);
             }
 
-            var saveDataErrMsg = await Data.Data.SaveDataAsync(data, CancellationToken.None);
+            var saveDataErrMsg = await Data.SaveDataAsync(data, CancellationToken.None);
             if (saveDataErrMsg is not null)
             {
                 Console.WriteLine(saveDataErrMsg);
@@ -84,14 +84,14 @@ namespace CubicBot.Telegram.CLI
             return 0;
         }
 
-        private static async Task SaveDataHourlyAsync(Data.Data data, CancellationToken cancellationToken = default)
+        private static async Task SaveDataHourlyAsync(Data data, CancellationToken cancellationToken = default)
         {
             try
             {
                 while (true)
                 {
                     await Task.Delay(TimeSpan.FromHours(1.0), cancellationToken);
-                    var saveDataErrMsg = await Data.Data.SaveDataAsync(data, cancellationToken);
+                    var saveDataErrMsg = await Data.SaveDataAsync(data, cancellationToken);
                     if (saveDataErrMsg is not null)
                     {
                         Console.WriteLine(saveDataErrMsg);

@@ -1,5 +1,4 @@
-﻿using CubicBot.Telegram.Data;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -18,7 +17,7 @@ namespace CubicBot.Telegram.Stats
 
         private static bool IsGrowingGrass(string msg) => GrassSeeds.Any(seed => msg.Contains(seed));
 
-        public Task CollectAsync(ITelegramBotClient botClient, Message message, Data.Data data, CancellationToken cancellationToken = default)
+        public Task CollectAsync(ITelegramBotClient botClient, Message message, Data data, CancellationToken cancellationToken = default)
             => string.IsNullOrEmpty(message.Text) || !IsGrowingGrass(message.Text)
                 ? Task.CompletedTask
                 : message.Chat.Type is ChatType.Private

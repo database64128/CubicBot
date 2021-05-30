@@ -21,7 +21,7 @@ namespace CubicBot.Telegram.Commands
             "strip naked",
         };
 
-        public BotCommandWithHandler[] Commands => new BotCommandWithHandler[]
+        public CubicBotCommand[] Commands => new CubicBotCommand[]
         {
             new("cook", "😋 Who cooks the best food in the world? Me!", CookAsync),
             new("force", "☮️ Use of force not recommended.", ForceAsync),
@@ -33,7 +33,7 @@ namespace CubicBot.Telegram.Commands
 
         public ConsentNotNeeded(Random random) => _random = random;
 
-        public Task CookAsync(ITelegramBotClient botClient, Message message, string? argument, CancellationToken cancellationToken = default)
+        public Task CookAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
         {
             var actionIndex = _random.Next(11);
             var actionMiddle = actionIndex switch
@@ -73,7 +73,7 @@ namespace CubicBot.Telegram.Commands
             return DoActionAsync(botClient, message, argument, actionMiddle, actionEnd, cookOrFood, cancellationToken);
         }
 
-        public Task ForceAsync(ITelegramBotClient botClient, Message message, string? argument, CancellationToken cancellationToken = default)
+        public Task ForceAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
         {
             var index = _random.Next(ForcedToDo.Length);
             var forcedToDo = argument ?? ForcedToDo[index];
@@ -93,7 +93,7 @@ namespace CubicBot.Telegram.Commands
             }
         }
 
-        public Task TouchAsync(ITelegramBotClient botClient, Message message, string? argument, CancellationToken cancellationToken = default)
+        public Task TouchAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
         {
             var actionIndex = _random.Next(6);
             var actionMiddle = actionIndex switch
@@ -128,7 +128,7 @@ namespace CubicBot.Telegram.Commands
             return DoActionAsync(botClient, message, argument, actionMiddle, actionEnd, selfEmoji, cancellationToken);
         }
 
-        public Task FuckAsync(ITelegramBotClient botClient, Message message, string? argument, CancellationToken cancellationToken = default)
+        public Task FuckAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
         {
             var symbol = _random.Next(3) switch
             {
