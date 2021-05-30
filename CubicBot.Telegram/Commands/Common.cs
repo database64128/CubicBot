@@ -23,6 +23,18 @@ namespace CubicBot.Telegram.Commands
             "🚓", "🚔", "🚨",
         };
 
+        public static string[] Firefighters => new string[]
+        {
+            "👩‍🚒", "👩🏻‍🚒", "👩🏼‍🚒", "👩🏽‍🚒", "👩🏾‍🚒", "👩🏿‍🚒",
+            "🧑‍🚒", "🧑🏻‍🚒", "🧑🏼‍🚒", "🧑🏽‍🚒", "🧑🏾‍🚒", "🧑🏿‍🚒",
+            "👨‍🚒", "👨🏻‍🚒", "👨🏼‍🚒", "👨🏽‍🚒", "👨🏾‍🚒", "👨🏿‍🚒",
+        };
+
+        public static string[] FireTrucks => new string[]
+        {
+            "🚒", "🧯", "🔥", "❤️‍🔥", "💥", "🚨",
+        };
+
         public static string[] Beverages => new string[]
         {
             "🍼", "🥛", "☕️", "🫖", "🍵", "🍶", "🍾", "🍷", "🍸", "🍹",
@@ -51,6 +63,7 @@ namespace CubicBot.Telegram.Commands
         public BotCommandWithHandler[] Commands => new BotCommandWithHandler[]
         {
             new("call_cops", "📞 Hello, this is 911. What's your emergency?", CallCopsAsync),
+            new("call_fire_dept", "🚒 The flames! Beautiful, aren't they?", CallFireDeptAsync),
             new("chant", "🗣 Say it out loud!", ChantAsync),
             new("cook", "😋 Who cooks the best food in the world? Me!", CookAsync),
             new("drink", "🥤 I'm thirsty!", DrinkAsync),
@@ -84,6 +97,32 @@ namespace CubicBot.Telegram.Commands
                     case 3:
                         var presenceIndex = _random.Next(PolicePresence.Length);
                         sb.Append(PolicePresence[presenceIndex]);
+                        break;
+                }
+            }
+
+            return botClient.SendTextMessageAsync(message.Chat.Id, sb.ToString(), cancellationToken: cancellationToken);
+        }
+
+        public Task CallFireDeptAsync(ITelegramBotClient botClient, Message message, string? argument, CancellationToken cancellationToken = default)
+        {
+            var sb = new StringBuilder($"📱9️⃣1️⃣1️⃣📲📞👌{Environment.NewLine}");
+            var count = _random.Next(24, 97);
+
+            for (var i = 0; i < count; i++)
+            {
+                var type = _random.Next(4);
+                switch (type)
+                {
+                    case 0:
+                        var firefighterIndex = _random.Next(Firefighters.Length);
+                        sb.Append(Firefighters[firefighterIndex]);
+                        break;
+                    case 1:
+                    case 2:
+                    case 3:
+                        var presenceIndex = _random.Next(FireTrucks.Length);
+                        sb.Append(FireTrucks[presenceIndex]);
                         break;
                 }
             }
