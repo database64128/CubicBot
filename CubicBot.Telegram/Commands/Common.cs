@@ -18,6 +18,7 @@ namespace CubicBot.Telegram.Commands
 
         public CubicBotCommand[] Commands => new CubicBotCommand[]
         {
+            new("apologize", "🥺 Sorry about last night.", ApologizeAsync),
             new("chant", "🗣 Say it out loud!", ChantAsync),
             new("drink", "🥤 I'm thirsty!", DrinkAsync),
             new("me", "🤳 What the hell am I doing?", MeAsync),
@@ -29,6 +30,42 @@ namespace CubicBot.Telegram.Commands
         private readonly Random _random;
 
         public Common(Random random) => _random = random;
+
+        public Task ApologizeAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
+        {
+            var apologyStart = _random.Next(5) switch
+            {
+                0 => "Sorry",
+                1 => "I'm sorry",
+                2 => "I'm so sorry",
+                3 => "I apologize",
+                _ => "I want to apologize",
+            };
+
+            if (message.ReplyToMessage is Message targetMessage)
+            {
+                if (!string.IsNullOrEmpty(argument))
+                    argument = $" for {argument}";
+
+                return botClient.SendTextMessageAsync(message.Chat.Id,
+                                                      $"{message.From.FirstName}: {apologyStart}{argument}, {targetMessage.From.FirstName}. 🥺",
+                                                      replyToMessageId: targetMessage.MessageId,
+                                                      cancellationToken: cancellationToken);
+            }
+            else if (argument is string targetName)
+            {
+                return botClient.SendTextMessageAsync(message.Chat.Id,
+                                                      $"{message.From.FirstName}: {apologyStart}, {targetName}. 🥺",
+                                                      cancellationToken: cancellationToken);
+            }
+            else
+            {
+                return botClient.SendTextMessageAsync(message.Chat.Id,
+                                                      $"{apologyStart}, {message.From.FirstName}. 🥺",
+                                                      replyToMessageId: message.MessageId,
+                                                      cancellationToken: cancellationToken);
+            }
+        }
 
         public Task ChantAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
         {

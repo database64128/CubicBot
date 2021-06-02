@@ -17,8 +17,10 @@ A stupid and annoying chatbot for your group chats.
 
 #### 1. Common
 
+- `/apologize`: 🥺 Sorry about last night.
 - `/chant`: 🗣 Say it out loud!
 - `/drink`: 🥤 I'm thirsty!
+- `/me`: 🤳 What the hell am I doing?
 - `/thank`: 🦃 Reply to or mention the name of the person you would like to thank.
 - `/thanks`: 😊 Say thanks to me!
 - `/vax`: 💉 Gen Z also got the vax!
@@ -66,7 +68,7 @@ A stupid and annoying chatbot for your group chats.
 
 #### 9. Query Stats
 
-- `/my_stats`: 🤳 View your stats in this chat.
+- `/my_stats`: 📅 View your stats in this chat.
 - `/leaderboard_command`: ⌨️ View command usage rankings in this chat.
 - `/leaderboard_grass`: 🍀 View grass growth rankings in this chat.
 
