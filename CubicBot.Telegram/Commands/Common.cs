@@ -29,11 +29,24 @@ namespace CubicBot.Telegram.Commands
 
         public Common(Random random) => _random = random;
 
-        public static Task ChantAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
+        public Task ChantAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
         {
             // Assign default sentence if empty
             if (string.IsNullOrEmpty(argument))
-                argument = "Make it happen";
+            {
+                argument = _random.Next(9) switch
+                {
+                    0 => "Make it happen",
+                    1 => "Do it now",
+                    2 => "Love wins",
+                    3 => "My body, my choice!",
+                    4 => "No justice, no peace!",
+                    5 => "No Hate! No Fear! Immigrants are welcome here!",
+                    6 => "Climate Change is not a lie, do not let our planet die!",
+                    7 => "Waters rise, hear our cries, no more lies for business ties!",
+                    _ => "No more secrets, no more lies! No more silence that money buys!",
+                };
+            }
 
             // Make sure it ends with '!'
             if (!argument.EndsWith('!'))
