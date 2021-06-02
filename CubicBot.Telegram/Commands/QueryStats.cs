@@ -18,7 +18,7 @@ namespace CubicBot.Telegram.Commands
 
         public QueryStats(StatsConfig statsConfig)
         {
-            Commands.Add(new("my_stats", "🤳 View your stats in this chat.", QueryUserStats));
+            Commands.Add(new("my_stats", "📅 View your stats in this chat.", QueryUserStats));
 
             if (statsConfig.EnableCommandStats)
                 Commands.Add(new("leaderboard_command", "⌨️ View command usage rankings in this chat.", QueryCommandStats));
