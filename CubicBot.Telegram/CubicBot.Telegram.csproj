@@ -14,6 +14,7 @@
     <RepositoryType>Public</RepositoryType>
     <RepositoryUrl>https://github.com/database64128/CubicBot</RepositoryUrl>
     <TargetFramework>net5.0</TargetFramework>
+    <Version>1.1.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
