@@ -6,8 +6,11 @@
         public ulong CommandsHandled { get; set; }
 
         #region 1. Common
+        public ulong ApologiesGiven { get; set; }
+        public ulong ApologiesReceived { get; set; }
         public ulong ChantsUsed { get; set; }
         public ulong BottlesDrank { get; set; }
+        public ulong MesUsed { get; set; }
         public ulong ThanksGiven { get; set; }
         public ulong ThanksReceived { get; set; }
         public ulong ThanksSaid { get; set; }
