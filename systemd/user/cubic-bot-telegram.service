@@ -1,0 +1,10 @@
+[Unit]
+Description=Cubic Telegram bot service
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+ExecStart=/usr/bin/cubic-bot-telegram
+
+[Install]
+WantedBy=multi-user.target default.target
