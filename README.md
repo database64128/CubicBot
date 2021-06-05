@@ -2,6 +2,9 @@
 
 [![Build](https://github.com/database64128/CubicBot/workflows/Build/badge.svg)](https://github.com/database64128/CubicBot/actions?query=workflow%3ABuild)
 [![Release](https://github.com/database64128/CubicBot/workflows/Release/badge.svg)](https://github.com/database64128/CubicBot/actions?query=workflow%3ARelease)
+<a href="https://aur.archlinux.org/packages/cubic-bot-telegram-git/">
+    <img alt="AUR badge for cubic-bot-telegram-git" src="https://img.shields.io/aur/version/cubic-bot-telegram-git?label=AUR%20cubic-bot-telegram-git" />
+</a>
 
 A stupid and annoying chatbot for your group chats.
 
