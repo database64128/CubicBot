@@ -1,4 +1,4 @@
-# 🤖 Cubic Bot
+# <img alt="Cubic Bot Logo" src="icons/robot-love.svg" width="40" /> Cubic Bot
 
 [![Build](https://github.com/database64128/CubicBot/workflows/Build/badge.svg)](https://github.com/database64128/CubicBot/actions?query=workflow%3ABuild)
 [![Release](https://github.com/database64128/CubicBot/workflows/Release/badge.svg)](https://github.com/database64128/CubicBot/actions?query=workflow%3ARelease)
