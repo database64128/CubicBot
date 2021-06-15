@@ -19,7 +19,7 @@ namespace CubicBot.Telegram.Utils
         /// Long messages are sent as text files.
         /// </summary>
         /// <inheritdoc cref="ITelegramBotClient.SendTextMessageAsync(ChatId, string, ParseMode, IEnumerable{MessageEntity}, bool, bool, int, bool, IReplyMarkup, CancellationToken)"/>
-        public static Task SendPossiblyLongTextMessageAsync(
+        public static async Task SendPossiblyLongTextMessageAsync(
             this ITelegramBotClient botClient,
             ChatId chatId,
             string text,
@@ -34,7 +34,7 @@ namespace CubicBot.Telegram.Utils
         {
             if (text.Length <= 4096)
             {
-                return botClient.SendTextMessageAsync(chatId,
+                await botClient.SendTextMessageAsync(chatId,
                                                       text,
                                                       parseMode,
                                                       entities,
@@ -55,8 +55,8 @@ namespace CubicBot.Telegram.Utils
                     ParseMode.MarkdownV2 => "long-message.md",
                     _ => "long-message",
                 };
-                using var stream = new MemoryStream(Encoding.UTF8.GetBytes(text));
-                return botClient.SendDocumentAsync(chatId,
+                await using var stream = new MemoryStream(Encoding.UTF8.GetBytes(text));
+                await botClient.SendDocumentAsync(chatId,
                                                    new(stream, filename),
                                                    null,
                                                    null,
