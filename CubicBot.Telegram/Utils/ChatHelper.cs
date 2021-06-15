@@ -19,7 +19,7 @@ namespace CubicBot.Telegram.Utils
         /// Long messages are sent as text files.
         /// </summary>
         /// <inheritdoc cref="ITelegramBotClient.SendTextMessageAsync(ChatId, string, ParseMode, IEnumerable{MessageEntity}, bool, bool, int, bool, IReplyMarkup, CancellationToken)"/>
-        public static async Task SendPossiblyLongTextMessageAsync(
+        public static Task SendPossiblyLongTextMessageAsync(
             this ITelegramBotClient botClient,
             ChatId chatId,
             string text,
@@ -34,7 +34,7 @@ namespace CubicBot.Telegram.Utils
         {
             if (text.Length <= 4096)
             {
-                await botClient.SendTextMessageAsync(chatId,
+                return botClient.SendTextMessageAsync(chatId,
                                                       text,
                                                       parseMode,
                                                       entities,
@@ -55,20 +55,58 @@ namespace CubicBot.Telegram.Utils
                     ParseMode.MarkdownV2 => "long-message.md",
                     _ => "long-message",
                 };
-                await using var stream = new MemoryStream(Encoding.UTF8.GetBytes(text));
-                await botClient.SendDocumentAsync(chatId,
-                                                   new(stream, filename),
-                                                   null,
-                                                   null,
-                                                   parseMode,
-                                                   entities,
-                                                   false,
-                                                   disableNotification,
-                                                   replyToMessageId,
-                                                   false,
-                                                   replyMarkup,
-                                                   cancellationToken);
+
+                return botClient.SendTextFileFromStringAsync(chatId,
+                                                             filename,
+                                                             text,
+                                                             null,
+                                                             null,
+                                                             parseMode,
+                                                             entities,
+                                                             false,
+                                                             disableNotification,
+                                                             replyToMessageId,
+                                                             false,
+                                                             replyMarkup,
+                                                             cancellationToken);
             }
+        }
+
+        /// <summary>
+        /// Sends a string as a text file.
+        /// </summary>
+        /// <param name="filename">Filename.</param>
+        /// <param name="text">The string to send.</param>
+        /// <inheritdoc cref="ITelegramBotClient.SendDocumentAsync(ChatId, InputOnlineFile, InputMedia, string, ParseMode, IEnumerable{MessageEntity}, bool, bool, int, bool, IReplyMarkup, CancellationToken)"/>
+        public static async Task<Message> SendTextFileFromStringAsync(
+            this ITelegramBotClient botClient,
+            ChatId chatId,
+            string filename,
+            string text,
+            InputMedia? thumb = null,
+            string? caption = null,
+            ParseMode parseMode = ParseMode.Default,
+            IEnumerable<MessageEntity>? captionEntities = null,
+            bool disableContentTypeDetection = false,
+            bool disableNotification = false,
+            int replyToMessageId = 0,
+            bool allowSendingWithoutReply = false,
+            IReplyMarkup? replyMarkup = null,
+            CancellationToken cancellationToken = default)
+        {
+            await using var stream = new MemoryStream(Encoding.UTF8.GetBytes(text));
+            return await botClient.SendDocumentAsync(chatId,
+                                                     new(stream, filename),
+                                                     thumb,
+                                                     caption,
+                                                     parseMode,
+                                                     captionEntities,
+                                                     disableContentTypeDetection,
+                                                     disableNotification,
+                                                     replyToMessageId,
+                                                     allowSendingWithoutReply,
+                                                     replyMarkup,
+                                                     cancellationToken);
         }
 
         /// <summary>
