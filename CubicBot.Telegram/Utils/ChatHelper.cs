@@ -176,11 +176,10 @@ namespace CubicBot.Telegram.Utils
                 command = command[..atSignIndex];
             }
 
-            // Trim quotes and spaces from argument
+            // Trim leading and trailing spaces from argument
             if (argument is not null)
             {
                 argument = argument.Trim();
-                argument = argument.Trim('\'', '"');
             }
 
             return (command, argument);
