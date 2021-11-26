@@ -13,7 +13,7 @@
     <Product>Cubic Telegram Bot</Product>
     <RepositoryType>Public</RepositoryType>
     <RepositoryUrl>https://github.com/database64128/CubicBot</RepositoryUrl>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <Version>1.1.0</Version>
   </PropertyGroup>
 
@@ -25,11 +25,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.CommandLine" Version="2.0.0-beta1.21525.1" />
+    <PackageReference Include="System.CommandLine" Version="2.0.0-beta1.21573.1" />
     <PackageReference Include="System.Interactive.Async" Version="5.0.0" />
     <PackageReference Include="System.Linq.Async" Version="5.0.0" />
-    <PackageReference Include="Telegram.Bot" Version="16.0.2" />
-    <PackageReference Include="Telegram.Bot.Extensions.Polling" Version="0.2.0" />
+    <PackageReference Include="Telegram.Bot" Version="17.0.0" />
+    <PackageReference Include="Telegram.Bot.Extensions.Polling" Version="1.0.0" />
   </ItemGroup>
 
 </Project>

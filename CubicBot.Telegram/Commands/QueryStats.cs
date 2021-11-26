@@ -29,8 +29,8 @@ namespace CubicBot.Telegram.Commands
 
         public static Task QueryUserStats(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
             => message.Chat.Type is ChatType.Private
-                ? QueryUserStatsInUserDataDict(botClient, message, message.From.Id, data.Users, cancellationToken)
-                : QueryUserStatsInGroupDataDict(botClient, message, message.Chat.Id, message.From.Id, data.Groups, cancellationToken);
+                ? QueryUserStatsInUserDataDict(botClient, message, message.From?.Id ?? 777000L, data.Users, cancellationToken)
+                : QueryUserStatsInGroupDataDict(botClient, message, message.Chat.Id, message.From?.Id ?? 777000L, data.Groups, cancellationToken);
 
         private static Task QueryUserStatsInGroupDataDict(ITelegramBotClient botClient, Message message, long chatId, long userId, Dictionary<long, GroupData> groupDataDict, CancellationToken cancellationToken = default)
             => groupDataDict.TryGetValue(chatId, out var groupData)

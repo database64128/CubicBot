@@ -75,14 +75,14 @@ namespace CubicBot.Telegram.Commands
             if (message.ReplyToMessage is Message targetMessage)
             {
                 return botClient.SendTextMessageAsync(message.Chat.Id,
-                                                      $"{targetMessage.From.FirstName} has been arrested for {reason}.",
+                                                      $"{targetMessage.From?.FirstName} has been arrested for {reason}.",
                                                       replyToMessageId: targetMessage.MessageId,
                                                       cancellationToken: cancellationToken);
             }
             else
             {
                 return botClient.SendTextMessageAsync(message.Chat.Id,
-                                                      $"{message.From.FirstName} has been arrested for {reason}.",
+                                                      $"{message.From?.FirstName} has been arrested for {reason}.",
                                                       cancellationToken: cancellationToken);
             }
         }

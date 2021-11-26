@@ -87,32 +87,41 @@ The counter also recognizes common typos like "cao", "艹", "c奥", "c嗷", etc.
 
 ## Build
 
-Prerequisites: .NET 5 SDK
+Prerequisites: .NET 6 SDK
 
 Note for packagers: The application by default uses executable directory as config directory.
 To use user's config directory, define the constant `PACKAGED` when building.
 
+### Build with Release configuration
+
 ```bash
-# Build with Release configuration
-$ dotnet build -c Release
+dotnet build -c Release
+```
 
-# Publish as framework-dependent
-$ dotnet publish CubicBot.Telegram -c Release
+### Publish as framework-dependent
 
-# Publish as self-contained for Linux x64
-$ dotnet publish CubicBot.Telegram -c Release \
+```bash
+dotnet publish CubicBot.Telegram -c Release
+```
+
+### Publish as self-contained for Linux x64
+
+```bash
+dotnet publish CubicBot.Telegram -c Release \
     -p:PublishReadyToRun=true \
     -p:PublishSingleFile=true \
     -p:PublishTrimmed=true \
-    -p:TrimMode=link \
     -p:DebuggerSupport=false \
     -p:EnableUnsafeBinaryFormatterSerialization=false \
     -p:EnableUnsafeUTF7Encoding=false \
     -p:InvariantGlobalization=true \
     -r linux-x64 --self-contained
+```
 
-# Publish as self-contained for packaging on Linux x64
-$ dotnet publish CubicBot.Telegram -c Release \
+### Publish as self-contained for packaging on Linux x64
+
+```bash
+dotnet publish CubicBot.Telegram -c Release \
     -p:DefineConstants=PACKAGED \
     -p:PublishReadyToRun=true \
     -p:PublishSingleFile=true \

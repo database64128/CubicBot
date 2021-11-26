@@ -81,14 +81,14 @@ namespace CubicBot.Telegram.Commands
             if (message.ReplyToMessage is Message targetMessage)
             {
                 return botClient.SendTextMessageAsync(message.Chat.Id,
-                                                      $"{message.From.FirstName} forced {targetMessage.From.FirstName} to {forcedToDo}.",
+                                                      $"{message.From?.FirstName} forced {targetMessage.From?.FirstName} to {forcedToDo}.",
                                                       replyToMessageId: targetMessage.MessageId,
                                                       cancellationToken: cancellationToken);
             }
             else
             {
                 return botClient.SendTextMessageAsync(message.Chat.Id,
-                                                      $"{message.From.FirstName} was forced to {forcedToDo}.",
+                                                      $"{message.From?.FirstName} was forced to {forcedToDo}.",
                                                       cancellationToken: cancellationToken);
             }
         }
@@ -164,14 +164,14 @@ namespace CubicBot.Telegram.Commands
             if (message.ReplyToMessage is Message targetMessage)
             {
                 return botClient.SendTextMessageAsync(message.Chat.Id,
-                                                      $"{message.From.FirstName}{actionMiddle}{targetMessage.From.FirstName}{actionEnd}",
+                                                      $"{message.From?.FirstName}{actionMiddle}{targetMessage.From?.FirstName}{actionEnd}",
                                                       replyToMessageId: targetMessage.MessageId,
                                                       cancellationToken: cancellationToken);
             }
             else if (argument is string targetName)
             {
                 return botClient.SendTextMessageAsync(message.Chat.Id,
-                                                      $"{message.From.FirstName}{actionMiddle}{targetName}{actionEnd}",
+                                                      $"{message.From?.FirstName}{actionMiddle}{targetName}{actionEnd}",
                                                       cancellationToken: cancellationToken);
             }
             else

@@ -41,7 +41,7 @@ namespace CubicBot.Telegram.Stats
 
         private static Task UpdateUserGrassGrownAsync(ITelegramBotClient botClient, Message message, Dictionary<long, UserData> userDataDict, CancellationToken cancellationToken = default)
         {
-            var userId = message.From.Id;
+            var userId = message.From?.Id ?? 777000L;
             if (userDataDict.TryGetValue(userId, out var userData))
             {
                 return UpdateGrassGrownAsync(botClient, message, userData, cancellationToken);

@@ -27,7 +27,7 @@ namespace CubicBot.Telegram.CLI
             return 0;
         }
 
-        public static async Task<int> Set(string botToken, bool? enableCommandsMod, bool? enableStatsMod, bool? enableCommonCommands, bool? enableDiceCommands, bool? enableChineseCommands, bool? enableGrassStats, CancellationToken cancellationToken = default)
+        public static async Task<int> Set(string? botToken, bool? enableCommandsMod, bool? enableStatsMod, bool? enableCommonCommands, bool? enableDiceCommands, bool? enableChineseCommands, bool? enableGrassStats, CancellationToken cancellationToken = default)
         {
             (var config, var loadConfigErrMsg) = await Config.LoadConfigAsync(cancellationToken);
             if (loadConfigErrMsg is not null)

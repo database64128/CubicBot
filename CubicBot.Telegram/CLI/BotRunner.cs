@@ -51,15 +51,12 @@ namespace CubicBot.Telegram.CLI
                     throw new Exception("Error: bot username is null or empty.");
 
                 var updateHandler = new UpdateHandler(me.Username, config, data);
-                await bot.SetMyCommandsAsync(updateHandler.Commands, cancellationToken);
+                await bot.SetMyCommandsAsync(updateHandler.Commands, null, null, cancellationToken);
                 Console.WriteLine($"Registered {updateHandler.Commands.Count()} bot commands.");
                 Console.WriteLine($"Started Telegram bot: @{me.Username} ({me.Id}).");
 
-                var updateReceiver = new QueuedUpdateReceiver(bot);
-                updateReceiver.StartReceiving(null, UpdateHandler.HandleErrorAsync, cancellationToken);
-
-                var updateStream = updateReceiver.YieldUpdatesAsync();
-                await updateHandler.HandleUpdateStreamAsync(bot, updateStream, cancellationToken);
+                var updateReceiver = new QueuedUpdateReceiver(bot, null, UpdateHandler.HandleErrorAsync);
+                await updateHandler.HandleUpdateStreamAsync(bot, updateReceiver, cancellationToken);
             }
             catch (ArgumentException ex)
             {

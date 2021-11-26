@@ -12,7 +12,7 @@ namespace CubicBot.Telegram
     {
         private static Task Main(string[] args)
         {
-            var botTokenOption = new Option<string>("--bot-token", "Telegram bot token.");
+            var botTokenOption = new Option<string?>("--bot-token", "Telegram bot token.");
             var enableCommandsModuleOption = new Option<bool?>("--enable-commands-mod", "Whether to enable the commands module.");
             var enableStatsModuleOption = new Option<bool?>("--enable-stats-mod", "Whether to enable the stats module.");
             var enableCommonCommandsOption = new Option<bool?>("--enable-common-commands", "Whether to enable common commands.");
@@ -36,7 +36,7 @@ namespace CubicBot.Telegram
                 enableGrassStatsOption,
             };
 
-            configSetCommand.Handler = CommandHandler.Create<string, bool?, bool?, bool?, bool?, bool?, bool?, CancellationToken>(ConfigCommand.Set);
+            configSetCommand.Handler = CommandHandler.Create<string?, bool?, bool?, bool?, bool?, bool?, bool?, CancellationToken>(ConfigCommand.Set);
 
             var configCommand = new Command("config", "Print or change config.")
             {
@@ -50,7 +50,7 @@ namespace CubicBot.Telegram
             };
 
             rootCommand.AddOption(botTokenOption);
-            rootCommand.Handler = CommandHandler.Create<string, CancellationToken>(BotRunner.RunBot);
+            rootCommand.Handler = CommandHandler.Create<string?, CancellationToken>(BotRunner.RunBot);
 
             Console.OutputEncoding = Encoding.UTF8;
             return rootCommand.InvokeAsync(args);

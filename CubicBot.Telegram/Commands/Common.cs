@@ -48,20 +48,20 @@ namespace CubicBot.Telegram.Commands
                     argument = $" for {argument}";
 
                 return botClient.SendTextMessageAsync(message.Chat.Id,
-                                                      $"{message.From.FirstName}: {apologyStart}{argument}, {targetMessage.From.FirstName}. 🥺",
+                                                      $"{message.From?.FirstName}: {apologyStart}{argument}, {targetMessage.From?.FirstName}. 🥺",
                                                       replyToMessageId: targetMessage.MessageId,
                                                       cancellationToken: cancellationToken);
             }
             else if (argument is string targetName)
             {
                 return botClient.SendTextMessageAsync(message.Chat.Id,
-                                                      $"{message.From.FirstName}: {apologyStart}, {targetName}. 🥺",
+                                                      $"{message.From?.FirstName}: {apologyStart}, {targetName}. 🥺",
                                                       cancellationToken: cancellationToken);
             }
             else
             {
                 return botClient.SendTextMessageAsync(message.Chat.Id,
-                                                      $"{apologyStart}, {message.From.FirstName}. 🥺",
+                                                      $"{apologyStart}, {message.From?.FirstName}. 🥺",
                                                       replyToMessageId: message.MessageId,
                                                       cancellationToken: cancellationToken);
             }
@@ -107,14 +107,14 @@ namespace CubicBot.Telegram.Commands
             if (message.ReplyToMessage is Message targetMessage)
             {
                 return botClient.SendTextMessageAsync(message.Chat.Id,
-                                                      $"{message.From.FirstName} drank {targetMessage.From.FirstName}! 🥤🤤",
+                                                      $"{message.From?.FirstName} drank {targetMessage.From?.FirstName}! 🥤🤤",
                                                       replyToMessageId: targetMessage.MessageId,
                                                       cancellationToken: cancellationToken);
             }
             else if (argument is string targetName)
             {
                 return botClient.SendTextMessageAsync(message.Chat.Id,
-                                                      $"{message.From.FirstName} drank {targetName}! 🥤🤤",
+                                                      $"{message.From?.FirstName} drank {targetName}! 🥤🤤",
                                                       cancellationToken: cancellationToken);
             }
             else
@@ -144,13 +144,13 @@ namespace CubicBot.Telegram.Commands
                 {
                     Type = MessageEntityType.TextMention,
                     Offset = 2,
-                    Length = message.From.FirstName.Length,
+                    Length = message.From?.FirstName?.Length ?? 0,
                     User = message.From,
                 },
             };
 
             return botClient.SendTextMessageAsync(message.Chat.Id,
-                                                  $"* {message.From.FirstName} {argument}",
+                                                  $"* {message.From?.FirstName} {argument}",
                                                   entities: entities,
                                                   cancellationToken: cancellationToken);
         }
@@ -160,7 +160,7 @@ namespace CubicBot.Telegram.Commands
             if (message.ReplyToMessage is Message targetMessage)
             {
                 return botClient.SendTextMessageAsync(message.Chat.Id,
-                                                      $"Thank you so much, {targetMessage.From.FirstName}! 😊",
+                                                      $"Thank you so much, {targetMessage.From?.FirstName}! 😊",
                                                       replyToMessageId: targetMessage.MessageId,
                                                       cancellationToken: cancellationToken);
             }

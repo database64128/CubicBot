@@ -69,7 +69,7 @@ namespace CubicBot.Telegram.Commands
             if (message.ReplyToMessage is null) // self assign
             {
                 await botClient.SendTextMessageAsync(message.Chat.Id,
-                                                     $"{message.From.FirstName}: 交  给  我  了",
+                                                     $"{message.From?.FirstName}: 交  给  我  了",
                                                      cancellationToken: cancellationToken);
             }
             else // assign to someone else
@@ -83,7 +83,7 @@ namespace CubicBot.Telegram.Commands
                 var randomOKAnswer = OKAnswers[randomIndex];
 
                 await botClient.SendTextMessageAsync(message.Chat.Id,
-                                                     $"{message.ReplyToMessage.From.FirstName}: {randomOKAnswer}",
+                                                     $"{message.ReplyToMessage.From?.FirstName}: {randomOKAnswer}",
                                                      replyToMessageId: message.MessageId,
                                                      cancellationToken: cancellationToken);
             }
@@ -91,7 +91,7 @@ namespace CubicBot.Telegram.Commands
 
         public static Task UnassignAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
         {
-            var targetName = message.ReplyToMessage?.From?.FirstName ?? message.From.FirstName;
+            var targetName = message.ReplyToMessage?.From?.FirstName ?? message.From?.FirstName;
             return botClient.SendTextMessageAsync(message.Chat.Id,
                                                   $"{targetName}: 不  干  了",
                                                   replyToMessageId: message.MessageId,

@@ -36,11 +36,11 @@ namespace CubicBot.Telegram
 
         public async Task HandleUpdateStreamAsync(ITelegramBotClient botClient, IAsyncEnumerable<Update> updates, CancellationToken cancellationToken = default)
         {
-            await foreach (var update in updates)
+            await foreach (var update in updates.WithCancellation(cancellationToken))
             {
                 try
                 {
-                    if (update.Type == UpdateType.Message)
+                    if (update.Type == UpdateType.Message && update.Message is not null)
                     {
                         var tasks = _dispatches.Select(dispatch => dispatch.HandleAsync(botClient, update.Message, cancellationToken));
                         await Task.WhenAll(tasks);
