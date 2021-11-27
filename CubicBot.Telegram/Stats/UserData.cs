@@ -1,7 +1,15 @@
-﻿namespace CubicBot.Telegram.Stats
+﻿using System.Collections.Generic;
+
+namespace CubicBot.Telegram.Stats
 {
     public class UserData
     {
+        #region 0. Personal
+        public List<Pronouns> PronounList { get; set; } = new();
+        public Pronouns? DefaultPronouns { get; set; }
+        public Pronouns? PreferredPronouns { get; set; }
+        #endregion
+
         public ulong MessagesProcessed { get; set; }
         public ulong CommandsHandled { get; set; }
 

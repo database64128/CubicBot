@@ -31,16 +31,58 @@ namespace CubicBot.Telegram
         /// <summary>
         /// Gets or sets the dictionary that stores user stats.
         /// Key is user ID.
-        /// Value is user stat object.
+        /// Value is user stats object.
         /// </summary>
         public Dictionary<long, UserData> Users { get; set; } = new();
 
         /// <summary>
         /// Gets or sets the dictionary that stores group stats.
         /// Key is group ID.
-        /// Value is group stat object.
+        /// Value is group stats object.
         /// </summary>
         public Dictionary<long, GroupData> Groups { get; set; } = new();
+
+        /// <summary>
+        /// Gets the user's stats object.
+        /// If the object doesn't already exist,
+        /// a new instance is created and added to storage.
+        /// </summary>
+        /// <param name="id">User ID.</param>
+        /// <returns>The user's stats object.</returns>
+        public UserData GetOrCreateUserData(long id)
+        {
+            if (Users.TryGetValue(id, out var userData))
+            {
+                return userData;
+            }
+            else
+            {
+                var newUserData = new UserData();
+                Users.Add(id, newUserData);
+                return newUserData;
+            }
+        }
+
+        /// <summary>
+        /// Gets the group's stats object.
+        /// If the object doesn't already exist,
+        /// a new instance is created and added to storage.
+        /// </summary>
+        /// <param name="id">Group ID.</param>
+        /// <returns>The group's stats object.</returns>
+        public GroupData GetOrCreateGroupData(long id)
+        {
+            if (Groups.TryGetValue(id, out var groupData))
+            {
+                return groupData;
+            }
+            else
+            {
+                var newGroupData = new GroupData();
+                Groups.Add(id, newGroupData);
+                return newGroupData;
+            }
+        }
 
         /// <summary>
         /// Loads data from data.json.

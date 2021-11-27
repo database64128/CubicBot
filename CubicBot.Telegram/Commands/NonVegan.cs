@@ -6,9 +6,9 @@ using Telegram.Bot.Types;
 
 namespace CubicBot.Telegram.Commands
 {
-    public class NonVegan
+    public static class NonVegan
     {
-        public static string[] Food => new string[]
+        public static readonly string[] Food = new string[]
         {
             "🍏", "🍎", "🍐", "🍊", "🍋", "🍌", "🍉", "🍇", "🍓", "🫐",
             "🍈", "🍒", "🍑", "🥭", "🍍", "🥥", "🥝", "🍅", "🍆", "🥑",
@@ -22,16 +22,12 @@ namespace CubicBot.Telegram.Commands
             "🍫", "🍿", "🍩", "🍪", "🌰", "🥜", "🍯",
         };
 
-        public CubicBotCommand[] Commands => new CubicBotCommand[]
+        public static readonly CubicBotCommand[] Commands = new CubicBotCommand[]
         {
             new("eat", "☃️ Do you want to eat a snowman?", EatAsync),
         };
 
-        private readonly Random _random;
-
-        public NonVegan(Random random) => _random = random;
-
-        public Task EatAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
+        public static Task EatAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
         {
             if (message.ReplyToMessage is Message targetMessage)
             {
@@ -48,7 +44,7 @@ namespace CubicBot.Telegram.Commands
             }
             else
             {
-                var foodIndex = _random.Next(Food.Length);
+                var foodIndex = Random.Shared.Next(Food.Length);
                 var food = Food[foodIndex];
                 return botClient.SendTextMessageAsync(message.Chat.Id,
                                                       food,

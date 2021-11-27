@@ -6,9 +6,9 @@ using Telegram.Bot.Types;
 
 namespace CubicBot.Telegram.Commands
 {
-    public class ChineseTasks
+    public static class ChineseTasks
     {
-        public static string[] OKAnswers => new string[]
+        public static readonly string[] OKAnswers = new string[]
         {
             "ok",
             "okay",
@@ -42,20 +42,16 @@ namespace CubicBot.Telegram.Commands
             "🆗",
         };
 
-        public CubicBotCommand[] Commands => new CubicBotCommand[]
+        public static readonly CubicBotCommand[] Commands = new CubicBotCommand[]
         {
             new("ok", "👌 好的，没问题！", OKAsync),
             new("assign", "📛 交给你了！", AssignAsync),
             new("unassign", "💢 不干了！", UnassignAsync),
         };
 
-        private readonly Random _random;
-
-        public ChineseTasks(Random random) => _random = random;
-
-        public Task OKAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
+        public static Task OKAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
         {
-            var randomIndex = _random.Next(OKAnswers.Length);
+            var randomIndex = Random.Shared.Next(OKAnswers.Length);
             var randomOKAnswer = OKAnswers[randomIndex];
 
             return botClient.SendTextMessageAsync(message.Chat.Id,
@@ -64,7 +60,7 @@ namespace CubicBot.Telegram.Commands
                                                   cancellationToken: cancellationToken);
         }
 
-        public async Task AssignAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
+        public static async Task AssignAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
         {
             if (message.ReplyToMessage is null) // self assign
             {
@@ -79,7 +75,7 @@ namespace CubicBot.Telegram.Commands
                                                      replyToMessageId: message.ReplyToMessage.MessageId,
                                                      cancellationToken: cancellationToken);
 
-                var randomIndex = _random.Next(OKAnswers.Length);
+                var randomIndex = Random.Shared.Next(OKAnswers.Length);
                 var randomOKAnswer = OKAnswers[randomIndex];
 
                 await botClient.SendTextMessageAsync(message.Chat.Id,

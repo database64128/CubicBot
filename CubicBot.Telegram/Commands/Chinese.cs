@@ -6,9 +6,9 @@ using Telegram.Bot.Types;
 
 namespace CubicBot.Telegram.Commands
 {
-    public class Chinese
+    public static class Chinese
     {
-        public static string[] Questions => new string[]
+        public static readonly string[] Questions = new string[]
         {
             "你发这些什么目的？",
             "谁指使你的？",
@@ -21,18 +21,14 @@ namespace CubicBot.Telegram.Commands
             "你要破坏什么？",
         };
 
-        public CubicBotCommand[] Commands => new CubicBotCommand[]
+        public static readonly CubicBotCommand[] Commands = new CubicBotCommand[]
         {
             new("interrogate", "🔫 开门，查水表！", InterrogateAsync),
         };
 
-        private readonly Random _random;
-
-        public Chinese(Random random) => _random = random;
-
-        public Task InterrogateAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
+        public static Task InterrogateAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
         {
-            var randomIndex = _random.Next(Questions.Length);
+            var randomIndex = Random.Shared.Next(Questions.Length);
             var randomQuestion = Questions[randomIndex];
 
             return botClient.SendTextMessageAsync(message.Chat.Id,

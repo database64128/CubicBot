@@ -8,15 +8,15 @@ using Telegram.Bot.Types.Enums;
 
 namespace CubicBot.Telegram.Commands
 {
-    public class Common
+    public static class Common
     {
-        public static string[] Beverages => new string[]
+        public static readonly string[] Beverages = new string[]
         {
             "🍼", "🥛", "☕️", "🫖", "🍵", "🍶", "🍾", "🍷", "🍸", "🍹",
             "🍺", "🍻", "🥂", "🧉", "🏺", "🚰", "🧋", "🧃",
         };
 
-        public CubicBotCommand[] Commands => new CubicBotCommand[]
+        public static readonly CubicBotCommand[] Commands = new CubicBotCommand[]
         {
             new("apologize", "🥺 Sorry about last night.", ApologizeAsync),
             new("chant", "🗣 Say it out loud!", ChantAsync),
@@ -27,13 +27,9 @@ namespace CubicBot.Telegram.Commands
             new("vax", "💉 Gen Z also got the vax!", VaccinateAsync),
         };
 
-        private readonly Random _random;
-
-        public Common(Random random) => _random = random;
-
-        public Task ApologizeAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
+        public static Task ApologizeAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
         {
-            var apologyStart = _random.Next(5) switch
+            var apologyStart = Random.Shared.Next(5) switch
             {
                 0 => "Sorry",
                 1 => "I'm sorry",
@@ -67,12 +63,12 @@ namespace CubicBot.Telegram.Commands
             }
         }
 
-        public Task ChantAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
+        public static Task ChantAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
         {
             // Assign default sentence if empty
             if (string.IsNullOrEmpty(argument))
             {
-                argument = _random.Next(9) switch
+                argument = Random.Shared.Next(9) switch
                 {
                     0 => "Make it happen",
                     1 => "Do it now",
@@ -102,7 +98,7 @@ namespace CubicBot.Telegram.Commands
                                                   cancellationToken: cancellationToken);
         }
 
-        public Task DrinkAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
+        public static Task DrinkAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
         {
             if (message.ReplyToMessage is Message targetMessage)
             {
@@ -119,7 +115,7 @@ namespace CubicBot.Telegram.Commands
             }
             else
             {
-                var beverageIndex = _random.Next(Beverages.Length);
+                var beverageIndex = Random.Shared.Next(Beverages.Length);
                 var beverage = Beverages[beverageIndex];
                 return botClient.SendTextMessageAsync(message.Chat.Id,
                                                       beverage,
@@ -128,9 +124,9 @@ namespace CubicBot.Telegram.Commands
             }
         }
 
-        public Task MeAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
+        public static Task MeAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
         {
-            argument ??= _random.Next(4) switch
+            argument ??= Random.Shared.Next(4) switch
             {
                 0 => "did nothing and fell asleep. 😴",
                 1 => "is showing off this new command he/she/they/whatever just learned. 😎",

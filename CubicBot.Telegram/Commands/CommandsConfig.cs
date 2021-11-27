@@ -2,6 +2,7 @@
 {
     public class CommandsConfig
     {
+        public bool EnablePersonal { get; set; } = true;
         public bool EnableCommon { get; set; } = true;
         public bool EnableDice { get; set; } = true;
         public bool EnableConsentNotNeeded { get; set; } = true;

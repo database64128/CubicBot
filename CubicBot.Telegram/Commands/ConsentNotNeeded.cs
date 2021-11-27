@@ -6,14 +6,14 @@ using Telegram.Bot.Types;
 
 namespace CubicBot.Telegram.Commands
 {
-    public class ConsentNotNeeded
+    public static class ConsentNotNeeded
     {
-        public static string[] CooksAndFood => new string[]
+        public static readonly string[] CooksAndFood = new string[]
         {
             "👩‍🍳", "🧑‍🍳", "👨‍🍳", "🍳", "🥘", "🍕",
         };
 
-        public static string[] ForcedToDo => new string[]
+        public static readonly string[] ForcedToDo = new string[]
         {
             "give up",
             "eat 💩",
@@ -21,7 +21,7 @@ namespace CubicBot.Telegram.Commands
             "strip naked",
         };
 
-        public CubicBotCommand[] Commands => new CubicBotCommand[]
+        public static readonly CubicBotCommand[] Commands = new CubicBotCommand[]
         {
             new("cook", "😋 Who cooks the best food in the world? Me!", CookAsync),
             new("force", "☮️ Use of force not recommended.", ForceAsync),
@@ -29,13 +29,9 @@ namespace CubicBot.Telegram.Commands
             new("fuck", "😍 Feeling horny as fuck?", FuckAsync),
         };
 
-        private readonly Random _random;
-
-        public ConsentNotNeeded(Random random) => _random = random;
-
-        public Task CookAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
+        public static Task CookAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
         {
-            var actionIndex = _random.Next(11);
+            var actionIndex = Random.Shared.Next(11);
             var actionMiddle = actionIndex switch
             {
                 0 => " cooked ",
@@ -67,15 +63,15 @@ namespace CubicBot.Telegram.Commands
                 _ => $"❌ Error: Unexpected action index {actionIndex}",
             };
 
-            var cooksAndFoodIndex = _random.Next(CooksAndFood.Length);
+            var cooksAndFoodIndex = Random.Shared.Next(CooksAndFood.Length);
             var cookOrFood = CooksAndFood[cooksAndFoodIndex];
 
             return DoActionAsync(botClient, message, argument, actionMiddle, actionEnd, cookOrFood, cancellationToken);
         }
 
-        public Task ForceAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
+        public static Task ForceAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
         {
-            var index = _random.Next(ForcedToDo.Length);
+            var index = Random.Shared.Next(ForcedToDo.Length);
             var forcedToDo = argument ?? ForcedToDo[index];
 
             if (message.ReplyToMessage is Message targetMessage)
@@ -93,9 +89,9 @@ namespace CubicBot.Telegram.Commands
             }
         }
 
-        public Task TouchAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
+        public static Task TouchAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
         {
-            var actionIndex = _random.Next(6);
+            var actionIndex = Random.Shared.Next(6);
             var actionMiddle = actionIndex switch
             {
                 0 => " patted ",
@@ -117,7 +113,7 @@ namespace CubicBot.Telegram.Commands
                 _ => $"❌ Error: Unexpected action index {actionIndex}",
             };
 
-            var selfEmoji = _random.Next(4) switch
+            var selfEmoji = Random.Shared.Next(4) switch
             {
                 0 => "💦",
                 1 => "💧",
@@ -128,9 +124,9 @@ namespace CubicBot.Telegram.Commands
             return DoActionAsync(botClient, message, argument, actionMiddle, actionEnd, selfEmoji, cancellationToken);
         }
 
-        public Task FuckAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
+        public static Task FuckAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
         {
-            var symbol = _random.Next(3) switch
+            var symbol = Random.Shared.Next(3) switch
             {
                 0 => "🍑",
                 1 => "🍆",

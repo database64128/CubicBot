@@ -1,5 +1,4 @@
 ﻿using CubicBot.Telegram.Utils;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -23,54 +22,49 @@ namespace CubicBot.Telegram.Commands
             _data = data;
             _botUsername = botUsername;
 
-            var random = new Random();
+            if (config.Commands.EnablePersonal)
+            {
+                Commands.AddRange(Personal.Commands);
+            }
 
             if (config.Commands.EnableCommon)
             {
-                var common = new Common(random);
-                Commands.AddRange(common.Commands);
+                Commands.AddRange(Common.Commands);
             }
 
             if (config.Commands.EnableDice)
             {
-                var dice = new Dice(random);
-                Commands.AddRange(dice.Commands);
+                Commands.AddRange(Dice.Commands);
             }
 
             if (config.Commands.EnableConsentNotNeeded)
             {
-                var consentNotNeeded = new ConsentNotNeeded(random);
-                Commands.AddRange(consentNotNeeded.Commands);
+                Commands.AddRange(ConsentNotNeeded.Commands);
             }
 
             if (config.Commands.EnableNonVegan)
             {
-                var nonVegan = new NonVegan(random);
-                Commands.AddRange(nonVegan.Commands);
+                Commands.AddRange(NonVegan.Commands);
             }
 
             if (config.Commands.EnableLawEnforcement)
             {
-                var lawEnforcement = new LawEnforcement(random);
-                Commands.AddRange(lawEnforcement.Commands);
+                Commands.AddRange(LawEnforcement.Commands);
             }
 
             if (config.Commands.EnablePublicServices)
             {
-                var publicServices = new PublicServices(random);
-                Commands.AddRange(publicServices.Commands);
+                Commands.AddRange(PublicServices.Commands);
             }
 
             if (config.Commands.EnableChinese)
             {
-                var chinese = new Chinese(random);
-                Commands.AddRange(chinese.Commands);
+                Commands.AddRange(Chinese.Commands);
             }
 
             if (config.Commands.EnableChineseTasks)
             {
-                var chineseTasks = new ChineseTasks(random);
-                Commands.AddRange(chineseTasks.Commands);
+                Commands.AddRange(ChineseTasks.Commands);
             }
 
             if (config.EnableStats)
