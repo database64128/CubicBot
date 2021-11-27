@@ -56,7 +56,7 @@ namespace CubicBot.Telegram.Commands
 
             return botClient.SendTextMessageAsync(message.Chat.Id,
                                                   randomOKAnswer,
-                                                  replyToMessageId: message.ReplyToMessage?.MessageId ?? 0,
+                                                  replyToMessageId: message.ReplyToMessage?.MessageId,
                                                   cancellationToken: cancellationToken);
         }
 

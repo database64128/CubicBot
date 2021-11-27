@@ -185,7 +185,7 @@ namespace CubicBot.Telegram.Commands
         public static Task VaccinateAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
             => botClient.SendTextMessageAsync(message.Chat.Id,
                                               "💉",
-                                              replyToMessageId: message.ReplyToMessage?.MessageId ?? 0,
+                                              replyToMessageId: message.ReplyToMessage?.MessageId,
                                               cancellationToken: cancellationToken);
     }
 }
