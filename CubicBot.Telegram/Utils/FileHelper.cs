@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text.Encodings.Web;
 using System.Text.Json;
@@ -59,6 +60,7 @@ namespace CubicBot.Telegram.Utils
         /// A ValueTuple containing a data object loaded from the JSON file and an error message.
         /// The error message is null if no errors occurred.
         /// </returns>
+        [UnconditionalSuppressMessage("JsonSerializerTrimming", "IL2026:RequiresUnreferencedCode", Justification = "All types for serialization and deserialization are preserved.")]
         public static async Task<(T, string? errMsg)> LoadJsonAsync<T>(string filename, JsonSerializerOptions? jsonSerializerOptions = null, CancellationToken cancellationToken = default) where T : class, new()
         {
             // extend relative path
@@ -104,6 +106,7 @@ namespace CubicBot.Telegram.Utils
         /// <param name="noBackup">Do not create `filename.old` as backup.</param>
         /// <param name="cancellationToken">A token that may be used to cancel the write operation.</param>
         /// <returns>An error message. Null if no errors occurred.</returns>
+        [UnconditionalSuppressMessage("JsonSerializerTrimming", "IL2026:RequiresUnreferencedCode", Justification = "All types for serialization and deserialization are preserved.")]
         public static async Task<string?> SaveJsonAsync<T>(
             string filename,
             T jsonData,
