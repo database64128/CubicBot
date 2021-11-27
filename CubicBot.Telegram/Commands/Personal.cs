@@ -25,7 +25,7 @@ public static class Personal
     public static Task AddPronounsAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
     {
         string? responseMarkdownV2;
-        const string helpMarkdownV2 = @"This command accepts *subject* _\(they\)_ form, *subject/object* _\(they/them\)_ form, or *subject/object/possessive\_pronoun* _\(they/them/theirs\)_ form for common known pronouns\. For uncommon pronouns, you must use the full *subject/object/possessive\_determiner/possessive\_pronoun/reflexive* _\(they/them/theirs\)_ form\.";
+        const string helpMarkdownV2 = @"This command accepts *subject* _\(they\)_ form, *subject/object* _\(they/them\)_ form, or *subject/object/possessive\_pronoun* _\(they/them/theirs\)_ form for commonly known pronouns\. For uncommon pronouns, you must use the full *subject/object/possessive\_determiner/possessive\_pronoun/reflexive* _\(they/them/their/theirs/themselves\)_ form\.";
         var userId = message.From?.Id ?? 777000L;
 
         if (!string.IsNullOrEmpty(argument))
@@ -40,12 +40,12 @@ public static class Personal
                 }
                 else
                 {
-                    responseMarkdownV2 = $@"You already have *{ChatHelper.EscapeMarkdownV2Plaintext(pronouns.ToString())}* in your list of pronouns\!";
+                    responseMarkdownV2 = $@"❌ You already have *{ChatHelper.EscapeMarkdownV2Plaintext(pronouns.ToString())}* in your list of pronouns\!";
                 }
             }
             else
             {
-                responseMarkdownV2 = $@"Failed to parse *{ChatHelper.EscapeMarkdownV2Plaintext(argument)}*\. {helpMarkdownV2}";
+                responseMarkdownV2 = $@"❌ Failed to parse *{ChatHelper.EscapeMarkdownV2Plaintext(argument)}*\. {helpMarkdownV2}";
             }
         }
         else
@@ -76,7 +76,7 @@ public static class Personal
             }
             else
             {
-                responseMarkdownV2 = @"You have more than one set of pronouns in your list\. Specify one to remove from the list\.";
+                responseMarkdownV2 = @"❌ You have more than one set of pronouns in your list\. Specify one to remove from the list\.";
             }
         }
         else if (Pronouns.TryParse(argument, out var pronouns))
@@ -87,12 +87,12 @@ public static class Personal
             }
             else
             {
-                responseMarkdownV2 = $@"Not found: *{ChatHelper.EscapeMarkdownV2Plaintext(pronouns.ToString())}*";
+                responseMarkdownV2 = $@"4️⃣0️⃣4️⃣ Not found: *{ChatHelper.EscapeMarkdownV2Plaintext(pronouns.ToString())}*";
             }
         }
         else
         {
-            responseMarkdownV2 = $@"Failed to parse *{ChatHelper.EscapeMarkdownV2Plaintext(argument)}*\. Please follow the same format requirements as `/add\_pronouns`\.";
+            responseMarkdownV2 = $@"❌ Failed to parse *{ChatHelper.EscapeMarkdownV2Plaintext(argument)}*\. Please follow the same format requirements as `/add\_pronouns`\.";
         }
 
         return botClient.SendTextMessageAsync(message.Chat.Id,
@@ -166,7 +166,7 @@ public static class Personal
             }
             else
             {
-                responseMarkdownV2 = @"You don't already have default pronouns\. Specify one to set as default pronouns\.";
+                responseMarkdownV2 = @"❌ You don't already have default pronouns\. Specify one to set as default pronouns\.";
             }
         }
         else if (Pronouns.TryParse(argument, out var pronouns)) // set
@@ -174,18 +174,18 @@ public static class Personal
             if (userData.PronounList.Contains(pronouns))
             {
                 userData.DefaultPronouns = pronouns;
-                responseMarkdownV2 = $@"🚮 Successfully set *{ChatHelper.EscapeMarkdownV2Plaintext(pronouns.ToString())}* as your default pronouns\!";
+                responseMarkdownV2 = $@"🥳 Successfully set *{ChatHelper.EscapeMarkdownV2Plaintext(pronouns.ToString())}* as your default pronouns\!";
             }
             else
             {
                 userData.DefaultPronouns = pronouns;
                 userData.PronounList.Add(pronouns);
-                responseMarkdownV2 = $@"🚮 Successfully added and set *{ChatHelper.EscapeMarkdownV2Plaintext(pronouns.ToString())}* as your default pronouns\!";
+                responseMarkdownV2 = $@"🥳 Successfully added and set *{ChatHelper.EscapeMarkdownV2Plaintext(pronouns.ToString())}* as your default pronouns\!";
             }
         }
         else
         {
-            responseMarkdownV2 = $@"Failed to parse *{ChatHelper.EscapeMarkdownV2Plaintext(argument)}*\. Please follow the same format requirements as `/add\_pronouns`\.";
+            responseMarkdownV2 = $@"❌ Failed to parse *{ChatHelper.EscapeMarkdownV2Plaintext(argument)}*\. Please follow the same format requirements as `/add\_pronouns`\.";
         }
 
         return botClient.SendTextMessageAsync(message.Chat.Id,
@@ -226,7 +226,7 @@ public static class Personal
             }
             else
             {
-                responseMarkdownV2 = @"You don't already have preferred pronouns in this chat\. Specify one to set as preferred pronouns in this chat\.";
+                responseMarkdownV2 = @"❌ You don't already have preferred pronouns in this chat\. Specify one to set as preferred pronouns in this chat\.";
             }
         }
         else if (Pronouns.TryParse(argument, out var pronouns)) // set
@@ -234,18 +234,18 @@ public static class Personal
             if (userData.PronounList.Contains(pronouns))
             {
                 setPreferredPronouns(pronouns);
-                responseMarkdownV2 = $@"🚮 Successfully set *{ChatHelper.EscapeMarkdownV2Plaintext(pronouns.ToString())}* as your preferred pronouns in this chat\!";
+                responseMarkdownV2 = $@"🥳 Successfully set *{ChatHelper.EscapeMarkdownV2Plaintext(pronouns.ToString())}* as your preferred pronouns in this chat\!";
             }
             else
             {
                 setPreferredPronouns(pronouns);
                 userData.PronounList.Add(pronouns);
-                responseMarkdownV2 = $@"🚮 Successfully added and set *{ChatHelper.EscapeMarkdownV2Plaintext(pronouns.ToString())}* as your preferred pronouns in this chat\!";
+                responseMarkdownV2 = $@"🥳 Successfully added and set *{ChatHelper.EscapeMarkdownV2Plaintext(pronouns.ToString())}* as your preferred pronouns in this chat\!";
             }
         }
         else
         {
-            responseMarkdownV2 = $@"Failed to parse *{ChatHelper.EscapeMarkdownV2Plaintext(argument)}*\. Please follow the same format requirements as `/add\_pronouns`\.";
+            responseMarkdownV2 = $@"❌ Failed to parse *{ChatHelper.EscapeMarkdownV2Plaintext(argument)}*\. Please follow the same format requirements as `/add\_pronouns`\.";
         }
 
         return botClient.SendTextMessageAsync(message.Chat.Id,
