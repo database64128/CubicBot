@@ -25,7 +25,7 @@ public static class Personal
     public static Task AddPronounsAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
     {
         string? responseMarkdownV2;
-        const string helpMarkdownV2 = @"This command accepts *subject* _\(they\)_ form, *subject/object* _\(they/them\)_ form, or *subject/object/possessive_pronoun* _\(they/them/theirs\)_ form for common known pronouns\. For uncommon pronouns, you must use the full *subject/object/possessive_determiner/possessive_pronoun/reflexive* _\(they/them/theirs\)_ form\.";
+        const string helpMarkdownV2 = @"This command accepts *subject* _\(they\)_ form, *subject/object* _\(they/them\)_ form, or *subject/object/possessive\_pronoun* _\(they/them/theirs\)_ form for common known pronouns\. For uncommon pronouns, you must use the full *subject/object/possessive\_determiner/possessive\_pronoun/reflexive* _\(they/them/theirs\)_ form\.";
         var userId = message.From?.Id ?? 777000L;
 
         if (!string.IsNullOrEmpty(argument))
@@ -141,10 +141,8 @@ public static class Personal
             responseSB.AppendLine($"- {p}");
         }
 
-        responseSB.AppendLine();
-
-        responseSB.AppendLine($"Default pronoun: {(defaultPronouns is null ? "Not set" : defaultPronouns)}");
-        responseSB.AppendLine($"Preferred pronoun in this chat: {(preferredPronouns is null ? "Not set" : preferredPronouns)}");
+        responseSB.AppendLine($"Default pronouns: {(defaultPronouns is null ? "Not set" : defaultPronouns)}");
+        responseSB.AppendLine($"Preferred pronouns in this chat: {(preferredPronouns is null ? "Not set" : preferredPronouns)}");
 
         return botClient.SendTextMessageAsync(message.Chat.Id,
                                               responseSB.ToString(),

@@ -1,4 +1,5 @@
-﻿using CubicBot.Telegram.Utils;
+﻿using CubicBot.Telegram.Stats;
+using CubicBot.Telegram.Utils;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -129,7 +130,7 @@ namespace CubicBot.Telegram.Commands
             argument ??= Random.Shared.Next(4) switch
             {
                 0 => "did nothing and fell asleep. 😴",
-                1 => "is showing off this new command he/she/they/whatever just learned. 😎",
+                1 => $"is showing off this new command {data.GetPronounSubject(message.From?.Id ?? 777000L, message.Chat.Type is ChatType.Private ? 0L : message.Chat.Id)} just learned. 😎",
                 2 => "got coffee for everyone in this chat. ☕",
                 _ => "invoked this command by mistake. 🤪",
             };
