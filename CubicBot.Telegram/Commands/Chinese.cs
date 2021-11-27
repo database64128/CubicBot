@@ -19,6 +19,19 @@ namespace CubicBot.Telegram.Commands
             "发这些想干什么？",
             "你想颠覆什么？",
             "你要破坏什么？",
+            "你最好收回！",
+            "你在影射谁？",
+            "你在影射什么？",
+            "互联网不是法外之地！",
+            "你的言论很危险！",
+            "寻衅滋事？",
+            "我们要移交法办！",
+            "你被举报了！",
+            "境外势力！",
+            "这是不是你发的？",
+            "我劝你谨言慎行！",
+            "谁让你发的？",
+            "你要打倒谁？",
         };
 
         public static readonly CubicBotCommand[] Commands = new CubicBotCommand[]
