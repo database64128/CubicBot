@@ -65,6 +65,11 @@ namespace CubicBot.Telegram.Commands
                 Commands.Add(new("leaderboard_grass", "🍀 View grass growth rankings in this chat.", SendGrassGrownLeaderboardAsync));
             }
 
+            if (config.Stats.EnableCommandStats)
+            {
+                Commands.Add(new("leaderboard_demanding", "👉 Who's the most demanding person in this chat?", SendDemandingLeaderboardAsync));
+            }
+
             if (config.Stats.EnableMessageCounter)
             {
                 Commands.Add(new("leaderboard_talkative", "🗣️ Who's the most talkative person in this chat?", SendTalkativeLeaderboardAsync));
@@ -258,7 +263,7 @@ namespace CubicBot.Telegram.Commands
                                     message,
                                     argument,
                                     data,
-                                    "🤳 Who loves themselves the most?",
+                                    "🤳 Who loves themselves the most in this chat?",
                                     null,
                                     x => x.MesUsed,
                                     cancellationToken);
@@ -402,6 +407,16 @@ namespace CubicBot.Telegram.Commands
                                     x => x.Members.Select(x => x.Value.GrassGrown)
                                                   .Aggregate(0Ul, (x, y) => x + y),
                                     x => x.GrassGrown,
+                                    cancellationToken);
+
+        public static Task SendDemandingLeaderboardAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
+            => SendLeaderboardAsync(botClient,
+                                    message,
+                                    argument,
+                                    data,
+                                    "👉 Who's the most demanding person in this chat?",
+                                    x => x.CommandsHandled,
+                                    x => x.CommandsHandled,
                                     cancellationToken);
 
         public static Task SendTalkativeLeaderboardAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
