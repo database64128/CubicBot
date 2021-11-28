@@ -238,7 +238,7 @@ namespace CubicBot.Telegram.Commands
 
             var dummyReply = await sendDummyReplyTask;
 
-            if (leaderboard.Length == 0)
+            if (leaderboard.Length == 0 || leaderboard[0].stats == 0UL)
             {
                 await botClient.EditMessageTextAsync(message.Chat.Id,
                                                      dummyReply.MessageId,
