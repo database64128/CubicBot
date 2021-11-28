@@ -29,7 +29,7 @@ public class CubicBotCommand : BotCommand
     /// </summary>
     public Action<Message, string?, UserData, GroupData?, UserData?>? UserOrMemberStatsCollector { get; set; }
 
-    public Func<ITelegramBotClient, Message, string?, UserData, GroupData?, UserData?, CancellationToken, Task>? UserOrMemberRespondAsync { get; set; }
+    public Func<ITelegramBotClient, Message, string?, Config, Data, UserData, GroupData?, UserData?, CancellationToken, Task>? UserOrMemberRespondAsync { get; set; }
 
     public CubicBotCommand(
         string command,
@@ -38,7 +38,7 @@ public class CubicBotCommand : BotCommand
         Action<Message, string?, UserData>? userStatsCollector = null,
         Action<Message, string?, GroupData, UserData>? groupStatsCollector = null,
         Action<Message, string?, UserData, GroupData?, UserData?>? userOrMemberStatsCollector = null,
-        Func<ITelegramBotClient, Message, string?, UserData, GroupData?, UserData?, CancellationToken, Task>? userOrMemberRespondAsync = null)
+        Func<ITelegramBotClient, Message, string?, Config, Data, UserData, GroupData?, UserData?, CancellationToken, Task>? userOrMemberRespondAsync = null)
     {
         Command = command;
         Description = description;

@@ -71,7 +71,7 @@ namespace CubicBot.Telegram.Commands
 
             if (config.EnableStats)
             {
-                var queryStats = new QueryStats(config.Stats);
+                var queryStats = new QueryStats(config);
                 Commands.AddRange(queryStats.Commands);
             }
         }
@@ -100,7 +100,7 @@ namespace CubicBot.Telegram.Commands
                         filteredCommand.UserOrMemberStatsCollector?.Invoke(message, argument, userData, null, null);
                         if (filteredCommand.UserOrMemberRespondAsync is not null)
                         {
-                            return Task.WhenAll(handleTask, filteredCommand.UserOrMemberRespondAsync(botClient, message, argument, userData, null, null, cancellationToken));
+                            return Task.WhenAll(handleTask, filteredCommand.UserOrMemberRespondAsync(botClient, message, argument, _config, _data, userData, null, null, cancellationToken));
                         }
                     }
                     else
@@ -119,7 +119,7 @@ namespace CubicBot.Telegram.Commands
                         filteredCommand.UserOrMemberStatsCollector?.Invoke(message, argument, userData, groupData, replyToUserData);
                         if (filteredCommand.UserOrMemberRespondAsync is not null)
                         {
-                            return Task.WhenAll(handleTask, filteredCommand.UserOrMemberRespondAsync(botClient, message, argument, userData, groupData, replyToUserData, cancellationToken));
+                            return Task.WhenAll(handleTask, filteredCommand.UserOrMemberRespondAsync(botClient, message, argument, _config, _data, userData, groupData, replyToUserData, cancellationToken));
                         }
                     }
                 }
