@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CubicBot.Telegram.Stats;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot;
@@ -24,7 +25,7 @@ namespace CubicBot.Telegram.Commands
 
         public static readonly CubicBotCommand[] Commands = new CubicBotCommand[]
         {
-            new("eat", "☃️ Do you want to eat a snowman?", EatAsync),
+            new("eat", "☃️ Do you want to eat a snowman?", EatAsync, userOrMemberStatsCollector: CountEats),
         };
 
         public static Task EatAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
@@ -50,6 +51,15 @@ namespace CubicBot.Telegram.Commands
                                                       food,
                                                       replyToMessageId: message.MessageId,
                                                       cancellationToken: cancellationToken);
+            }
+        }
+
+        public static void CountEats(Message message, string? argument, UserData userData, GroupData? groupData, UserData? replyToUserData)
+        {
+            userData.FoodEaten++;
+            if (replyToUserData is not null)
+            {
+                replyToUserData.EatenByOthers++;
             }
         }
     }

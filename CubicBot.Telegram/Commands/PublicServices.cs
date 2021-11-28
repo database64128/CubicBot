@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CubicBot.Telegram.Stats;
+using System;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -35,8 +36,8 @@ namespace CubicBot.Telegram.Commands
 
         public static readonly CubicBotCommand[] Commands = new CubicBotCommand[]
         {
-            new("call_ambulance", "🚑 Busy saving lives?", CallAmbulance),
-            new("call_fire_dept", "🚒 The flames! Beautiful, aren't they?", CallFireDeptAsync),
+            new("call_ambulance", "🚑 Busy saving lives?", CallAmbulance, userOrMemberStatsCollector: CountAmbulanceCalls),
+            new("call_fire_dept", "🚒 The flames! Beautiful, aren't they?", CallFireDeptAsync, userOrMemberStatsCollector: CountFireCalls),
         };
 
         public static Task CallAmbulance(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
@@ -65,6 +66,15 @@ namespace CubicBot.Telegram.Commands
             return botClient.SendTextMessageAsync(message.Chat.Id, sb.ToString(), cancellationToken: cancellationToken);
         }
 
+        public static void CountAmbulanceCalls(Message message, string? argument, UserData userData, GroupData? groupData, UserData? replyToUserData)
+        {
+            userData.AmbulancesCalled++;
+            if (groupData is not null)
+            {
+                groupData.AmbulancesCalled++;
+            }
+        }
+
         public static Task CallFireDeptAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
         {
             var sb = new StringBuilder($"📱9️⃣1️⃣1️⃣📲📞👌{Environment.NewLine}");
@@ -89,6 +99,15 @@ namespace CubicBot.Telegram.Commands
             }
 
             return botClient.SendTextMessageAsync(message.Chat.Id, sb.ToString(), cancellationToken: cancellationToken);
+        }
+
+        public static void CountFireCalls(Message message, string? argument, UserData userData, GroupData? groupData, UserData? replyToUserData)
+        {
+            userData.FiresReported++;
+            if (groupData is not null)
+            {
+                groupData.FiresReported++;
+            }
         }
     }
 }

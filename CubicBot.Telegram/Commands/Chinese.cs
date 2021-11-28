@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CubicBot.Telegram.Stats;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot;
@@ -36,7 +37,7 @@ namespace CubicBot.Telegram.Commands
 
         public static readonly CubicBotCommand[] Commands = new CubicBotCommand[]
         {
-            new("interrogate", "🔫 开门，查水表！", InterrogateAsync),
+            new("interrogate", "🔫 开门，查水表！", InterrogateAsync, userOrMemberStatsCollector: CountInterrogations),
         };
 
         public static Task InterrogateAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
@@ -48,6 +49,19 @@ namespace CubicBot.Telegram.Commands
                                                   randomQuestion,
                                                   replyToMessageId: message.ReplyToMessage?.MessageId,
                                                   cancellationToken: cancellationToken);
+        }
+
+        public static void CountInterrogations(Message message, string? argument, UserData userData, GroupData? groupData, UserData? replyToUserData)
+        {
+            userData.InterrogationsInitiated++;
+            if (groupData is not null)
+            {
+                groupData.InterrogationsInitiated++;
+                if (replyToUserData is not null)
+                {
+                    replyToUserData.InterrogatedByOthers++;
+                }
+            }
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CubicBot.Telegram.Stats;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot;
@@ -23,10 +24,10 @@ namespace CubicBot.Telegram.Commands
 
         public static readonly CubicBotCommand[] Commands = new CubicBotCommand[]
         {
-            new("cook", "😋 Who cooks the best food in the world? Me!", CookAsync),
-            new("force", "☮️ Use of force not recommended.", ForceAsync),
-            new("touch", "🥲 No touching.", TouchAsync),
-            new("fuck", "😍 Feeling horny as fuck?", FuckAsync),
+            new("cook", "😋 Who cooks the best food in the world? Me!", CookAsync, userOrMemberStatsCollector: CountCooks),
+            new("force", "☮️ Use of force not recommended.", ForceAsync, userOrMemberStatsCollector: CountForceUsed),
+            new("touch", "🥲 No touching.", TouchAsync, userOrMemberStatsCollector: CountTouches),
+            new("fuck", "😍 Feeling horny as fuck?", FuckAsync, userOrMemberStatsCollector: CountSex),
         };
 
         public static Task CookAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
@@ -69,6 +70,15 @@ namespace CubicBot.Telegram.Commands
             return DoActionAsync(botClient, message, argument, actionMiddle, actionEnd, cookOrFood, cancellationToken);
         }
 
+        public static void CountCooks(Message message, string? argument, UserData userData, GroupData? groupData, UserData? replyToUserData)
+        {
+            userData.MealsCooked++;
+            if (replyToUserData is not null)
+            {
+                replyToUserData.CookedByOthers++;
+            }
+        }
+
         public static Task ForceAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
         {
             var index = Random.Shared.Next(ForcedToDo.Length);
@@ -86,6 +96,15 @@ namespace CubicBot.Telegram.Commands
                 return botClient.SendTextMessageAsync(message.Chat.Id,
                                                       $"{message.From?.FirstName} was forced to {forcedToDo}.",
                                                       cancellationToken: cancellationToken);
+            }
+        }
+
+        public static void CountForceUsed(Message message, string? argument, UserData userData, GroupData? groupData, UserData? replyToUserData)
+        {
+            userData.ForceUsed++;
+            if (replyToUserData is not null)
+            {
+                replyToUserData.ForcedByOthers++;
             }
         }
 
@@ -124,6 +143,15 @@ namespace CubicBot.Telegram.Commands
             return DoActionAsync(botClient, message, argument, actionMiddle, actionEnd, selfEmoji, cancellationToken);
         }
 
+        public static void CountTouches(Message message, string? argument, UserData userData, GroupData? groupData, UserData? replyToUserData)
+        {
+            userData.TouchesGiven++;
+            if (replyToUserData is not null)
+            {
+                replyToUserData.TouchesReceived++;
+            }
+        }
+
         public static Task FuckAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
         {
             var symbol = Random.Shared.Next(3) switch
@@ -152,6 +180,19 @@ namespace CubicBot.Telegram.Commands
                                                       symbol,
                                                       replyToMessageId: message.MessageId,
                                                       cancellationToken: cancellationToken);
+            }
+        }
+
+        public static void CountSex(Message message, string? argument, UserData userData, GroupData? groupData, UserData? replyToUserData)
+        {
+            userData.SexInitiated++;
+            if (groupData is not null)
+            {
+                groupData.SexInitiated++;
+                if (replyToUserData is not null)
+                {
+                    replyToUserData.SexReceived++;
+                }
             }
         }
 

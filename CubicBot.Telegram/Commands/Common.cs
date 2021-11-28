@@ -19,13 +19,13 @@ namespace CubicBot.Telegram.Commands
 
         public static readonly CubicBotCommand[] Commands = new CubicBotCommand[]
         {
-            new("apologize", "🥺 Sorry about last night.", ApologizeAsync),
-            new("chant", "🗣 Say it out loud!", ChantAsync),
-            new("drink", "🥤 I'm thirsty!", DrinkAsync),
-            new("me", "🤳 What the hell am I doing?", MeAsync),
-            new("thank", "🦃 Reply to or mention the name of the person you would like to thank.", SayThankAsync),
-            new("thanks", "😊 Say thanks to me!", SayThanksAsync),
-            new("vax", "💉 Gen Z also got the vax!", VaccinateAsync),
+            new("apologize", "🥺 Sorry about last night.", ApologizeAsync, userOrMemberStatsCollector: CountApologies),
+            new("chant", "🗣 Say it out loud!", ChantAsync, userOrMemberStatsCollector: CountChants),
+            new("drink", "🥤 I'm thirsty!", DrinkAsync, userOrMemberStatsCollector: CountDrinks),
+            new("me", "🤳 What the hell am I doing?", MeAsync, userOrMemberStatsCollector: CountMes),
+            new("thank", "🦃 Reply to or mention the name of the person you would like to thank.", SayThankAsync, userOrMemberStatsCollector: CountThankYous),
+            new("thanks", "😊 Say thanks to me!", SayThanksAsync, userOrMemberStatsCollector: CountThanks),
+            new("vax", "💉 Gen Z also got the vax!", VaccinateAsync, userOrMemberStatsCollector: CountVaccinations),
         };
 
         public static Task ApologizeAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
@@ -64,6 +64,23 @@ namespace CubicBot.Telegram.Commands
             }
         }
 
+        public static void CountApologies(Message message, string? argument, UserData userData, GroupData? groupData, UserData? replyToUserData)
+        {
+            if (replyToUserData is not null)
+            {
+                userData.ApologiesSent++;
+                replyToUserData.ApologiesReceived++;
+            }
+            else if (argument is not null)
+            {
+                userData.ApologiesSent++;
+            }
+            else
+            {
+                userData.ApologiesReceived++;
+            }
+        }
+
         public static Task ChantAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
         {
             // Assign default sentence if empty
@@ -99,6 +116,8 @@ namespace CubicBot.Telegram.Commands
                                                   cancellationToken: cancellationToken);
         }
 
+        public static void CountChants(Message message, string? argument, UserData userData, GroupData? groupData, UserData? replyToUserData) => userData.ChantsUsed++;
+
         public static Task DrinkAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
         {
             if (message.ReplyToMessage is Message targetMessage)
@@ -122,6 +141,15 @@ namespace CubicBot.Telegram.Commands
                                                       beverage,
                                                       replyToMessageId: message.MessageId,
                                                       cancellationToken: cancellationToken);
+            }
+        }
+
+        public static void CountDrinks(Message message, string? argument, UserData userData, GroupData? groupData, UserData? replyToUserData)
+        {
+            userData.DrinksTaken++;
+            if (replyToUserData is not null)
+            {
+                replyToUserData.DrankByOthers++;
             }
         }
 
@@ -152,6 +180,8 @@ namespace CubicBot.Telegram.Commands
                                                   cancellationToken: cancellationToken);
         }
 
+        public static void CountMes(Message message, string? argument, UserData userData, GroupData? groupData, UserData? replyToUserData) => userData.MesUsed++;
+
         public static Task SayThankAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
         {
             if (message.ReplyToMessage is Message targetMessage)
@@ -176,16 +206,44 @@ namespace CubicBot.Telegram.Commands
             }
         }
 
+        public static void CountThankYous(Message message, string? argument, UserData userData, GroupData? groupData, UserData? replyToUserData)
+        {
+            userData.ThankYousSent++;
+            if (replyToUserData is not null)
+            {
+                replyToUserData.ThankYousReceived++;
+            }
+        }
+
         public static Task SayThanksAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
             => botClient.SendTextMessageAsync(message.Chat.Id,
                                               "You're welcome! 🦾",
                                               replyToMessageId: message.MessageId,
                                               cancellationToken: cancellationToken);
 
+        public static void CountThanks(Message message, string? argument, UserData userData, GroupData? groupData, UserData? replyToUserData) => userData.ThanksSaid++;
+
         public static Task VaccinateAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
             => botClient.SendTextMessageAsync(message.Chat.Id,
                                               "💉",
                                               replyToMessageId: message.ReplyToMessage?.MessageId,
                                               cancellationToken: cancellationToken);
+
+        public static void CountVaccinations(Message message, string? argument, UserData userData, GroupData? groupData, UserData? replyToUserData)
+        {
+            userData.VaccinationShotsAdministered++;
+            if (groupData is not null)
+            {
+                groupData.VaccinationShotsAdministered++;
+                if (replyToUserData is not null)
+                {
+                    replyToUserData.VaccinationShotsGot++;
+                }
+                else
+                {
+                    userData.VaccinationShotsGot++;
+                }
+            }
+        }
     }
 }

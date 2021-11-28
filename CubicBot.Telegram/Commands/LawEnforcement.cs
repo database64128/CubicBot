@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CubicBot.Telegram.Stats;
+using System;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -32,9 +33,9 @@ namespace CubicBot.Telegram.Commands
 
         public static readonly CubicBotCommand[] Commands = new CubicBotCommand[]
         {
-            new("call_cops", "📞 Hello, this is 911. What's your emergency?", CallCopsAsync),
-            new("arrest", "🚓 Do I still have the right to remain silent?", ArrestAsync),
-            new("guilty_or_not", "🧑‍⚖️ Yes, your honor.", GuiltyOrNotAsync),
+            new("call_cops", "📞 Hello, this is 911. What's your emergency?", CallCopsAsync, userOrMemberStatsCollector: CountCopCalls),
+            new("arrest", "🚓 Do I still have the right to remain silent?", ArrestAsync, userOrMemberStatsCollector: CountArrests),
+            new("guilty_or_not", "🧑‍⚖️ Yes, your honor.", GuiltyOrNotAsync, userOrMemberStatsCollector: CountLawsuits),
         };
 
         public static Task CallCopsAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
@@ -63,6 +64,15 @@ namespace CubicBot.Telegram.Commands
             return botClient.SendTextMessageAsync(message.Chat.Id, sb.ToString(), cancellationToken: cancellationToken);
         }
 
+        public static void CountCopCalls(Message message, string? argument, UserData userData, GroupData? groupData, UserData? replyToUserData)
+        {
+            userData.CopCallsMade++;
+            if (groupData is not null)
+            {
+                groupData.CopCallsMade++;
+            }
+        }
+
         public static Task ArrestAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
         {
             var reasonIndex = Random.Shared.Next(ReasonsForArrest.Length);
@@ -83,6 +93,19 @@ namespace CubicBot.Telegram.Commands
             }
         }
 
+        public static void CountArrests(Message message, string? argument, UserData userData, GroupData? groupData, UserData? replyToUserData)
+        {
+            userData.ArrestsMade++;
+            if (groupData is not null)
+            {
+                groupData.ArrestsMade++;
+                if (replyToUserData is not null)
+                {
+                    replyToUserData.ArrestsReceived++;
+                }
+            }
+        }
+
         public static Task GuiltyOrNotAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
         {
             var verdict = Random.Shared.Next(3) switch
@@ -96,6 +119,19 @@ namespace CubicBot.Telegram.Commands
                                                   verdict,
                                                   replyToMessageId: message.ReplyToMessage?.MessageId,
                                                   cancellationToken: cancellationToken);
+        }
+
+        public static void CountLawsuits(Message message, string? argument, UserData userData, GroupData? groupData, UserData? replyToUserData)
+        {
+            userData.VerdictsGiven++;
+            if (groupData is not null)
+            {
+                groupData.VerdictsGiven++;
+                if (replyToUserData is not null)
+                {
+                    replyToUserData.VerdictsReceived++;
+                }
+            }
         }
     }
 }

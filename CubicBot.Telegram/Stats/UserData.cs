@@ -14,13 +14,14 @@ namespace CubicBot.Telegram.Stats
         public ulong CommandsHandled { get; set; }
 
         #region 1. Common
-        public ulong ApologiesGiven { get; set; }
+        public ulong ApologiesSent { get; set; }
         public ulong ApologiesReceived { get; set; }
         public ulong ChantsUsed { get; set; }
-        public ulong BottlesDrank { get; set; }
+        public ulong DrinksTaken { get; set; }
+        public ulong DrankByOthers { get; set; }
         public ulong MesUsed { get; set; }
-        public ulong ThanksGiven { get; set; }
-        public ulong ThanksReceived { get; set; }
+        public ulong ThankYousSent { get; set; }
+        public ulong ThankYousReceived { get; set; }
         public ulong ThanksSaid { get; set; }
         public ulong VaccinationShotsAdministered { get; set; }
         public ulong VaccinationShotsGot { get; set; }
@@ -37,6 +38,7 @@ namespace CubicBot.Telegram.Stats
 
         #region 3. Consent Not Needed
         public ulong MealsCooked { get; set; }
+        public ulong CookedByOthers { get; set; }
         public ulong ForceUsed { get; set; }
         public ulong ForcedByOthers { get; set; }
         public ulong TouchesGiven { get; set; }
@@ -64,14 +66,14 @@ namespace CubicBot.Telegram.Stats
         #endregion
 
         #region 7. Chinese
-        public ulong InterrogationInitiated { get; set; }
+        public ulong InterrogationsInitiated { get; set; }
         public ulong InterrogatedByOthers { get; set; }
         #endregion
 
         #region 8. Chinese Tasks
         public ulong OkaysSaid { get; set; }
         public ulong OkaysReceived { get; set; }
-        public ulong AssignmentsGiven { get; set; }
+        public ulong AssignmentsCreated { get; set; }
         public ulong AssignmentsReceived { get; set; }
         public ulong UnassignInitiated { get; set; }
         public ulong UnassignReceived { get; set; }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CubicBot.Telegram.Stats;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot;
@@ -44,9 +45,9 @@ namespace CubicBot.Telegram.Commands
 
         public static readonly CubicBotCommand[] Commands = new CubicBotCommand[]
         {
-            new("ok", "👌 好的，没问题！", OKAsync),
-            new("assign", "📛 交给你了！", AssignAsync),
-            new("unassign", "💢 不干了！", UnassignAsync),
+            new("ok", "👌 好的，没问题！", OKAsync, userOrMemberStatsCollector: CountOKs),
+            new("assign", "📛 交给你了！", AssignAsync, userOrMemberStatsCollector: CountAssignments),
+            new("unassign", "💢 不干了！", UnassignAsync, userOrMemberStatsCollector: CountUnassign),
         };
 
         public static Task OKAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
@@ -58,6 +59,15 @@ namespace CubicBot.Telegram.Commands
                                                   randomOKAnswer,
                                                   replyToMessageId: message.ReplyToMessage?.MessageId,
                                                   cancellationToken: cancellationToken);
+        }
+
+        public static void CountOKs(Message message, string? argument, UserData userData, GroupData? groupData, UserData? replyToUserData)
+        {
+            userData.OkaysSaid++;
+            if (replyToUserData is not null)
+            {
+                replyToUserData.OkaysReceived++;
+            }
         }
 
         public static async Task AssignAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
@@ -85,6 +95,19 @@ namespace CubicBot.Telegram.Commands
             }
         }
 
+        public static void CountAssignments(Message message, string? argument, UserData userData, GroupData? groupData, UserData? replyToUserData)
+        {
+            userData.AssignmentsCreated++;
+            if (replyToUserData is not null)
+            {
+                replyToUserData.AssignmentsReceived++;
+            }
+            else
+            {
+                userData.AssignmentsReceived++;
+            }
+        }
+
         public static Task UnassignAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
         {
             var targetName = message.ReplyToMessage?.From?.FirstName ?? message.From?.FirstName;
@@ -92,6 +115,19 @@ namespace CubicBot.Telegram.Commands
                                                   $"{targetName}: 不  干  了",
                                                   replyToMessageId: message.MessageId,
                                                   cancellationToken: cancellationToken);
+        }
+
+        public static void CountUnassign(Message message, string? argument, UserData userData, GroupData? groupData, UserData? replyToUserData)
+        {
+            userData.UnassignInitiated++;
+            if (replyToUserData is not null)
+            {
+                replyToUserData.UnassignReceived++;
+            }
+            else
+            {
+                userData.UnassignReceived++;
+            }
         }
     }
 }

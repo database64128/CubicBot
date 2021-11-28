@@ -1,10 +1,12 @@
-﻿using CubicBot.Telegram.Utils;
+﻿using CubicBot.Telegram.Stats;
+using CubicBot.Telegram.Utils;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
 
 namespace CubicBot.Telegram.Commands
 {
@@ -78,26 +80,54 @@ namespace CubicBot.Telegram.Commands
         {
             (var command, var argument) = ChatHelper.ParseMessageIntoCommandAndArgument(message.Text, _botUsername);
             if (command is null)
+            {
                 return Task.CompletedTask;
+            }
 
             var filteredCommands = Commands.Where(x => x.Command == command);
             if (filteredCommands.Any())
             {
                 var filteredCommand = filteredCommands.First();
-                if (_config.EnableStats && _config.Stats.EnableCommandStats && filteredCommand.StatsCollector is not null)
+                var handleTask = filteredCommand.HandlerAsync(botClient, message, argument, _config, _data, cancellationToken);
+                if (_config.EnableStats && _config.Stats.EnableCommandStats)
                 {
-                    return Task.WhenAll(filteredCommand.Handler(botClient, message, argument, _config, _data, cancellationToken),
-                                        filteredCommand.StatsCollector(botClient, message, argument, _config, _data, cancellationToken));
+                    var userId = message.From?.Id ?? 777000L;
+                    if (message.Chat.Type is ChatType.Private)
+                    {
+                        var userData = _data.GetOrCreateUserData(userId);
+                        userData.CommandsHandled++;
+                        filteredCommand.UserStatsCollector?.Invoke(message, argument, userData);
+                        filteredCommand.UserOrMemberStatsCollector?.Invoke(message, argument, userData, null, null);
+                        if (filteredCommand.UserOrMemberRespondAsync is not null)
+                        {
+                            return Task.WhenAll(handleTask, filteredCommand.UserOrMemberRespondAsync(botClient, message, argument, userData, null, null, cancellationToken));
+                        }
+                    }
+                    else
+                    {
+                        var groupData = _data.GetOrCreateGroupData(message.Chat.Id);
+                        groupData.CommandsHandled++;
+                        var userData = groupData.GetOrCreateUserData(userId);
+                        userData.CommandsHandled++;
+                        UserData? replyToUserData = null;
+                        var replyToUserId = message.ReplyToMessage?.From?.Id;
+                        if (replyToUserId is long id)
+                        {
+                            replyToUserData = groupData.GetOrCreateUserData(id);
+                        }
+                        filteredCommand.GroupStatsCollector?.Invoke(message, argument, groupData, userData);
+                        filteredCommand.UserOrMemberStatsCollector?.Invoke(message, argument, userData, groupData, replyToUserData);
+                        if (filteredCommand.UserOrMemberRespondAsync is not null)
+                        {
+                            return Task.WhenAll(handleTask, filteredCommand.UserOrMemberRespondAsync(botClient, message, argument, userData, groupData, replyToUserData, cancellationToken));
+                        }
+                    }
                 }
-                else
-                {
-                    return filteredCommand.Handler(botClient, message, argument, _config, _data, cancellationToken);
-                }
+
+                return handleTask;
             }
-            else
-            {
-                return Task.CompletedTask;
-            }
+
+            return Task.CompletedTask;
         }
     }
 }
