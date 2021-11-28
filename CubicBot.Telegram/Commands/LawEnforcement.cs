@@ -103,6 +103,10 @@ namespace CubicBot.Telegram.Commands
                 {
                     replyToUserData.ArrestsReceived++;
                 }
+                else
+                {
+                    userData.ArrestsReceived++;
+                }
             }
         }
 
