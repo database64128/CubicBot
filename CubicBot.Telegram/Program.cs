@@ -15,10 +15,20 @@ namespace CubicBot.Telegram
             var botTokenOption = new Option<string?>("--bot-token", "Telegram bot token.");
             var enableCommandsModuleOption = new Option<bool?>("--enable-commands-mod", "Whether to enable the commands module.");
             var enableStatsModuleOption = new Option<bool?>("--enable-stats-mod", "Whether to enable the stats module.");
+
+            var enablePersonalCommandsOption = new Option<bool?>("--enable-personal-commands", "Whether to enable personal commands.");
             var enableCommonCommandsOption = new Option<bool?>("--enable-common-commands", "Whether to enable common commands.");
             var enableDiceCommandsOption = new Option<bool?>("--enable-dice-commands", "Whether to enable dice commands.");
+            var enableConsentNotNeededCommandsOption = new Option<bool?>("--enable-consent-not-needed-commands", "Whether to enable consent not needed commands.");
+            var enableNonVeganCommandsOption = new Option<bool?>("--enable-non-vegan-commands", "Whether to enable non-vegan commands.");
+            var enableLawEnforcementCommandsOption = new Option<bool?>("--enable-law-enforcement-commands", "Whether to enable law enforcement commands.");
+            var enablePublicServicesCommandsOption = new Option<bool?>("--enable-public-services-commands", "Whether to enable public services commands.");
             var enableChineseCommandsOption = new Option<bool?>("--enable-chinese-commands", "Whether to enable Chinese commands.");
+            var enableChineseTasksCommandsOption = new Option<bool?>("--enable-chinese-tasks-commands", "Whether to enable Chinese tasks commands.");
+
             var enableGrassStatsOption = new Option<bool?>("--enable-grass-stats", "Whether to enable grass stats.");
+            var enableCommandStatsOption = new Option<bool?>("--enable-command-stats", "Whether to enable command stats.");
+            var enableMessageCounterOption = new Option<bool?>("--enable-message-counter", "Whether to enable message counter.");
 
             var configGetCommand = new Command("get", "Print config.")
             {
@@ -30,13 +40,21 @@ namespace CubicBot.Telegram
                 botTokenOption,
                 enableCommandsModuleOption,
                 enableStatsModuleOption,
+                enablePersonalCommandsOption,
                 enableCommonCommandsOption,
                 enableDiceCommandsOption,
+                enableConsentNotNeededCommandsOption,
+                enableNonVeganCommandsOption,
+                enableLawEnforcementCommandsOption,
+                enablePublicServicesCommandsOption,
                 enableChineseCommandsOption,
+                enableChineseTasksCommandsOption,
                 enableGrassStatsOption,
+                enableCommandStatsOption,
+                enableMessageCounterOption,
             };
 
-            configSetCommand.Handler = CommandHandler.Create<string?, bool?, bool?, bool?, bool?, bool?, bool?, CancellationToken>(ConfigCommand.Set);
+            configSetCommand.Handler = CommandHandler.Create<string?, bool?, bool?, bool?, bool?, bool?, bool?, bool?, bool?, bool?, bool?, bool?, bool?, bool?, bool?, CancellationToken>(ConfigCommand.Set);
 
             var configCommand = new Command("config", "Print or change config.")
             {

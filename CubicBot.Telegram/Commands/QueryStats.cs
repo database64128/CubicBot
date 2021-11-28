@@ -43,8 +43,15 @@ namespace CubicBot.Telegram.Commands
 
             var responseSB = new StringBuilder();
 
-            responseSB.AppendLine($"Messages processed: {targetUserData.MessagesProcessed}");
-            responseSB.AppendLine($"Commands handled: {targetUserData.CommandsHandled}");
+            if (config.Stats.EnableMessageCounter)
+            {
+                responseSB.AppendLine($"Messages processed: {targetUserData.MessagesProcessed}");
+            }
+
+            if (config.Stats.EnableCommandStats)
+            {
+                responseSB.AppendLine($"Commands handled: {targetUserData.CommandsHandled}");
+            }
 
             #region 1. Common
             if (config.Commands.EnableCommon)
@@ -156,6 +163,11 @@ namespace CubicBot.Telegram.Commands
             {
                 responseSB.AppendLine();
                 responseSB.AppendLine($"生草数量: {targetUserData.GrassGrown}");
+            }
+
+            if (responseSB.Length == 0)
+            {
+                responseSB.Append("No stats.");
             }
 
             return botClient.SendTextMessageAsync(message.Chat.Id,

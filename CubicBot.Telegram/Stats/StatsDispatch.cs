@@ -21,6 +21,12 @@ namespace CubicBot.Telegram.Stats
                 var grass = new Grass();
                 _collectors.Add(grass);
             }
+
+            if (config.EnableMessageCounter)
+            {
+                var messageCounter = new MessageCounter();
+                _collectors.Add(messageCounter);
+            }
         }
 
         public Task HandleAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken = default)

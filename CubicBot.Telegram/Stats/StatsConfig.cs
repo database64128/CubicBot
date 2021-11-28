@@ -5,5 +5,7 @@
         public bool EnableGrass { get; set; } = true;
 
         public bool EnableCommandStats { get; set; } = true;
+
+        public bool EnableMessageCounter { get; set; } = true;
     }
 }
