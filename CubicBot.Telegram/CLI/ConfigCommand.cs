@@ -29,6 +29,7 @@ namespace CubicBot.Telegram.CLI
             Console.WriteLine($"{"Enable Public Services Commands",-36}{config.Commands.EnablePublicServices}");
             Console.WriteLine($"{"Enable Chinese Commands",-36}{config.Commands.EnableChinese}");
             Console.WriteLine($"{"Enable Chinese Tasks Commands",-36}{config.Commands.EnableChineseTasks}");
+            Console.WriteLine($"{"Enable Systemd Commands",-36}{config.Commands.EnableSystemd}");
             Console.WriteLine();
             Console.WriteLine($"{"Enable Grass Stats",-36}{config.Stats.EnableGrass}");
             Console.WriteLine($"{"Enable Command Stats",-36}{config.Stats.EnableCommandStats}");
@@ -50,6 +51,7 @@ namespace CubicBot.Telegram.CLI
             bool? enablePublicServicesCommands,
             bool? enableChineseCommands,
             bool? enableChineseTasksCommands,
+            bool? enableSystemdCommands,
             bool? enableGrassStats,
             bool? enableCommandStats,
             bool? enableMessageCounter,
@@ -87,6 +89,8 @@ namespace CubicBot.Telegram.CLI
                 config.Commands.EnableChinese = eCNC;
             if (enableChineseTasksCommands is bool eCNTC)
                 config.Commands.EnableChineseTasks = eCNTC;
+            if (enableSystemdCommands is bool eSC)
+                config.Commands.EnableSystemd = eSC;
 
             if (enableGrassStats is bool eGS)
                 config.Stats.EnableGrass = eGS;

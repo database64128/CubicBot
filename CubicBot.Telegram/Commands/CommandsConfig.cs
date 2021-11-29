@@ -11,5 +11,6 @@
         public bool EnablePublicServices { get; set; } = true;
         public bool EnableChinese { get; set; } = true;
         public bool EnableChineseTasks { get; set; } = true;
+        public bool EnableSystemd { get; set; } = true;
     }
 }

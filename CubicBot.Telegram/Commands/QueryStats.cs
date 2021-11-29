@@ -58,6 +58,11 @@ namespace CubicBot.Telegram.Commands
                     Commands.Add(new("leaderboard_interrogations", "🔫 发起喝茶排行榜", SendInterrogationsInitiatedLeaderboardAsync));
                     Commands.Add(new("leaderboard_interrogated", "☕ 被请喝茶排行榜", SendInterrogatedLeaderboardAsync));
                 }
+
+                if (config.Commands.EnableSystemd)
+                {
+                    Commands.Add(new("leaderboard_systemd", "🐧 Who's the biggest systemd fan in this chat?", SendSystemdFandomLeaderboardAsync));
+                }
             }
 
             if (config.Stats.EnableGrass)
@@ -395,6 +400,18 @@ namespace CubicBot.Telegram.Commands
                                     x => x.Members.Select(x => x.Value.InterrogatedByOthers)
                                                   .Aggregate(0Ul, (x, y) => x + y),
                                     x => x.InterrogatedByOthers,
+                                    cancellationToken);
+        #endregion
+
+        #region 9. Systemd
+        public static Task SendSystemdFandomLeaderboardAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
+            => SendLeaderboardAsync(botClient,
+                                    message,
+                                    argument,
+                                    data,
+                                    "🐧 Who's the biggest systemd fan in this chat?",
+                                    null,
+                                    x => x.SystemctlCommandsUsed,
                                     cancellationToken);
         #endregion
 

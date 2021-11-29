@@ -69,6 +69,11 @@ namespace CubicBot.Telegram.Commands
                 Commands.AddRange(ChineseTasks.Commands);
             }
 
+            if (config.Commands.EnableSystemd)
+            {
+                Commands.AddRange(Systemd.Commands);
+            }
+
             if (config.EnableStats)
             {
                 var queryStats = new QueryStats(config);

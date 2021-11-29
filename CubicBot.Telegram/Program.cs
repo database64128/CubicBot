@@ -25,6 +25,7 @@ namespace CubicBot.Telegram
             var enablePublicServicesCommandsOption = new Option<bool?>("--enable-public-services-commands", "Whether to enable public services commands.");
             var enableChineseCommandsOption = new Option<bool?>("--enable-chinese-commands", "Whether to enable Chinese commands.");
             var enableChineseTasksCommandsOption = new Option<bool?>("--enable-chinese-tasks-commands", "Whether to enable Chinese tasks commands.");
+            var enableSystemdCommandsOption = new Option<bool?>("--enable-systemd-commands", "Whether to enable systemd commands.");
 
             var enableGrassStatsOption = new Option<bool?>("--enable-grass-stats", "Whether to enable grass stats.");
             var enableCommandStatsOption = new Option<bool?>("--enable-command-stats", "Whether to enable command stats.");
@@ -49,12 +50,13 @@ namespace CubicBot.Telegram
                 enablePublicServicesCommandsOption,
                 enableChineseCommandsOption,
                 enableChineseTasksCommandsOption,
+                enableSystemdCommandsOption,
                 enableGrassStatsOption,
                 enableCommandStatsOption,
                 enableMessageCounterOption,
             };
 
-            configSetCommand.Handler = CommandHandler.Create<string?, bool?, bool?, bool?, bool?, bool?, bool?, bool?, bool?, bool?, bool?, bool?, bool?, bool?, bool?, CancellationToken>(ConfigCommand.Set);
+            configSetCommand.Handler = CommandHandler.Create(ConfigCommand.Set);
 
             var configCommand = new Command("config", "Print or change config.")
             {

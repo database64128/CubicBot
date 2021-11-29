@@ -1,10 +1,8 @@
 # <img alt="Cubic Bot Logo" src="icons/robot-love.svg" width="40" /> Cubic Bot
 
-[![Build](https://github.com/database64128/CubicBot/workflows/Build/badge.svg)](https://github.com/database64128/CubicBot/actions?query=workflow%3ABuild)
-[![Release](https://github.com/database64128/CubicBot/workflows/Release/badge.svg)](https://github.com/database64128/CubicBot/actions?query=workflow%3ARelease)
-<a href="https://aur.archlinux.org/packages/cubic-bot-telegram-git/">
-    <img alt="AUR badge for cubic-bot-telegram-git" src="https://img.shields.io/aur/version/cubic-bot-telegram-git?label=AUR%20cubic-bot-telegram-git" />
-</a>
+[![Build](https://github.com/database64128/CubicBot/actions/workflows/build.yml/badge.svg)](https://github.com/database64128/CubicBot/actions/workflows/build.yml)
+[![Release](https://github.com/database64128/CubicBot/actions/workflows/release.yml/badge.svg)](https://github.com/database64128/CubicBot/actions/workflows/release.yml)
+[![AUR badge for cubic-bot-telegram-git](https://img.shields.io/aur/version/cubic-bot-telegram-git?label=AUR%20cubic-bot-telegram-git)](https://aur.archlinux.org/packages/cubic-bot-telegram-git/)
 
 A stupid and annoying chatbot for your group chats.
 
@@ -17,6 +15,14 @@ A stupid and annoying chatbot for your group chats.
 ## Modules
 
 ### Commands
+
+#### 0. Personal
+
+- `/add_pronouns`: ➕ Add pronouns.
+- `/remove_pronouns`: ➖ Remove pronouns.
+- `/get_pronouns`: ❤️ Get someone's pronouns by replying to someone's message, or display your own pronoun settings.
+- `/set_default_pronouns`: 📛 Set or unset default pronouns for all chats.
+- `/set_preferred_pronouns`: 🕶️ Set or unset preferred pronouns for this chat.
 
 #### 1. Common
 
@@ -69,11 +75,16 @@ A stupid and annoying chatbot for your group chats.
 - `/assign`: 📛 交给你了！
 - `/unassign`: 💢 不干了！
 
-#### 9. Query Stats
+#### 9. Systemd
 
-- `/my_stats`: 📅 View your stats in this chat.
-- `/leaderboard_command`: ⌨️ View command usage rankings in this chat.
+- `/systemctl`: `➡️ systemctl <command> [unit]`
+
+#### 10. Query Stats
+
+- `/get_stats`: 📅 View your stats in this chat, or reply to a message to view the sender's stats in this chat.
 - `/leaderboard_grass`: 🍀 View grass growth rankings in this chat.
+- `/leaderboard_demanding`: 👉 Who's the most demanding person in this chat?
+- `/leaderboard_talkative`: 🗣️ Who's the most talkative person in this chat?
 
 ### Stats
 
@@ -83,7 +94,15 @@ The Chinese charater "草" is commonly seen in Chinese text messages. It could m
 
 This stats counter counts each individual's usage of "草" in group chats and generates usage rankings. Say it when you feel like it to unlock achievements.
 
-The counter also recognizes common typos like "cao", "艹", "c奥", "c嗷", etc.
+The counter also recognizes common variants and typos like "cao", "艹", "c奥", "c嗷", etc.
+
+#### 2. Command Usage Stats
+
+Counts command usage and generates the demanding leaderboard.
+
+#### 3. Message Counter
+
+Counts text messages and generates the talkative leaderboard.
 
 ## Build
 

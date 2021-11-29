@@ -79,6 +79,10 @@ namespace CubicBot.Telegram.Stats
         public ulong UnassignReceived { get; set; }
         #endregion
 
+        #region 9. Systemd
+        public ulong SystemctlCommandsUsed { get; set; }
+        #endregion
+
         public ulong GrassGrown { get; set; }
     }
 }
