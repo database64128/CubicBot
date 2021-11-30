@@ -1,4 +1,5 @@
 ﻿using CubicBot.Telegram.Stats;
+using CubicBot.Telegram.Utils;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -112,6 +113,7 @@ Reply to a message to use the sender's name as the unit\.";
         string ed,
         CancellationToken cancellationToken = default)
     {
+        unit = ChatHelper.EscapeMarkdownV2CodeBlock(unit);
         var rounds = Random.Shared.Next(roundsMin, roundsMax);
         var sent = await botClient.SendTextMessageAsync(message.Chat.Id,
                                                         $"`{WaitState}{ing}{unit}...`",
