@@ -1,4 +1,5 @@
 ﻿using CubicBot.Telegram.Stats;
+using CubicBot.Telegram.Utils;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -35,7 +36,9 @@ public static class Dice
         var tasks = new List<Task>();
 
         for (var i = 0; i < count; i++)
-            tasks.Add(botClient.SendDiceAsync(message.Chat.Id, emoji, disableNotification: true, cancellationToken: cancellationToken));
+        {
+            tasks.Add(botClient.SendDiceWithRetryAsync(message.Chat.Id, emoji, disableNotification: true, cancellationToken: cancellationToken));
+        }
 
         return Task.WhenAll(tasks);
     }

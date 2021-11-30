@@ -216,10 +216,10 @@ namespace CubicBot.Telegram.Commands
                 responseSB.Append("No stats.");
             }
 
-            return botClient.SendTextMessageAsync(message.Chat.Id,
-                                                  responseSB.ToString(),
-                                                  replyToMessageId: message.MessageId,
-                                                  cancellationToken: cancellationToken);
+            return botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
+                                                           responseSB.ToString(),
+                                                           replyToMessageId: message.MessageId,
+                                                           cancellationToken: cancellationToken);
         }
 
         #region 1. Common
@@ -458,28 +458,28 @@ namespace CubicBot.Telegram.Commands
         {
             if (message.Chat.Type is ChatType.Private)
             {
-                await botClient.SendTextMessageAsync(message.Chat.Id,
-                                                      "This command can only be used in group chats.",
-                                                      replyToMessageId: message.MessageId,
-                                                      cancellationToken: cancellationToken);
+                await botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
+                                                              "This command can only be used in group chats.",
+                                                              replyToMessageId: message.MessageId,
+                                                              cancellationToken: cancellationToken);
 
                 return;
             }
 
             if (!data.Groups.TryGetValue(message.Chat.Id, out var groupData) || groupData.Members.Count == 0)
             {
-                await botClient.SendTextMessageAsync(message.Chat.Id,
-                                                      "No stats.",
-                                                      replyToMessageId: message.MessageId,
-                                                      cancellationToken: cancellationToken);
+                await botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
+                                                              "No stats.",
+                                                              replyToMessageId: message.MessageId,
+                                                              cancellationToken: cancellationToken);
 
                 return;
             }
 
-            var sendDummyReplyTask = botClient.SendTextMessageAsync(message.Chat.Id,
-                                                                    "Querying user information...",
-                                                                    replyToMessageId: message.MessageId,
-                                                                    cancellationToken: cancellationToken);
+            var sendDummyReplyTask = botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
+                                                                             "Querying user information...",
+                                                                             replyToMessageId: message.MessageId,
+                                                                             cancellationToken: cancellationToken);
 
             var generateLeaderboardTasks = groupData.Members.OrderByDescending(x => getStats(x.Value))
                                                             .Take(10)
@@ -490,10 +490,10 @@ namespace CubicBot.Telegram.Commands
 
             if (leaderboard.Length == 0 || leaderboard[0].stats == 0UL)
             {
-                await botClient.EditMessageTextAsync(message.Chat.Id,
-                                                     dummyReply.MessageId,
-                                                     "No stats.",
-                                                     cancellationToken: cancellationToken);
+                await botClient.EditMessageTextWithRetryAsync(message.Chat.Id,
+                                                              dummyReply.MessageId,
+                                                              "No stats.",
+                                                              cancellationToken: cancellationToken);
 
                 return;
             }
@@ -523,11 +523,11 @@ namespace CubicBot.Telegram.Commands
 
             replyBuilder.AppendLine("```");
 
-            await botClient.EditMessageTextAsync(message.Chat.Id,
-                                                 dummyReply.MessageId,
-                                                 replyBuilder.ToString(),
-                                                 ParseMode.MarkdownV2,
-                                                 cancellationToken: cancellationToken);
+            await botClient.EditMessageTextWithRetryAsync(message.Chat.Id,
+                                                          dummyReply.MessageId,
+                                                          replyBuilder.ToString(),
+                                                          ParseMode.MarkdownV2,
+                                                          cancellationToken: cancellationToken);
         }
 
         private static async Task<string> GetChatMemberFirstName(ITelegramBotClient botClient, ChatId chatId, long userId, CancellationToken cancellationToken = default)

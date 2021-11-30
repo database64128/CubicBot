@@ -115,34 +115,34 @@ Reply to a message to use the sender's name as the unit\.";
     {
         unit = ChatHelper.EscapeMarkdownV2CodeBlock(unit);
         var rounds = Random.Shared.Next(roundsMin, roundsMax);
-        var sent = await botClient.SendTextMessageAsync(message.Chat.Id,
-                                                        $"`{WaitState}{ing}{unit}...`",
-                                                        ParseMode.MarkdownV2,
-                                                        cancellationToken: cancellationToken);
+        var sent = await botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
+                                                                 $"`{WaitState}{ing}{unit}...`",
+                                                                 ParseMode.MarkdownV2,
+                                                                 cancellationToken: cancellationToken);
 
         for (var i = 0; i < rounds; i++)
         {
             await Task.Delay(2000, cancellationToken);
-            await botClient.EditMessageTextAsync(sent.Chat.Id,
-                                                 sent.MessageId,
-                                                 $"`{States[i % States.Length]}{ing}{unit}...`",
-                                                 ParseMode.MarkdownV2,
-                                                 cancellationToken: cancellationToken);
+            await botClient.EditMessageTextWithRetryAsync(sent.Chat.Id,
+                                                          sent.MessageId,
+                                                          $"`{States[i % States.Length]}{ing}{unit}...`",
+                                                          ParseMode.MarkdownV2,
+                                                          cancellationToken: cancellationToken);
         }
 
-        await botClient.EditMessageTextAsync(sent.Chat.Id,
-                                             sent.MessageId,
-                                             $"`{OkState}{ed}{unit}.`",
-                                             ParseMode.MarkdownV2,
-                                             cancellationToken: cancellationToken);
+        await botClient.EditMessageTextWithRetryAsync(sent.Chat.Id,
+                                                      sent.MessageId,
+                                                      $"`{OkState}{ed}{unit}.`",
+                                                      ParseMode.MarkdownV2,
+                                                      cancellationToken: cancellationToken);
     }
 
     private static Task SendHelpAsync(ITelegramBotClient botClient, Message message, string errMsgMarkdownV2, CancellationToken cancellationToken = default)
-        => botClient.SendTextMessageAsync(message.Chat.Id,
-                                          errMsgMarkdownV2 + HelpMarkdownV2,
-                                          ParseMode.MarkdownV2,
-                                          replyToMessageId: message.MessageId,
-                                          cancellationToken: cancellationToken);
+        => botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
+                                                   errMsgMarkdownV2 + HelpMarkdownV2,
+                                                   ParseMode.MarkdownV2,
+                                                   replyToMessageId: message.MessageId,
+                                                   cancellationToken: cancellationToken);
 
     public static void CountSystemctlCalls(Message message, string? argument, UserData userData, GroupData? groupData, UserData? replyToUserData) => userData.SystemctlCommandsUsed++;
 }

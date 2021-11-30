@@ -53,11 +53,11 @@ public static class Personal
             responseMarkdownV2 = helpMarkdownV2;
         }
 
-        return botClient.SendTextMessageAsync(message.Chat.Id,
-                                              responseMarkdownV2,
-                                              ParseMode.MarkdownV2,
-                                              replyToMessageId: message.MessageId,
-                                              cancellationToken: cancellationToken);
+        return botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
+                                                       responseMarkdownV2,
+                                                       ParseMode.MarkdownV2,
+                                                       replyToMessageId: message.MessageId,
+                                                       cancellationToken: cancellationToken);
     }
 
     public static Task RemovePronounsAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
@@ -95,11 +95,11 @@ public static class Personal
             responseMarkdownV2 = $@"❌ Failed to parse *{ChatHelper.EscapeMarkdownV2Plaintext(argument)}*\. Please follow the same format requirements as `/add\_pronouns`\.";
         }
 
-        return botClient.SendTextMessageAsync(message.Chat.Id,
-                                              responseMarkdownV2,
-                                              ParseMode.MarkdownV2,
-                                              replyToMessageId: message.MessageId,
-                                              cancellationToken: cancellationToken);
+        return botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
+                                                       responseMarkdownV2,
+                                                       ParseMode.MarkdownV2,
+                                                       replyToMessageId: message.MessageId,
+                                                       cancellationToken: cancellationToken);
     }
 
     public static Task GetPronounsAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
@@ -123,11 +123,11 @@ public static class Personal
                 0 => $@"*{firstnameEscaped}* has not set any pronouns yet\. You may address *{firstnameEscaped}* by *{Pronouns.Neutral.ToSubjectObject()}*\.",
                 _ => $@"You may address *{firstnameEscaped}* by {string.Join(", ", pronouns.Select(x => $"*{ChatHelper.EscapeMarkdownV2Plaintext(x.ToSubjectObject())}*"))}\.",
             };
-            return botClient.SendTextMessageAsync(message.Chat.Id,
-                                                  responseMarkdownV2,
-                                                  ParseMode.MarkdownV2,
-                                                  replyToMessageId: message.MessageId,
-                                                  cancellationToken: cancellationToken);
+            return botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
+                                                           responseMarkdownV2,
+                                                           ParseMode.MarkdownV2,
+                                                           replyToMessageId: message.MessageId,
+                                                           cancellationToken: cancellationToken);
         }
 
         // self query
@@ -144,10 +144,10 @@ public static class Personal
         responseSB.AppendLine($"Default pronouns: {(defaultPronouns is null ? "Not set" : defaultPronouns)}");
         responseSB.AppendLine($"Preferred pronouns in this chat: {(preferredPronouns is null ? "Not set" : preferredPronouns)}");
 
-        return botClient.SendTextMessageAsync(message.Chat.Id,
-                                              responseSB.ToString(),
-                                              replyToMessageId: message.MessageId,
-                                              cancellationToken: cancellationToken);
+        return botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
+                                                       responseSB.ToString(),
+                                                       replyToMessageId: message.MessageId,
+                                                       cancellationToken: cancellationToken);
     }
 
     public static Task SetDefaultPronounsAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
@@ -188,11 +188,11 @@ public static class Personal
             responseMarkdownV2 = $@"❌ Failed to parse *{ChatHelper.EscapeMarkdownV2Plaintext(argument)}*\. Please follow the same format requirements as `/add\_pronouns`\.";
         }
 
-        return botClient.SendTextMessageAsync(message.Chat.Id,
-                                              responseMarkdownV2,
-                                              ParseMode.MarkdownV2,
-                                              replyToMessageId: message.MessageId,
-                                              cancellationToken: cancellationToken);
+        return botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
+                                                       responseMarkdownV2,
+                                                       ParseMode.MarkdownV2,
+                                                       replyToMessageId: message.MessageId,
+                                                       cancellationToken: cancellationToken);
     }
 
     public static Task SetPreferredPronounsAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
@@ -248,10 +248,10 @@ public static class Personal
             responseMarkdownV2 = $@"❌ Failed to parse *{ChatHelper.EscapeMarkdownV2Plaintext(argument)}*\. Please follow the same format requirements as `/add\_pronouns`\.";
         }
 
-        return botClient.SendTextMessageAsync(message.Chat.Id,
-                                              responseMarkdownV2,
-                                              ParseMode.MarkdownV2,
-                                              replyToMessageId: message.MessageId,
-                                              cancellationToken: cancellationToken);
+        return botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
+                                                       responseMarkdownV2,
+                                                       ParseMode.MarkdownV2,
+                                                       replyToMessageId: message.MessageId,
+                                                       cancellationToken: cancellationToken);
     }
 }

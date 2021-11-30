@@ -1,4 +1,5 @@
 ﻿using CubicBot.Telegram.Stats;
+using CubicBot.Telegram.Utils;
 using System;
 using System.Text;
 using System.Threading;
@@ -61,7 +62,7 @@ namespace CubicBot.Telegram.Commands
                 }
             }
 
-            return botClient.SendTextMessageAsync(message.Chat.Id, sb.ToString(), cancellationToken: cancellationToken);
+            return botClient.SendTextMessageWithRetryAsync(message.Chat.Id, sb.ToString(), cancellationToken: cancellationToken);
         }
 
         public static void CountCopCalls(Message message, string? argument, UserData userData, GroupData? groupData, UserData? replyToUserData)
@@ -80,16 +81,16 @@ namespace CubicBot.Telegram.Commands
 
             if (message.ReplyToMessage is Message targetMessage)
             {
-                return botClient.SendTextMessageAsync(message.Chat.Id,
-                                                      $"{targetMessage.From?.FirstName} has been arrested for {reason}.",
-                                                      replyToMessageId: targetMessage.MessageId,
-                                                      cancellationToken: cancellationToken);
+                return botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
+                                                               $"{targetMessage.From?.FirstName} has been arrested for {reason}.",
+                                                               replyToMessageId: targetMessage.MessageId,
+                                                               cancellationToken: cancellationToken);
             }
             else
             {
-                return botClient.SendTextMessageAsync(message.Chat.Id,
-                                                      $"{message.From?.FirstName} has been arrested for {reason}.",
-                                                      cancellationToken: cancellationToken);
+                return botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
+                                                               $"{message.From?.FirstName} has been arrested for {reason}.",
+                                                               cancellationToken: cancellationToken);
             }
         }
 
@@ -119,10 +120,10 @@ namespace CubicBot.Telegram.Commands
                 _ => "The jury failed to reach a consensus.",
             };
 
-            return botClient.SendTextMessageAsync(message.Chat.Id,
-                                                  verdict,
-                                                  replyToMessageId: message.ReplyToMessage?.MessageId,
-                                                  cancellationToken: cancellationToken);
+            return botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
+                                                           verdict,
+                                                           replyToMessageId: message.ReplyToMessage?.MessageId,
+                                                           cancellationToken: cancellationToken);
         }
 
         public static void CountLawsuits(Message message, string? argument, UserData userData, GroupData? groupData, UserData? replyToUserData)

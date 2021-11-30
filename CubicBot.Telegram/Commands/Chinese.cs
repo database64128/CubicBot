@@ -1,4 +1,5 @@
 ﻿using CubicBot.Telegram.Stats;
+using CubicBot.Telegram.Utils;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -45,10 +46,10 @@ namespace CubicBot.Telegram.Commands
             var randomIndex = Random.Shared.Next(Questions.Length);
             var randomQuestion = Questions[randomIndex];
 
-            return botClient.SendTextMessageAsync(message.Chat.Id,
-                                                  randomQuestion,
-                                                  replyToMessageId: message.ReplyToMessage?.MessageId,
-                                                  cancellationToken: cancellationToken);
+            return botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
+                                                           randomQuestion,
+                                                           replyToMessageId: message.ReplyToMessage?.MessageId,
+                                                           cancellationToken: cancellationToken);
         }
 
         public static void CountInterrogations(Message message, string? argument, UserData userData, GroupData? groupData, UserData? replyToUserData)

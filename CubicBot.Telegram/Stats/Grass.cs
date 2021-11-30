@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using CubicBot.Telegram.Utils;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot;
@@ -16,10 +17,10 @@ namespace CubicBot.Telegram.Stats
         private static bool IsGrowingGrass(string msg) => GrassSeeds.Any(seed => msg.Contains(seed));
 
         private static Task NotifyGrassGrowthAchievementAsync(ITelegramBotClient botClient, Message message, ulong count, CancellationToken cancellationToken = default)
-            => botClient.SendTextMessageAsync(message.Chat.Id,
-                                              $"🏆 Achievement Unlocked: {count} Grass Grown",
-                                              replyToMessageId: message.MessageId,
-                                              cancellationToken: cancellationToken);
+            => botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
+                                                       $"🏆 Achievement Unlocked: {count} Grass Grown",
+                                                       replyToMessageId: message.MessageId,
+                                                       cancellationToken: cancellationToken);
 
         public override bool IsCollectable(Message message) => !string.IsNullOrEmpty(message.Text) && IsGrowingGrass(message.Text);
 

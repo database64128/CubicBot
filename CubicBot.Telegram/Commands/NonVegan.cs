@@ -1,4 +1,5 @@
 ﻿using CubicBot.Telegram.Stats;
+using CubicBot.Telegram.Utils;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -32,25 +33,25 @@ namespace CubicBot.Telegram.Commands
         {
             if (message.ReplyToMessage is Message targetMessage)
             {
-                return botClient.SendTextMessageAsync(message.Chat.Id,
-                                                      $"{message.From?.FirstName} ate {targetMessage.From?.FirstName}! 🍴😋",
-                                                      replyToMessageId: targetMessage.MessageId,
-                                                      cancellationToken: cancellationToken);
+                return botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
+                                                               $"{message.From?.FirstName} ate {targetMessage.From?.FirstName}! 🍴😋",
+                                                               replyToMessageId: targetMessage.MessageId,
+                                                               cancellationToken: cancellationToken);
             }
             else if (argument is string targetName)
             {
-                return botClient.SendTextMessageAsync(message.Chat.Id,
-                                                      $"{message.From?.FirstName} ate {targetName}! 🍴😋",
-                                                      cancellationToken: cancellationToken);
+                return botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
+                                                               $"{message.From?.FirstName} ate {targetName}! 🍴😋",
+                                                               cancellationToken: cancellationToken);
             }
             else
             {
                 var foodIndex = Random.Shared.Next(Food.Length);
                 var food = Food[foodIndex];
-                return botClient.SendTextMessageAsync(message.Chat.Id,
-                                                      food,
-                                                      replyToMessageId: message.MessageId,
-                                                      cancellationToken: cancellationToken);
+                return botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
+                                                               food,
+                                                               replyToMessageId: message.MessageId,
+                                                               cancellationToken: cancellationToken);
             }
         }
 

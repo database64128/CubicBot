@@ -38,22 +38,24 @@ namespace CubicBot.Telegram
         {
             await foreach (var update in updates.WithCancellation(cancellationToken))
             {
-                try
+                if (update.Type == UpdateType.Message && update.Message is not null)
                 {
-                    if (update.Type == UpdateType.Message && update.Message is not null)
+                    foreach (var dispatch in _dispatches)
                     {
-                        var tasks = _dispatches.Select(dispatch => dispatch.HandleAsync(botClient, update.Message, cancellationToken));
-                        await Task.WhenAll(tasks);
+                        _ = Task.Run(() => dispatch.HandleAsync(botClient, update.Message, cancellationToken), cancellationToken)
+                                .ContinueWith(t =>
+                                {
+                                    if (t?.Exception?.InnerException is not null)
+                                    {
+                                        HandleError(t.Exception.InnerException);
+                                    }
+                                }, TaskContinuationOptions.OnlyOnFaulted);
                     }
-                }
-                catch (Exception ex)
-                {
-                    await HandleErrorAsync(ex, cancellationToken);
                 }
             }
         }
 
-        public static Task HandleErrorAsync(Exception ex, CancellationToken _ = default)
+        public static void HandleError(Exception ex)
         {
             var errorMessage = ex switch
             {
@@ -62,6 +64,11 @@ namespace CubicBot.Telegram
             };
 
             Console.WriteLine(errorMessage);
+        }
+
+        public static Task HandleErrorAsync(Exception ex, CancellationToken _ = default)
+        {
+            HandleError(ex);
             return Task.CompletedTask;
         }
     }

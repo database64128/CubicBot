@@ -44,23 +44,23 @@ namespace CubicBot.Telegram.Commands
                 if (!string.IsNullOrEmpty(argument))
                     argument = $" for {argument}";
 
-                return botClient.SendTextMessageAsync(message.Chat.Id,
-                                                      $"{message.From?.FirstName}: {apologyStart}{argument}, {targetMessage.From?.FirstName}. 🥺",
-                                                      replyToMessageId: targetMessage.MessageId,
-                                                      cancellationToken: cancellationToken);
+                return botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
+                                                               $"{message.From?.FirstName}: {apologyStart}{argument}, {targetMessage.From?.FirstName}. 🥺",
+                                                               replyToMessageId: targetMessage.MessageId,
+                                                               cancellationToken: cancellationToken);
             }
             else if (argument is string targetName)
             {
-                return botClient.SendTextMessageAsync(message.Chat.Id,
-                                                      $"{message.From?.FirstName}: {apologyStart}, {targetName}. 🥺",
-                                                      cancellationToken: cancellationToken);
+                return botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
+                                                               $"{message.From?.FirstName}: {apologyStart}, {targetName}. 🥺",
+                                                               cancellationToken: cancellationToken);
             }
             else
             {
-                return botClient.SendTextMessageAsync(message.Chat.Id,
-                                                      $"{apologyStart}, {message.From?.FirstName}. 🥺",
-                                                      replyToMessageId: message.MessageId,
-                                                      cancellationToken: cancellationToken);
+                return botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
+                                                               $"{apologyStart}, {message.From?.FirstName}. 🥺",
+                                                               replyToMessageId: message.MessageId,
+                                                               cancellationToken: cancellationToken);
             }
         }
 
@@ -110,10 +110,10 @@ namespace CubicBot.Telegram.Commands
             // Apply bold format and repeat
             argument = $"*{argument}*{Environment.NewLine}*{argument}*{Environment.NewLine}*{argument}*";
 
-            return botClient.SendTextMessageAsync(message.Chat.Id,
-                                                  argument,
-                                                  parseMode: ParseMode.MarkdownV2,
-                                                  cancellationToken: cancellationToken);
+            return botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
+                                                           argument,
+                                                           parseMode: ParseMode.MarkdownV2,
+                                                           cancellationToken: cancellationToken);
         }
 
         public static void CountChants(Message message, string? argument, UserData userData, GroupData? groupData, UserData? replyToUserData) => userData.ChantsUsed++;
@@ -122,25 +122,25 @@ namespace CubicBot.Telegram.Commands
         {
             if (message.ReplyToMessage is Message targetMessage)
             {
-                return botClient.SendTextMessageAsync(message.Chat.Id,
-                                                      $"{message.From?.FirstName} drank {targetMessage.From?.FirstName}! 🥤🤤",
-                                                      replyToMessageId: targetMessage.MessageId,
-                                                      cancellationToken: cancellationToken);
+                return botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
+                                                               $"{message.From?.FirstName} drank {targetMessage.From?.FirstName}! 🥤🤤",
+                                                               replyToMessageId: targetMessage.MessageId,
+                                                               cancellationToken: cancellationToken);
             }
             else if (argument is string targetName)
             {
-                return botClient.SendTextMessageAsync(message.Chat.Id,
-                                                      $"{message.From?.FirstName} drank {targetName}! 🥤🤤",
-                                                      cancellationToken: cancellationToken);
+                return botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
+                                                               $"{message.From?.FirstName} drank {targetName}! 🥤🤤",
+                                                               cancellationToken: cancellationToken);
             }
             else
             {
                 var beverageIndex = Random.Shared.Next(Beverages.Length);
                 var beverage = Beverages[beverageIndex];
-                return botClient.SendTextMessageAsync(message.Chat.Id,
-                                                      beverage,
-                                                      replyToMessageId: message.MessageId,
-                                                      cancellationToken: cancellationToken);
+                return botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
+                                                               beverage,
+                                                               replyToMessageId: message.MessageId,
+                                                               cancellationToken: cancellationToken);
             }
         }
 
@@ -174,10 +174,10 @@ namespace CubicBot.Telegram.Commands
                 },
             };
 
-            return botClient.SendTextMessageAsync(message.Chat.Id,
-                                                  $"* {message.From?.FirstName} {argument}",
-                                                  entities: entities,
-                                                  cancellationToken: cancellationToken);
+            return botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
+                                                           $"* {message.From?.FirstName} {argument}",
+                                                           entities: entities,
+                                                           cancellationToken: cancellationToken);
         }
 
         public static void CountMes(Message message, string? argument, UserData userData, GroupData? groupData, UserData? replyToUserData) => userData.MesUsed++;
@@ -186,23 +186,23 @@ namespace CubicBot.Telegram.Commands
         {
             if (message.ReplyToMessage is Message targetMessage)
             {
-                return botClient.SendTextMessageAsync(message.Chat.Id,
-                                                      $"Thank you so much, {targetMessage.From?.FirstName}! 😊",
-                                                      replyToMessageId: targetMessage.MessageId,
-                                                      cancellationToken: cancellationToken);
+                return botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
+                                                               $"Thank you so much, {targetMessage.From?.FirstName}! 😊",
+                                                               replyToMessageId: targetMessage.MessageId,
+                                                               cancellationToken: cancellationToken);
             }
             else if (argument is string targetName)
             {
-                return botClient.SendTextMessageAsync(message.Chat.Id,
-                                                      $"Thank you so much, {targetName}! 😊",
-                                                      cancellationToken: cancellationToken);
+                return botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
+                                                               $"Thank you so much, {targetName}! 😊",
+                                                               cancellationToken: cancellationToken);
             }
             else
             {
-                return botClient.SendTextMessageAsync(message.Chat.Id,
-                                                      "You must either reply to a message or specify someone to thank!",
-                                                      replyToMessageId: message.MessageId,
-                                                      cancellationToken: cancellationToken);
+                return botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
+                                                               "You must either reply to a message or specify someone to thank!",
+                                                               replyToMessageId: message.MessageId,
+                                                               cancellationToken: cancellationToken);
             }
         }
 
@@ -216,18 +216,18 @@ namespace CubicBot.Telegram.Commands
         }
 
         public static Task SayThanksAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
-            => botClient.SendTextMessageAsync(message.Chat.Id,
-                                              "You're welcome! 🦾",
-                                              replyToMessageId: message.MessageId,
-                                              cancellationToken: cancellationToken);
+            => botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
+                                                       "You're welcome! 🦾",
+                                                       replyToMessageId: message.MessageId,
+                                                       cancellationToken: cancellationToken);
 
         public static void CountThanks(Message message, string? argument, UserData userData, GroupData? groupData, UserData? replyToUserData) => userData.ThanksSaid++;
 
         public static Task VaccinateAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
-            => botClient.SendTextMessageAsync(message.Chat.Id,
-                                              "💉",
-                                              replyToMessageId: message.ReplyToMessage?.MessageId,
-                                              cancellationToken: cancellationToken);
+            => botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
+                                                       "💉",
+                                                       replyToMessageId: message.ReplyToMessage?.MessageId,
+                                                       cancellationToken: cancellationToken);
 
         public static void CountVaccinations(Message message, string? argument, UserData userData, GroupData? groupData, UserData? replyToUserData)
         {

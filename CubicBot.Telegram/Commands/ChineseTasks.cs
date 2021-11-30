@@ -1,4 +1,5 @@
 ﻿using CubicBot.Telegram.Stats;
+using CubicBot.Telegram.Utils;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -55,10 +56,10 @@ namespace CubicBot.Telegram.Commands
             var randomIndex = Random.Shared.Next(OKAnswers.Length);
             var randomOKAnswer = OKAnswers[randomIndex];
 
-            return botClient.SendTextMessageAsync(message.Chat.Id,
-                                                  randomOKAnswer,
-                                                  replyToMessageId: message.ReplyToMessage?.MessageId,
-                                                  cancellationToken: cancellationToken);
+            return botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
+                                                           randomOKAnswer,
+                                                           replyToMessageId: message.ReplyToMessage?.MessageId,
+                                                           cancellationToken: cancellationToken);
         }
 
         public static void CountOKs(Message message, string? argument, UserData userData, GroupData? groupData, UserData? replyToUserData)
@@ -74,24 +75,24 @@ namespace CubicBot.Telegram.Commands
         {
             if (message.ReplyToMessage is null) // self assign
             {
-                await botClient.SendTextMessageAsync(message.Chat.Id,
-                                                     $"{message.From?.FirstName}: 交  给  我  了",
-                                                     cancellationToken: cancellationToken);
+                await botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
+                                                              $"{message.From?.FirstName}: 交  给  我  了",
+                                                              cancellationToken: cancellationToken);
             }
             else // assign to someone else
             {
-                await botClient.SendTextMessageAsync(message.Chat.Id,
-                                                     "交  给  你  了",
-                                                     replyToMessageId: message.ReplyToMessage.MessageId,
-                                                     cancellationToken: cancellationToken);
+                await botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
+                                                              "交  给  你  了",
+                                                              replyToMessageId: message.ReplyToMessage.MessageId,
+                                                              cancellationToken: cancellationToken);
 
                 var randomIndex = Random.Shared.Next(OKAnswers.Length);
                 var randomOKAnswer = OKAnswers[randomIndex];
 
-                await botClient.SendTextMessageAsync(message.Chat.Id,
-                                                     $"{message.ReplyToMessage.From?.FirstName}: {randomOKAnswer}",
-                                                     replyToMessageId: message.MessageId,
-                                                     cancellationToken: cancellationToken);
+                await botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
+                                                              $"{message.ReplyToMessage.From?.FirstName}: {randomOKAnswer}",
+                                                              replyToMessageId: message.MessageId,
+                                                              cancellationToken: cancellationToken);
             }
         }
 
@@ -111,10 +112,10 @@ namespace CubicBot.Telegram.Commands
         public static Task UnassignAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
         {
             var targetName = message.ReplyToMessage?.From?.FirstName ?? message.From?.FirstName;
-            return botClient.SendTextMessageAsync(message.Chat.Id,
-                                                  $"{targetName}: 不  干  了",
-                                                  replyToMessageId: message.MessageId,
-                                                  cancellationToken: cancellationToken);
+            return botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
+                                                           $"{targetName}: 不  干  了",
+                                                           replyToMessageId: message.MessageId,
+                                                           cancellationToken: cancellationToken);
         }
 
         public static void CountUnassign(Message message, string? argument, UserData userData, GroupData? groupData, UserData? replyToUserData)

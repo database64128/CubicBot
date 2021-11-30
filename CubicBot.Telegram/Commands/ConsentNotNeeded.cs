@@ -1,4 +1,5 @@
 ﻿using CubicBot.Telegram.Stats;
+using CubicBot.Telegram.Utils;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -86,16 +87,16 @@ namespace CubicBot.Telegram.Commands
 
             if (message.ReplyToMessage is Message targetMessage)
             {
-                return botClient.SendTextMessageAsync(message.Chat.Id,
-                                                      $"{message.From?.FirstName} forced {targetMessage.From?.FirstName} to {forcedToDo}.",
-                                                      replyToMessageId: targetMessage.MessageId,
-                                                      cancellationToken: cancellationToken);
+                return botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
+                                                               $"{message.From?.FirstName} forced {targetMessage.From?.FirstName} to {forcedToDo}.",
+                                                               replyToMessageId: targetMessage.MessageId,
+                                                               cancellationToken: cancellationToken);
             }
             else
             {
-                return botClient.SendTextMessageAsync(message.Chat.Id,
-                                                      $"{message.From?.FirstName} was forced to {forcedToDo}.",
-                                                      cancellationToken: cancellationToken);
+                return botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
+                                                               $"{message.From?.FirstName} was forced to {forcedToDo}.",
+                                                               cancellationToken: cancellationToken);
             }
         }
 
@@ -163,23 +164,23 @@ namespace CubicBot.Telegram.Commands
 
             if (message.ReplyToMessage is Message targetMessage)
             {
-                return botClient.SendTextMessageAsync(message.Chat.Id,
-                                                      symbol,
-                                                      replyToMessageId: targetMessage.MessageId,
-                                                      cancellationToken: cancellationToken);
+                return botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
+                                                               symbol,
+                                                               replyToMessageId: targetMessage.MessageId,
+                                                               cancellationToken: cancellationToken);
             }
             else if (argument is string targetName)
             {
-                return botClient.SendTextMessageAsync(message.Chat.Id,
-                                                      $"🖕 {targetName}",
-                                                      cancellationToken: cancellationToken);
+                return botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
+                                                               $"🖕 {targetName}",
+                                                               cancellationToken: cancellationToken);
             }
             else
             {
-                return botClient.SendTextMessageAsync(message.Chat.Id,
-                                                      symbol,
-                                                      replyToMessageId: message.MessageId,
-                                                      cancellationToken: cancellationToken);
+                return botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
+                                                               symbol,
+                                                               replyToMessageId: message.MessageId,
+                                                               cancellationToken: cancellationToken);
             }
         }
 
@@ -200,23 +201,23 @@ namespace CubicBot.Telegram.Commands
         {
             if (message.ReplyToMessage is Message targetMessage)
             {
-                return botClient.SendTextMessageAsync(message.Chat.Id,
-                                                      $"{message.From?.FirstName}{actionMiddle}{targetMessage.From?.FirstName}{actionEnd}",
-                                                      replyToMessageId: targetMessage.MessageId,
-                                                      cancellationToken: cancellationToken);
+                return botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
+                                                               $"{message.From?.FirstName}{actionMiddle}{targetMessage.From?.FirstName}{actionEnd}",
+                                                               replyToMessageId: targetMessage.MessageId,
+                                                               cancellationToken: cancellationToken);
             }
             else if (argument is string targetName)
             {
-                return botClient.SendTextMessageAsync(message.Chat.Id,
-                                                      $"{message.From?.FirstName}{actionMiddle}{targetName}{actionEnd}",
-                                                      cancellationToken: cancellationToken);
+                return botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
+                                                               $"{message.From?.FirstName}{actionMiddle}{targetName}{actionEnd}",
+                                                               cancellationToken: cancellationToken);
             }
             else
             {
-                return botClient.SendTextMessageAsync(message.Chat.Id,
-                                                      selfEmoji,
-                                                      replyToMessageId: message.MessageId,
-                                                      cancellationToken: cancellationToken);
+                return botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
+                                                               selfEmoji,
+                                                               replyToMessageId: message.MessageId,
+                                                               cancellationToken: cancellationToken);
             }
         }
     }

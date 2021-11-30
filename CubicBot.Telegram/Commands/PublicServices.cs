@@ -1,4 +1,5 @@
 ﻿using CubicBot.Telegram.Stats;
+using CubicBot.Telegram.Utils;
 using System;
 using System.Text;
 using System.Threading;
@@ -63,7 +64,7 @@ namespace CubicBot.Telegram.Commands
                 }
             }
 
-            return botClient.SendTextMessageAsync(message.Chat.Id, sb.ToString(), cancellationToken: cancellationToken);
+            return botClient.SendTextMessageWithRetryAsync(message.Chat.Id, sb.ToString(), cancellationToken: cancellationToken);
         }
 
         public static void CountAmbulanceCalls(Message message, string? argument, UserData userData, GroupData? groupData, UserData? replyToUserData)
@@ -98,7 +99,7 @@ namespace CubicBot.Telegram.Commands
                 }
             }
 
-            return botClient.SendTextMessageAsync(message.Chat.Id, sb.ToString(), cancellationToken: cancellationToken);
+            return botClient.SendTextMessageWithRetryAsync(message.Chat.Id, sb.ToString(), cancellationToken: cancellationToken);
         }
 
         public static void CountFireCalls(Message message, string? argument, UserData userData, GroupData? groupData, UserData? replyToUserData)
