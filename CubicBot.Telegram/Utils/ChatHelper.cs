@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Buffers;
-using System.Buffers.Text;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -267,25 +265,11 @@ public static class ChatHelper
     public static int GetRetryWaitTimeMs(ApiRequestException apiRequestException)
     {
         // "Too Many Requests: retry after 11"
-        var length = Encoding.UTF8.GetByteCount(apiRequestException.Message);
-        if (length > 31)
+        ReadOnlySpan<char> message = apiRequestException.Message;
+        if (message.Length > 31 && int.TryParse(message[31..], out var timeSec))
         {
-            var array = ArrayPool<byte>.Shared.Rent(length);
-            Span<byte> timeString = array;
-            try
-            {
-                _ = Encoding.UTF8.GetBytes(apiRequestException.Message, timeString);
-                timeString = timeString[31..];
-                if (Utf8Parser.TryParse(timeString, out int timeSec, out _))
-                {
-                    var extra = Random.Shared.Next(1, 6);
-                    return (timeSec + extra) * 1000;
-                }
-            }
-            finally
-            {
-                ArrayPool<byte>.Shared.Return(array);
-            }
+            var extra = Random.Shared.Next(1, 6);
+            return (timeSec + extra) * 1000;
         }
 
         return 15 * 1000;
