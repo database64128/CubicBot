@@ -8,7 +8,7 @@ namespace CubicBot.Telegram.CLI
     {
         public static async Task<int> Get(CancellationToken cancellationToken = default)
         {
-            (var config, var loadConfigErrMsg) = await Config.LoadConfigAsync(cancellationToken);
+            var (config, loadConfigErrMsg) = await Config.LoadConfigAsync(cancellationToken);
             if (loadConfigErrMsg is not null)
             {
                 Console.WriteLine(loadConfigErrMsg);
@@ -57,7 +57,7 @@ namespace CubicBot.Telegram.CLI
             bool? enableMessageCounter,
             CancellationToken cancellationToken = default)
         {
-            (var config, var loadConfigErrMsg) = await Config.LoadConfigAsync(cancellationToken);
+            var (config, loadConfigErrMsg) = await Config.LoadConfigAsync(cancellationToken);
             if (loadConfigErrMsg is not null)
             {
                 Console.WriteLine(loadConfigErrMsg);

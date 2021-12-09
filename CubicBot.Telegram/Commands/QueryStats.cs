@@ -226,7 +226,6 @@ namespace CubicBot.Telegram.Commands
         public static Task SendApologeticLeaderboardAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
             => SendLeaderboardAsync(botClient,
                                     message,
-                                    argument,
                                     data,
                                     "🙏 Who's the most apologetic person in this chat?",
                                     null,
@@ -236,7 +235,6 @@ namespace CubicBot.Telegram.Commands
         public static Task SendApologiesAcceptedLeaderboardAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
             => SendLeaderboardAsync(botClient,
                                     message,
-                                    argument,
                                     data,
                                     "😭 Apologies Accepted",
                                     null,
@@ -246,7 +244,6 @@ namespace CubicBot.Telegram.Commands
         public static Task SendChantsLeaderboardAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
             => SendLeaderboardAsync(botClient,
                                     message,
-                                    argument,
                                     data,
                                     "📢 Who chants the most in this chat?",
                                     null,
@@ -256,7 +253,6 @@ namespace CubicBot.Telegram.Commands
         public static Task SendDrinkLeaderboardAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
             => SendLeaderboardAsync(botClient,
                                     message,
-                                    argument,
                                     data,
                                     "🍺 Who drinks the most in this chat?",
                                     null,
@@ -266,7 +262,6 @@ namespace CubicBot.Telegram.Commands
         public static Task SendLoveThemselvesLeaderboardAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
             => SendLeaderboardAsync(botClient,
                                     message,
-                                    argument,
                                     data,
                                     "🤳 Who loves themselves the most in this chat?",
                                     null,
@@ -276,7 +271,6 @@ namespace CubicBot.Telegram.Commands
         public static Task SendThankfulLeaderboardAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
             => SendLeaderboardAsync(botClient,
                                     message,
-                                    argument,
                                     data,
                                     "😊 Who's the most thankful person in this chat?",
                                     null,
@@ -286,7 +280,6 @@ namespace CubicBot.Telegram.Commands
         public static Task SendAppreciatedLeaderboardAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
             => SendLeaderboardAsync(botClient,
                                     message,
-                                    argument,
                                     data,
                                     "💖 Who's the most appreciated person in this chat?",
                                     null,
@@ -298,7 +291,6 @@ namespace CubicBot.Telegram.Commands
         public static Task SendDicesLeaderboardAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
             => SendLeaderboardAsync(botClient,
                                     message,
-                                    argument,
                                     data,
                                     "🎲 Dices Thrown",
                                     x => x.DicesThrown,
@@ -308,7 +300,6 @@ namespace CubicBot.Telegram.Commands
         public static Task SendDartsLeaderboardAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
             => SendLeaderboardAsync(botClient,
                                     message,
-                                    argument,
                                     data,
                                     "🎯 Darts Thrown",
                                     x => x.DartsThrown,
@@ -318,7 +309,6 @@ namespace CubicBot.Telegram.Commands
         public static Task SendBasketballsLeaderboardAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
             => SendLeaderboardAsync(botClient,
                                     message,
-                                    argument,
                                     data,
                                     "🏀 Basketballs Thrown",
                                     x => x.BasketballsThrown,
@@ -328,7 +318,6 @@ namespace CubicBot.Telegram.Commands
         public static Task SendSoccerGoalsLeaderboardAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
             => SendLeaderboardAsync(botClient,
                                     message,
-                                    argument,
                                     data,
                                     "⚽ Soccer Goals",
                                     x => x.SoccerGoals,
@@ -338,7 +327,6 @@ namespace CubicBot.Telegram.Commands
         public static Task SendSlotsRolledLeaderboardAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
             => SendLeaderboardAsync(botClient,
                                     message,
-                                    argument,
                                     data,
                                     "🎰 Slots Rolled",
                                     x => x.SlotMachineRolled,
@@ -348,7 +336,6 @@ namespace CubicBot.Telegram.Commands
         public static Task SendPinsKnockedLeaderboardAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
             => SendLeaderboardAsync(botClient,
                                     message,
-                                    argument,
                                     data,
                                     "🎳 Pins Knocked",
                                     x => x.PinsKnocked,
@@ -360,7 +347,6 @@ namespace CubicBot.Telegram.Commands
         public static Task SendSexualLeaderboardAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
             => SendLeaderboardAsync(botClient,
                                     message,
-                                    argument,
                                     data,
                                     "💋 Who's the most sexual person in this chat?",
                                     x => x.SexInitiated,
@@ -372,7 +358,6 @@ namespace CubicBot.Telegram.Commands
         public static Task SendCriminalLeaderboardAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
             => SendLeaderboardAsync(botClient,
                                     message,
-                                    argument,
                                     data,
                                     "🦹 Criminals",
                                     x => x.ArrestsMade,
@@ -384,7 +369,6 @@ namespace CubicBot.Telegram.Commands
         public static Task SendInterrogationsInitiatedLeaderboardAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
             => SendLeaderboardAsync(botClient,
                                     message,
-                                    argument,
                                     data,
                                     "发起喝茶排行榜",
                                     x => x.InterrogationsInitiated,
@@ -394,7 +378,6 @@ namespace CubicBot.Telegram.Commands
         public static Task SendInterrogatedLeaderboardAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
             => SendLeaderboardAsync(botClient,
                                     message,
-                                    argument,
                                     data,
                                     "被请喝茶排行榜",
                                     x => x.Members.Select(x => x.Value.InterrogatedByOthers)
@@ -407,7 +390,6 @@ namespace CubicBot.Telegram.Commands
         public static Task SendSystemdFandomLeaderboardAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
             => SendLeaderboardAsync(botClient,
                                     message,
-                                    argument,
                                     data,
                                     "🐧 Who's the biggest systemd fan in this chat?",
                                     null,
@@ -418,7 +400,6 @@ namespace CubicBot.Telegram.Commands
         public static Task SendGrassGrownLeaderboardAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
             => SendLeaderboardAsync(botClient,
                                     message,
-                                    argument,
                                     data,
                                     "🌿 生草排行榜",
                                     x => x.Members.Select(x => x.Value.GrassGrown)
@@ -429,7 +410,6 @@ namespace CubicBot.Telegram.Commands
         public static Task SendDemandingLeaderboardAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
             => SendLeaderboardAsync(botClient,
                                     message,
-                                    argument,
                                     data,
                                     "👉 Who's the most demanding person in this chat?",
                                     x => x.CommandsHandled,
@@ -439,7 +419,6 @@ namespace CubicBot.Telegram.Commands
         public static Task SendTalkativeLeaderboardAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
             => SendLeaderboardAsync(botClient,
                                     message,
-                                    argument,
                                     data,
                                     "🗣️ Who's the most talkative person in this chat?",
                                     x => x.MessagesProcessed,
@@ -449,7 +428,6 @@ namespace CubicBot.Telegram.Commands
         private static async Task SendLeaderboardAsync(
             ITelegramBotClient botClient,
             Message message,
-            string? argument,
             Data data,
             string? title,
             Func<GroupData, ulong>? getTotal,

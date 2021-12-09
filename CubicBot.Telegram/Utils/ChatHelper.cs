@@ -275,7 +275,7 @@ public static class ChatHelper
             try
             {
                 _ = Encoding.UTF8.GetBytes(apiRequestException.Message, timeString);
-                timeString = timeString[31..length];
+                timeString = timeString[31..];
                 if (Utf8Parser.TryParse(timeString, out int timeSec, out _))
                 {
                     var extra = Random.Shared.Next(1, 6);

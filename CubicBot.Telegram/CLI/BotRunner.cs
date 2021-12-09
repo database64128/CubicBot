@@ -12,14 +12,14 @@ namespace CubicBot.Telegram.CLI
     {
         public static async Task<int> RunBot(string? botToken, CancellationToken cancellationToken = default)
         {
-            (var config, var loadConfigErrMsg) = await Config.LoadConfigAsync(cancellationToken);
+            var (config, loadConfigErrMsg) = await Config.LoadConfigAsync(cancellationToken);
             if (loadConfigErrMsg is not null)
             {
                 Console.WriteLine(loadConfigErrMsg);
                 return 1;
             }
 
-            (var data, var loadDataErrMsg) = await Data.LoadDataAsync(cancellationToken);
+            var (data, loadDataErrMsg) = await Data.LoadDataAsync(cancellationToken);
             if (loadDataErrMsg is not null)
             {
                 Console.WriteLine(loadDataErrMsg);

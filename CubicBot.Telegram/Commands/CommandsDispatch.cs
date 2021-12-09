@@ -83,7 +83,7 @@ namespace CubicBot.Telegram.Commands
 
         public Task HandleAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken = default)
         {
-            (var command, var argument) = ChatHelper.ParseMessageIntoCommandAndArgument(message.Text, _botUsername);
+            var (command, argument) = ChatHelper.ParseMessageIntoCommandAndArgument(message.Text, _botUsername);
             if (command is null)
             {
                 return Task.CompletedTask;
