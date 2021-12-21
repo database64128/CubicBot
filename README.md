@@ -127,7 +127,6 @@ dotnet publish CubicBot.Telegram -c Release
 
 ```bash
 dotnet publish CubicBot.Telegram -c Release \
-    -p:PublishReadyToRun=true \
     -p:PublishSingleFile=true \
     -p:PublishTrimmed=true \
     -p:DebuggerSupport=false \
@@ -142,10 +141,8 @@ dotnet publish CubicBot.Telegram -c Release \
 ```bash
 dotnet publish CubicBot.Telegram -c Release \
     -p:DefineConstants=PACKAGED \
-    -p:PublishReadyToRun=true \
     -p:PublishSingleFile=true \
     -p:PublishTrimmed=true \
-    -p:TrimMode=link \
     -p:DebuggerSupport=false \
     -p:EnableUnsafeBinaryFormatterSerialization=false \
     -p:EnableUnsafeUTF7Encoding=false \
