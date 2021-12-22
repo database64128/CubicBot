@@ -5,7 +5,7 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CubicBot.Telegram", "CubicBot.Telegram\CubicBot.Telegram.csproj", "{997C0DEC-6193-480D-9317-16053D8AD5FA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CubicBot.Telegram.Tests", "CubicBot.Telegram.Tests\CubicBot.Telegram.Tests.csproj", "{A4BCE05E-2876-459D-936C-B2A99F074AF7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CubicBot.Telegram.Tests", "CubicBot.Telegram.Tests\CubicBot.Telegram.Tests.csproj", "{A4BCE05E-2876-459D-936C-B2A99F074AF7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
