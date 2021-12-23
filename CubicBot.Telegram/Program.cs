@@ -1,7 +1,6 @@
 ﻿using CubicBot.Telegram.CLI;
 using System;
 using System.CommandLine;
-using System.CommandLine.NamingConventionBinder;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -53,8 +52,26 @@ namespace CubicBot.Telegram
                 enableMessageCounterOption,
             };
 
+            var configSetBinder = new ConfigSetBinder(
+                botTokenOption,
+                enableCommandsModuleOption,
+                enableStatsModuleOption,
+                enablePersonalCommandsOption,
+                enableCommonCommandsOption,
+                enableDiceCommandsOption,
+                enableConsentNotNeededCommandsOption,
+                enableNonVeganCommandsOption,
+                enableLawEnforcementCommandsOption,
+                enablePublicServicesCommandsOption,
+                enableChineseCommandsOption,
+                enableChineseTasksCommandsOption,
+                enableSystemdCommandsOption,
+                enableGrassStatsOption,
+                enableCommandStatsOption,
+                enableMessageCounterOption);
+
             configGetCommand.SetHandler<CancellationToken>(ConfigCommand.Get);
-            configSetCommand.Handler = CommandHandler.Create(ConfigCommand.Set);
+            configSetCommand.SetHandler<ConfigChangeSet, CancellationToken>(ConfigCommand.Set, configSetBinder);
 
             var configCommand = new Command("config", "Print or change config.")
             {
