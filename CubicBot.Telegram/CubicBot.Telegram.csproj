@@ -26,7 +26,7 @@
 
   <ItemGroup>
     <PackageReference Include="System.CommandLine" Version="2.0.0-beta2.21621.1" />
-    <PackageReference Include="System.CommandLine.NamingConventionBinder" Version="2.0.0-beta2.21621.1" />
+    <PackageReference Include="System.CommandLine.NamingConventionBinder" Version="2.0.0-beta2.21622.2" />
     <PackageReference Include="System.Interactive.Async" Version="5.1.0" />
     <PackageReference Include="System.Linq.Async" Version="5.1.0" />
     <PackageReference Include="Telegram.Bot" Version="17.0.0" />
