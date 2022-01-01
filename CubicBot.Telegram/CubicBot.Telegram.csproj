@@ -3,7 +3,7 @@
   <PropertyGroup>
     <AssemblyName>cubic-bot-telegram</AssemblyName>
     <Authors>database64128</Authors>
-    <Copyright>© 2021 database64128</Copyright>
+    <Copyright>© 2022 database64128</Copyright>
     <Description>A stupid and annoying chatbot for your group chats.</Description>
     <Nullable>enable</Nullable>
     <OutputType>Exe</OutputType>
