@@ -19,7 +19,7 @@ public static class ChatHelper
     /// <summary>
     /// Sends a text message with auto retry to work around Telegram API's rate limit.
     /// </summary>
-    /// <inheritdoc cref="TelegramBotClientExtensions.SendTextMessageAsync(ITelegramBotClient, ChatId, string, ParseMode?, IEnumerable{MessageEntity}?, bool?, bool?, int?, bool?, IReplyMarkup?, CancellationToken)"/>
+    /// <inheritdoc cref="TelegramBotClientExtensions.SendTextMessageAsync(ITelegramBotClient, ChatId, string, ParseMode?, IEnumerable{MessageEntity}?, bool?, bool?, bool?, int?, bool?, IReplyMarkup?, CancellationToken)"/>
     public static async Task<Message> SendTextMessageWithRetryAsync(
         this ITelegramBotClient botClient,
         ChatId chatId,
@@ -28,6 +28,7 @@ public static class ChatHelper
         IEnumerable<MessageEntity>? entities = null,
         bool? disableWebPagePreview = null,
         bool? disableNotification = null,
+        bool? protectContent = null,
         int? replyToMessageId = null,
         bool? allowSendingWithoutReply = null,
         IReplyMarkup? replyMarkup = null,
@@ -43,6 +44,7 @@ public static class ChatHelper
                                                             entities,
                                                             disableWebPagePreview,
                                                             disableNotification,
+                                                            protectContent,
                                                             replyToMessageId,
                                                             allowSendingWithoutReply,
                                                             replyMarkup,
@@ -58,7 +60,7 @@ public static class ChatHelper
     /// <summary>
     /// Sends a file with auto retry to work around Telegram API's rate limit.
     /// </summary>
-    /// <inheritdoc cref="TelegramBotClientExtensions.SendDocumentAsync(ITelegramBotClient, ChatId, InputOnlineFile, InputMedia?, string?, ParseMode?, IEnumerable{MessageEntity}?, bool?, bool?, int?, bool?, IReplyMarkup?, CancellationToken)"/>
+    /// <inheritdoc cref="TelegramBotClientExtensions.SendDocumentAsync(ITelegramBotClient, ChatId, InputOnlineFile, InputMedia?, string?, ParseMode?, IEnumerable{MessageEntity}?, bool?, bool?, bool?, int?, bool?, IReplyMarkup?, CancellationToken)"/>
     public static async Task<Message> SendDocumentWithRetryAsync(
         this ITelegramBotClient botClient,
         ChatId chatId,
@@ -69,6 +71,7 @@ public static class ChatHelper
         IEnumerable<MessageEntity>? captionEntities = null,
         bool? disableContentTypeDetection = null,
         bool? disableNotification = null,
+        bool? protectContent = null,
         int? replyToMessageId = null,
         bool? allowSendingWithoutReply = null,
         IReplyMarkup? replyMarkup = null,
@@ -86,6 +89,7 @@ public static class ChatHelper
                                                          captionEntities,
                                                          disableContentTypeDetection,
                                                          disableNotification,
+                                                         protectContent,
                                                          replyToMessageId,
                                                          allowSendingWithoutReply,
                                                          replyMarkup,
@@ -136,12 +140,13 @@ public static class ChatHelper
     /// <summary>
     /// Sends an animated emoji with auto retry to work around Telegram API's rate limit.
     /// </summary>
-    /// <inheritdoc cref="TelegramBotClientExtensions.SendDiceAsync(ITelegramBotClient, ChatId, Emoji?, bool?, int?, bool?, IReplyMarkup?, CancellationToken)"/>
+    /// <inheritdoc cref="TelegramBotClientExtensions.SendDiceAsync(ITelegramBotClient, ChatId, Emoji?, bool?, bool?, int?, bool?, IReplyMarkup?, CancellationToken)"/>
     public static async Task<Message> SendDiceWithRetryAsync(
         this ITelegramBotClient botClient,
         ChatId chatId,
         Emoji? emoji = null,
         bool? disableNotification = null,
+        bool? protectContent = null,
         int? replyToMessageId = null,
         bool? allowSendingWithoutReply = null,
         IReplyMarkup? replyMarkup = null,
@@ -154,6 +159,7 @@ public static class ChatHelper
                 return await botClient.SendDiceAsync(chatId,
                                                      emoji,
                                                      disableNotification,
+                                                     protectContent,
                                                      replyToMessageId,
                                                      allowSendingWithoutReply,
                                                      replyMarkup,
@@ -172,7 +178,7 @@ public static class ChatHelper
     /// Long messages are sent as text files.
     /// Automatically retries when hitting the rate limit.
     /// </summary>
-    /// <inheritdoc cref="TelegramBotClientExtensions.SendTextMessageAsync(ITelegramBotClient, ChatId, string, ParseMode?, IEnumerable{MessageEntity}?, bool?, bool?, int?, bool?, IReplyMarkup?, CancellationToken)"/>
+    /// <inheritdoc cref="TelegramBotClientExtensions.SendTextMessageAsync(ITelegramBotClient, ChatId, string, ParseMode?, IEnumerable{MessageEntity}?, bool?, bool?, bool?, int?, bool?, IReplyMarkup?, CancellationToken)"/>
     public static Task SendPossiblyLongTextMessageWithRetryAsync(
         this ITelegramBotClient botClient,
         ChatId chatId,
@@ -181,6 +187,7 @@ public static class ChatHelper
         IEnumerable<MessageEntity>? entities = null,
         bool? disableWebPagePreview = null,
         bool? disableNotification = null,
+        bool? protectContent = null,
         int? replyToMessageId = null,
         bool? allowSendingWithoutReply = null,
         IReplyMarkup? replyMarkup = null,
@@ -193,6 +200,7 @@ public static class ChatHelper
                                                                entities,
                                                                disableWebPagePreview,
                                                                disableNotification,
+                                                               protectContent,
                                                                replyToMessageId,
                                                                allowSendingWithoutReply,
                                                                replyMarkup,
@@ -212,6 +220,7 @@ public static class ChatHelper
                                                                 entities,
                                                                 null,
                                                                 disableNotification,
+                                                                protectContent,
                                                                 replyToMessageId,
                                                                 null,
                                                                 replyMarkup,
@@ -224,7 +233,7 @@ public static class ChatHelper
     /// </summary>
     /// <param name="filename">Filename.</param>
     /// <param name="text">The string to send.</param>
-    /// <inheritdoc cref="TelegramBotClientExtensions.SendDocumentAsync(ITelegramBotClient, ChatId, InputOnlineFile, InputMedia?, string?, ParseMode?, IEnumerable{MessageEntity}?, bool?, bool?, int?, bool?, IReplyMarkup?, CancellationToken)"/>
+    /// <inheritdoc cref="TelegramBotClientExtensions.SendDocumentAsync(ITelegramBotClient, ChatId, InputOnlineFile, InputMedia?, string?, ParseMode?, IEnumerable{MessageEntity}?, bool?, bool?, bool?, int?, bool?, IReplyMarkup?, CancellationToken)"/>
     public static async Task<Message> SendTextFileFromStringWithRetryAsync(
         this ITelegramBotClient botClient,
         ChatId chatId,
@@ -236,6 +245,7 @@ public static class ChatHelper
         IEnumerable<MessageEntity>? captionEntities = null,
         bool? disableContentTypeDetection = null,
         bool? disableNotification = null,
+        bool? protectContent = null,
         int? replyToMessageId = null,
         bool? allowSendingWithoutReply = null,
         IReplyMarkup? replyMarkup = null,
@@ -250,6 +260,7 @@ public static class ChatHelper
                                                           captionEntities,
                                                           disableContentTypeDetection,
                                                           disableNotification,
+                                                          protectContent,
                                                           replyToMessageId,
                                                           allowSendingWithoutReply,
                                                           replyMarkup,
