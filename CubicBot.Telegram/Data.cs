@@ -93,7 +93,7 @@ namespace CubicBot.Telegram
         /// </returns>
         public static async Task<(Data data, string? errMsg)> LoadDataAsync(CancellationToken cancellationToken = default)
         {
-            var (data, errMsg) = await FileHelper.LoadJsonAsync<Data>("data.json", FileHelper.commonJsonDeserializerOptions, cancellationToken);
+            var (data, errMsg) = await FileHelper.LoadJsonAsync("data.json", DataJsonSerializerContext.Default.Data, cancellationToken);
             if (errMsg is null && data.Version != DefaultVersion)
             {
                 data.UpdateConfig();
@@ -112,7 +112,7 @@ namespace CubicBot.Telegram
         /// Null if no errors occurred.
         /// </returns>
         public static Task<string?> SaveDataAsync(Data data, CancellationToken cancellationToken = default)
-            => FileHelper.SaveJsonAsync("data.json", data, FileHelper.commonJsonSerializerOptions, false, false, cancellationToken);
+            => FileHelper.SaveJsonAsync("data.json", data, DataJsonSerializerContext.Default.Data, false, false, cancellationToken);
 
         /// <summary>
         /// Updates the current object to the latest version.

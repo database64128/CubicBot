@@ -54,7 +54,7 @@ namespace CubicBot.Telegram
         /// </returns>
         public static async Task<(Config config, string? errMsg)> LoadConfigAsync(CancellationToken cancellationToken = default)
         {
-            var (config, errMsg) = await FileHelper.LoadJsonAsync<Config>("config.json", FileHelper.commonJsonDeserializerOptions, cancellationToken);
+            var (config, errMsg) = await FileHelper.LoadJsonAsync("config.json", ConfigJsonSerializerContext.Default.Config, cancellationToken);
             if (errMsg is null && config.Version != DefaultVersion)
             {
                 config.UpdateConfig();
@@ -73,7 +73,7 @@ namespace CubicBot.Telegram
         /// Null if no errors occurred.
         /// </returns>
         public static Task<string?> SaveConfigAsync(Config config, CancellationToken cancellationToken = default)
-            => FileHelper.SaveJsonAsync("config.json", config, FileHelper.commonJsonSerializerOptions, false, false, cancellationToken);
+            => FileHelper.SaveJsonAsync("config.json", config, ConfigJsonSerializerContext.Default.Config, false, false, cancellationToken);
 
         /// <summary>
         /// Updates the current object to the latest version.
