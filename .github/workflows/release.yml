@@ -18,12 +18,7 @@ jobs:
         shell: bash
 
     steps:
-      - uses: actions/checkout@v2
-
-      - uses: actions/setup-dotnet@v1
-        if: matrix.os != 'windows-2022'
-        with:
-          dotnet-version: '6.0.x'
+      - uses: actions/checkout@v3
 
       - name: Restore dependencies
         run: dotnet restore
@@ -56,11 +51,6 @@ jobs:
         run: |
           dotnet publish CubicBot.Telegram -c Release $MSBUILD_PROPS -r win-x64 --self-contained
 
-      # Get version
-      - name: Get version
-        id: get_version
-        run: echo "::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3)"
-
       # Package
       - name: Package for Linux
         if: matrix.os == 'ubuntu-latest'
@@ -70,25 +60,25 @@ jobs:
         run: |
           # CubicBot.Telegram
           cd CubicBot.Telegram/bin/Release/net6.0/publish
-          tar -acf ../cubic-bot-telegram-${{ steps.get_version.outputs.VERSION }}-linux.tar.zst .
+          tar -acf ../cubic-bot-telegram-${{ github.ref_name }}-linux.tar.zst .
           cd ../linux-arm64/publish
-          tar -acf ../../cubic-bot-telegram-${{ steps.get_version.outputs.VERSION }}-linux-arm64.tar.zst .
+          tar -acf ../../cubic-bot-telegram-${{ github.ref_name }}-linux-arm64.tar.zst .
           cd ../../linux-x64/publish
-          tar -acf ../../cubic-bot-telegram-${{ steps.get_version.outputs.VERSION }}-linux-x64.tar.zst .
+          tar -acf ../../cubic-bot-telegram-${{ github.ref_name }}-linux-x64.tar.zst .
 
       - name: Package for Windows
         if: matrix.os == 'windows-2022'
         run: |
           # CubicBot.Telegram
           cd CubicBot.Telegram/bin/Release/net6.0/publish
-          7z a -tzip -mx=9 -mfb=128 ../cubic-bot-telegram-${{ steps.get_version.outputs.VERSION }}-windows.zip .
-          7z a -t7z -m0=lzma2 -mx=9 -mfb=64 -md=64m -ms=on ../cubic-bot-telegram-${{ steps.get_version.outputs.VERSION }}-windows.7z .
+          7z a -tzip -mx=9 -mfb=128 ../cubic-bot-telegram-${{ github.ref_name }}-windows.zip .
+          7z a -t7z -m0=lzma2 -mx=9 -mfb=64 -md=64m -ms=on ../cubic-bot-telegram-${{ github.ref_name }}-windows.7z .
           cd ../win-arm64/publish
-          7z a -tzip -mx=9 -mfb=128 ../../cubic-bot-telegram-${{ steps.get_version.outputs.VERSION }}-windows-arm64.zip .
-          7z a -t7z -m0=lzma2 -mx=9 -mfb=64 -md=64m -ms=on ../../cubic-bot-telegram-${{ steps.get_version.outputs.VERSION }}-windows-arm64.7z .
+          7z a -tzip -mx=9 -mfb=128 ../../cubic-bot-telegram-${{ github.ref_name }}-windows-arm64.zip .
+          7z a -t7z -m0=lzma2 -mx=9 -mfb=64 -md=64m -ms=on ../../cubic-bot-telegram-${{ github.ref_name }}-windows-arm64.7z .
           cd ../../win-x64/publish
-          7z a -tzip -mx=9 -mfb=128 ../../cubic-bot-telegram-${{ steps.get_version.outputs.VERSION }}-windows-x64.zip .
-          7z a -t7z -m0=lzma2 -mx=9 -mfb=64 -md=64m -ms=on ../../cubic-bot-telegram-${{ steps.get_version.outputs.VERSION }}-windows-x64.7z .
+          7z a -tzip -mx=9 -mfb=128 ../../cubic-bot-telegram-${{ github.ref_name }}-windows-x64.zip .
+          7z a -t7z -m0=lzma2 -mx=9 -mfb=64 -md=64m -ms=on ../../cubic-bot-telegram-${{ github.ref_name }}-windows-x64.7z .
 
       # Release
       - name: Upload release assets for Linux
