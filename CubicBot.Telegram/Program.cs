@@ -2,7 +2,6 @@
 using System;
 using System.CommandLine;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace CubicBot.Telegram
@@ -52,6 +51,8 @@ namespace CubicBot.Telegram
                 enableMessageCounterOption,
             };
 
+            var cancellationTokenBinder = new CancellationTokenBinder();
+
             var configSetBinder = new ConfigSetBinder(
                 botTokenOption,
                 enableCommandsModuleOption,
@@ -70,8 +71,8 @@ namespace CubicBot.Telegram
                 enableCommandStatsOption,
                 enableMessageCounterOption);
 
-            configGetCommand.SetHandler<CancellationToken>(ConfigCommand.Get);
-            configSetCommand.SetHandler<ConfigChangeSet, CancellationToken>(ConfigCommand.Set, configSetBinder);
+            configGetCommand.SetHandler(ConfigCommand.Get, cancellationTokenBinder);
+            configSetCommand.SetHandler(ConfigCommand.Set, configSetBinder, cancellationTokenBinder);
 
             var configCommand = new Command("config", "Print or change config.")
             {
@@ -85,7 +86,7 @@ namespace CubicBot.Telegram
             };
 
             rootCommand.AddOption(botTokenOption);
-            rootCommand.SetHandler<string?, CancellationToken>(BotRunner.RunBot, botTokenOption);
+            rootCommand.SetHandler(BotRunner.RunBot, botTokenOption, cancellationTokenBinder);
 
             Console.OutputEncoding = Encoding.UTF8;
             return rootCommand.InvokeAsync(args);
