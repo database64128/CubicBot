@@ -79,6 +79,11 @@ namespace CubicBot.Telegram.Commands
             {
                 Commands.Add(new("leaderboard_talkative", "🗣️ Who's the most talkative person in this chat?", SendTalkativeLeaderboardAsync));
             }
+
+            if (config.Stats.EnableParenthesisEnclosure)
+            {
+                Commands.Add(new("leaderboard_half_parentheses", "🌓 括号发一半排行榜", SendParenthesesUnenclosedLeaderboardAsync));
+            }
         }
 
         public static Task QueryUserStats(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default) => Task.CompletedTask;
@@ -370,7 +375,7 @@ namespace CubicBot.Telegram.Commands
             => SendLeaderboardAsync(botClient,
                                     message,
                                     data,
-                                    "发起喝茶排行榜",
+                                    "🔫 发起喝茶排行榜",
                                     x => x.InterrogationsInitiated,
                                     x => x.InterrogationsInitiated,
                                     cancellationToken);
@@ -379,7 +384,7 @@ namespace CubicBot.Telegram.Commands
             => SendLeaderboardAsync(botClient,
                                     message,
                                     data,
-                                    "被请喝茶排行榜",
+                                    "☕ 被请喝茶排行榜",
                                     x => x.Members.Select(x => x.Value.InterrogatedByOthers)
                                                   .Aggregate(0Ul, (x, y) => x + y),
                                     x => x.InterrogatedByOthers,
@@ -423,6 +428,16 @@ namespace CubicBot.Telegram.Commands
                                     "🗣️ Who's the most talkative person in this chat?",
                                     x => x.MessagesProcessed,
                                     x => x.MessagesProcessed,
+                                    cancellationToken);
+
+        public static Task SendParenthesesUnenclosedLeaderboardAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
+            => SendLeaderboardAsync(botClient,
+                                    message,
+                                    data,
+                                    "🌓 括号发一半排行榜",
+                                    x => x.Members.Select(x => x.Value.ParenthesesUnenclosed)
+                                                  .Aggregate(0Ul, (x, y) => x + y),
+                                    x => x.ParenthesesUnenclosed,
                                     cancellationToken);
 
         private static async Task SendLeaderboardAsync(
