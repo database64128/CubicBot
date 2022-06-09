@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using CubicBot.Telegram.Utils;
+using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Types;
@@ -46,7 +47,7 @@ public abstract class UserStatsCollector : StatsCollector
 
         UserData userData;
         GroupData? groupData = null;
-        var userId = message.From?.Id ?? 777000L;
+        var userId = ChatHelper.GetMessageSenderId(message);
 
         if (message.Chat.Type is ChatType.Private)
         {

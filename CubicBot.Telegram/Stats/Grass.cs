@@ -28,11 +28,15 @@ namespace CubicBot.Telegram.Stats
 
         public override Task Respond(ITelegramBotClient botClient, Message message, UserData userData, GroupData? groupData, CancellationToken cancellationToken)
         {
-            return userData.GrassGrown switch
+            var i = userData.GrassGrown;
+            if ((i & (i - 1)) == 0 && i > 4) // 8, 16, 32...
             {
-                10UL or 20UL or 50UL or 100UL or 200UL or 500UL or 1000UL or 2000UL or 5000UL or 10000UL => NotifyGrassGrowthAchievementAsync(botClient, message, userData.GrassGrown, cancellationToken),
-                _ => Task.CompletedTask,
-            };
+                return NotifyGrassGrowthAchievementAsync(botClient, message, i, cancellationToken);
+            }
+            else
+            {
+                return Task.CompletedTask;
+            }
         }
     }
 }

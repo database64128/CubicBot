@@ -78,6 +78,9 @@ namespace CubicBot.Telegram.Commands
             {
                 var queryStats = new QueryStats(config);
                 Commands.AddRange(queryStats.Commands);
+
+                var controls = new Controls(config);
+                Commands.AddRange(controls.Commands);
             }
         }
 
@@ -96,7 +99,7 @@ namespace CubicBot.Telegram.Commands
                 var handleTask = filteredCommand.HandlerAsync(botClient, message, argument, _config, _data, cancellationToken);
                 if (_config.EnableStats && _config.Stats.EnableCommandStats)
                 {
-                    var userId = message.From?.Id ?? 777000L;
+                    var userId = ChatHelper.GetMessageSenderId(message);
                     if (message.Chat.Type is ChatType.Private)
                     {
                         var userData = _data.GetOrCreateUserData(userId);

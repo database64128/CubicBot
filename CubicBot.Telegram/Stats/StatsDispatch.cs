@@ -27,6 +27,12 @@ namespace CubicBot.Telegram.Stats
                 var messageCounter = new MessageCounter();
                 _collectors.Add(messageCounter);
             }
+
+            if (config.EnableParenthesisEnclosure)
+            {
+                var parenthesisEnclosure = new ParenthesisEnclosure();
+                _collectors.Add(parenthesisEnclosure);
+            }
         }
 
         public Task HandleAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken = default)

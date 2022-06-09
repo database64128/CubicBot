@@ -26,7 +26,7 @@ public static class Personal
     {
         string? responseMarkdownV2;
         const string helpMarkdownV2 = @"This command accepts *subject* _\(they\)_ form, *subject/object* _\(they/them\)_ form, or *subject/object/possessive\_pronoun* _\(they/them/theirs\)_ form for commonly known pronouns\. For uncommon pronouns, you must use the full *subject/object/possessive\_determiner/possessive\_pronoun/reflexive* _\(they/them/their/theirs/themselves\)_ form\.";
-        var userId = message.From?.Id ?? 777000L;
+        var userId = ChatHelper.GetMessageSenderId(message);
 
         if (!string.IsNullOrEmpty(argument))
         {
@@ -63,7 +63,7 @@ public static class Personal
     public static Task RemovePronounsAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
     {
         string? responseMarkdownV2;
-        var userId = message.From?.Id ?? 777000L;
+        var userId = ChatHelper.GetMessageSenderId(message);
         var pronounsList = data.GetOrCreateUserData(userId).PronounList;
 
         if (string.IsNullOrEmpty(argument))
@@ -114,7 +114,7 @@ public static class Personal
         // query someone else
         if (message.ReplyToMessage is Message targetMessage)
         {
-            userId = targetMessage.From?.Id ?? 777000L;
+            userId = ChatHelper.GetMessageSenderId(targetMessage);
             var firstname = targetMessage.From?.FirstName ?? string.Empty;
             var firstnameEscaped = ChatHelper.EscapeMarkdownV2Plaintext(firstname);
             var pronouns = data.GetPronounsToUse(userId, groupId);
@@ -131,7 +131,7 @@ public static class Personal
         }
 
         // self query
-        userId = message.From?.Id ?? 777000L;
+        userId = ChatHelper.GetMessageSenderId(message);
         var (allPronouns, defaultPronouns, preferredPronouns) = data.GetPronounsInfo(userId, groupId);
         var responseSB = new StringBuilder();
 
@@ -153,7 +153,7 @@ public static class Personal
     public static Task SetDefaultPronounsAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
     {
         string? responseMarkdownV2;
-        var userId = message.From?.Id ?? 777000L;
+        var userId = ChatHelper.GetMessageSenderId(message);
         var userData = data.GetOrCreateUserData(userId);
 
         if (string.IsNullOrEmpty(argument)) // unset
@@ -198,7 +198,7 @@ public static class Personal
     public static Task SetPreferredPronounsAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
     {
         string? responseMarkdownV2;
-        var userId = message.From?.Id ?? 777000L;
+        var userId = ChatHelper.GetMessageSenderId(message);
         var userData = data.GetOrCreateUserData(userId);
 
         var memberData = message.Chat.Type switch

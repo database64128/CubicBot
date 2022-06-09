@@ -2,7 +2,7 @@
 
 namespace CubicBot.Telegram.Stats;
 
-public class GroupData
+public class GroupData : IParenthesisEnclosureControl
 {
     public ulong MessagesProcessed { get; set; }
     public ulong CommandsHandled { get; set; }
@@ -61,4 +61,10 @@ public class GroupData
     #region 7. Chinese
     public ulong InterrogationsInitiated { get; set; }
     #endregion
+
+    /// <summary>
+    /// Gets or sets whether to ensure group chat messages are properly
+    /// enclosed in parentheses if any.
+    /// </summary>
+    public bool EnsureParenthesisEnclosure { get; set; }
 }

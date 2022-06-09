@@ -155,10 +155,12 @@ namespace CubicBot.Telegram.Commands
 
         public static Task MeAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
         {
+            var userId = ChatHelper.GetMessageSenderId(message);
+
             argument ??= Random.Shared.Next(4) switch
             {
                 0 => "did nothing and fell asleep. 😴",
-                1 => $"is showing off this new command {data.GetPronounSubject(message.From?.Id ?? 777000L, message.Chat.Type is ChatType.Private ? 0L : message.Chat.Id)} just learned. 😎",
+                1 => $"is showing off this new command {data.GetPronounSubject(userId, message.Chat.Type is ChatType.Private ? 0L : message.Chat.Id)} just learned. 😎",
                 2 => "got coffee for everyone in this chat. ☕",
                 _ => "invoked this command by mistake. 🤪",
             };

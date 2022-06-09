@@ -379,4 +379,12 @@ public static class ChatHelper
 
         return (commandString, argumentString);
     }
+
+    /// <summary>
+    /// Gets the message's sender ID.
+    /// If the message was sent to a channel, Telegram's "default" ID (777000) is returned.
+    /// </summary>
+    /// <param name="message">A message.</param>
+    /// <returns>The message's sender ID.</returns>
+    public static long GetMessageSenderId(Message message) => message.From?.Id ?? 777000L;
 }
