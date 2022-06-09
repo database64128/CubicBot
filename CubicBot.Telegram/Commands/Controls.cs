@@ -17,7 +17,7 @@ public class Controls
     {
         if (config.Stats.EnableParenthesisEnclosure)
         {
-            Commands.Add(new("toggle_parenthesis_enclosure_assurance", "🔘 Toggle Parenthesis Enclosure Assurance in this chat.", ToggleParenthesisEnclosureAssuranceAsync));
+            Commands.Add(new("toggle_pea", "🔘 Toggle Parenthesis Enclosure Assurance in this chat.", ToggleParenthesisEnclosureAssuranceAsync));
         }
     }
 
