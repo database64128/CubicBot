@@ -88,9 +88,9 @@ namespace CubicBot.Telegram.Commands
             {
                 argument = Random.Shared.Next(9) switch
                 {
-                    0 => "Make it happen",
-                    1 => "Do it now",
-                    2 => "Love wins",
+                    0 => "Make it happen!",
+                    1 => "Do it now!",
+                    2 => "Love wins!",
                     3 => "My body, my choice!",
                     4 => "No justice, no peace!",
                     5 => "No Hate! No Fear! Immigrants are welcome here!",
@@ -156,14 +156,22 @@ namespace CubicBot.Telegram.Commands
         public static Task MeAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
         {
             var userId = ChatHelper.GetMessageSenderId(message);
+            var groupId = message.Chat.Type switch
+            {
+                ChatType.Private => 0L,
+                _ => message.Chat.Id,
+            };
+            var pronounSubject = data.GetPronounSubject(userId, groupId);
 
             argument ??= Random.Shared.Next(4) switch
             {
                 0 => "did nothing and fell asleep. 😴",
-                1 => $"is showing off this new command {data.GetPronounSubject(userId, message.Chat.Type is ChatType.Private ? 0L : message.Chat.Id)} just learned. 😎",
+                1 => $"is showing off this new command {pronounSubject} just learned. 😎",
                 2 => "got coffee for everyone in this chat. ☕",
                 _ => "invoked this command by mistake. 🤪",
             };
+
+            var text = $"* {message.From?.FirstName} {argument}";
 
             var entities = new MessageEntity[]
             {
@@ -177,7 +185,7 @@ namespace CubicBot.Telegram.Commands
             };
 
             return botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
-                                                           $"* {message.From?.FirstName} {argument}",
+                                                           text,
                                                            entities: entities,
                                                            cancellationToken: cancellationToken);
         }

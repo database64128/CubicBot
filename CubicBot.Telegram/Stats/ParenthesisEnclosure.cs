@@ -12,7 +12,8 @@ namespace CubicBot.Telegram.Stats;
 public class ParenthesisEnclosure : UserStatsCollector
 {
     private readonly List<char> _compensation = new();
-    private readonly Dictionary<char, char> _enclosureDict = new()
+
+    public static readonly Dictionary<char, char> EnclosureDict = new()
     {
         // bi-directional
         ['"'] = '"',
@@ -65,7 +66,7 @@ public class ParenthesisEnclosure : UserStatsCollector
             }
 
             // Handle enclosure signs.
-            if (_enclosureDict.TryGetValue(msg[i], out var otherHalf))
+            if (EnclosureDict.TryGetValue(msg[i], out var otherHalf))
             {
                 var lastThisHalfMatch = _compensation.LastIndexOf(msg[i]);
                 if (lastThisHalfMatch != -1)

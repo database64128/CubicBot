@@ -105,11 +105,11 @@ public static class Personal
     public static Task GetPronounsAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
     {
         long userId;
-        long groupId = 0L;
-        if (message.Chat.Type != ChatType.Private)
+        var groupId = message.Chat.Type switch
         {
-            groupId = message.Chat.Id;
-        }
+            ChatType.Private => 0L,
+            _ => message.Chat.Id,
+        };
 
         // query someone else
         if (message.ReplyToMessage is Message targetMessage)
@@ -197,7 +197,7 @@ public static class Personal
 
     public static Task SetPreferredPronounsAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
     {
-        string? responseMarkdownV2;
+        string responseMarkdownV2;
         var userId = ChatHelper.GetMessageSenderId(message);
         var userData = data.GetOrCreateUserData(userId);
 
