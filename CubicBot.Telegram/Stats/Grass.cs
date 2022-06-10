@@ -14,7 +14,7 @@ namespace CubicBot.Telegram.Stats
             "cao", "艹", "草", "c奥", "c嗷",
         };
 
-        private static bool IsGrowingGrass(string msg) => GrassSeeds.Any(seed => msg.Contains(seed));
+        private static bool IsGrowingGrass(string msg) => msg != "" && GrassSeeds.Any(seed => msg.Contains(seed));
 
         private static Task NotifyGrassGrowthAchievementAsync(ITelegramBotClient botClient, Message message, ulong count, CancellationToken cancellationToken = default)
             => botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
@@ -22,7 +22,7 @@ namespace CubicBot.Telegram.Stats
                                                        replyToMessageId: message.MessageId,
                                                        cancellationToken: cancellationToken);
 
-        public override bool IsCollectable(Message message) => !string.IsNullOrEmpty(message.Text) && IsGrowingGrass(message.Text);
+        public override bool IsCollectable(Message message) => IsGrowingGrass(ChatHelper.GetMessageText(message));
 
         public override void CollectUser(Message message, UserData userData, GroupData? groupData) => userData.GrassGrown++;
 

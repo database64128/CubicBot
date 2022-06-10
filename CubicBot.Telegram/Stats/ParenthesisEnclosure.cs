@@ -83,18 +83,9 @@ public class ParenthesisEnclosure : UserStatsCollector
         return _compensation.Count > 0;
     }
 
-    public string GetCompensationString() =>
-        string.Create(_compensation.Count, _compensation, (buf, compensation) =>
-        {
-            var cbuf = CollectionsMarshal.AsSpan(compensation);
-            cbuf.CopyTo(buf);
-        });
+    public string GetCompensationString() => new(CollectionsMarshal.AsSpan(_compensation));
 
-    public override bool IsCollectable(Message message) => message.Text switch
-    {
-        null => false,
-        _ => AnalyzeMessage(message.Text),
-    };
+    public override bool IsCollectable(Message message) => AnalyzeMessage(ChatHelper.GetMessageText(message));
 
     public override void CollectUser(Message message, UserData userData, GroupData? groupData) =>
         userData.ParenthesesUnenclosed += (ulong)_compensation.Count;

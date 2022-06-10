@@ -387,4 +387,11 @@ public static class ChatHelper
     /// <param name="message">A message.</param>
     /// <returns>The message's sender ID.</returns>
     public static long GetMessageSenderId(Message message) => message.From?.Id ?? 777000L;
+
+    /// <summary>
+    /// Gets a text message's text, or a picture/video's caption, otherwise returns an empty string.
+    /// </summary>
+    /// <param name="message">A message.</param>
+    /// <returns>A non-null string.</returns>
+    public static string GetMessageText(Message message) => message.Text ?? message.Caption ?? "";
 }
