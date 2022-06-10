@@ -36,7 +36,7 @@ public abstract class UserStatsCollector : StatsCollector
     /// </param>
     /// <param name="cancellationToken">A token that may be used to cancel the respond operation.</param>
     /// <returns>A task that represents the asynchronous operation.</returns>
-    public virtual Task Respond(ITelegramBotClient botClient, Message message, UserData userData, GroupData? groupData, CancellationToken cancellationToken) => Task.CompletedTask;
+    public virtual Task RespondAsync(ITelegramBotClient botClient, Message message, UserData userData, GroupData? groupData, CancellationToken cancellationToken) => Task.CompletedTask;
 
     public override Task CollectAsync(ITelegramBotClient botClient, Message message, Data data, CancellationToken cancellationToken = default)
     {
@@ -45,22 +45,22 @@ public abstract class UserStatsCollector : StatsCollector
             return Task.CompletedTask;
         }
 
-        UserData userData;
-        GroupData? groupData = null;
         var userId = ChatHelper.GetMessageSenderId(message);
 
-        if (message.Chat.Type is ChatType.Private)
+        var groupData = message.Chat.Type switch
         {
-            userData = data.GetOrCreateUserData(userId);
-        }
-        else
+            ChatType.Private => null,
+            _ => data.GetOrCreateGroupData(message.Chat.Id),
+        };
+
+        var userData = message.Chat.Type switch
         {
-            groupData = data.GetOrCreateGroupData(message.Chat.Id);
-            userData = groupData.GetOrCreateUserData(userId);
-        }
+            ChatType.Private => data.GetOrCreateUserData(userId),
+            _ => groupData!.GetOrCreateUserData(userId),
+        };
 
         CollectUser(message, userData, groupData);
 
-        return Respond(botClient, message, userData, groupData, cancellationToken);
+        return RespondAsync(botClient, message, userData, groupData, cancellationToken);
     }
 }

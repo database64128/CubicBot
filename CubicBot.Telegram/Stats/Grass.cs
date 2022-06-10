@@ -26,7 +26,7 @@ namespace CubicBot.Telegram.Stats
 
         public override void CollectUser(Message message, UserData userData, GroupData? groupData) => userData.GrassGrown++;
 
-        public override Task Respond(ITelegramBotClient botClient, Message message, UserData userData, GroupData? groupData, CancellationToken cancellationToken)
+        public override Task RespondAsync(ITelegramBotClient botClient, Message message, UserData userData, GroupData? groupData, CancellationToken cancellationToken)
         {
             var i = userData.GrassGrown;
             if ((i & (i - 1)) == 0 && i > 4) // 8, 16, 32...

@@ -99,7 +99,7 @@ public class ParenthesisEnclosure : UserStatsCollector
     public override void CollectUser(Message message, UserData userData, GroupData? groupData) =>
         userData.ParenthesesUnenclosed += (ulong)_compensation.Count;
 
-    public override Task Respond(ITelegramBotClient botClient, Message message, UserData userData, GroupData? groupData, CancellationToken cancellationToken)
+    public override Task RespondAsync(ITelegramBotClient botClient, Message message, UserData userData, GroupData? groupData, CancellationToken cancellationToken)
     {
         IParenthesisEnclosureControl control = groupData switch
         {

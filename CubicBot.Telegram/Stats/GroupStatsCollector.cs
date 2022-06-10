@@ -26,7 +26,7 @@ public abstract class GroupStatsCollector : StatsCollector
     /// <param name="groupData">Group data object.</param>
     /// <param name="cancellationToken">A token that may be used to cancel the respond operation.</param>
     /// <returns>A task that represents the asynchronous operation.</returns>
-    public virtual Task Respond(ITelegramBotClient botClient, Message message, GroupData groupData, CancellationToken cancellationToken) => Task.CompletedTask;
+    public virtual Task RespondAsync(ITelegramBotClient botClient, Message message, GroupData groupData, CancellationToken cancellationToken) => Task.CompletedTask;
 
     public override Task CollectAsync(ITelegramBotClient botClient, Message message, Data data, CancellationToken cancellationToken = default)
     {
@@ -38,6 +38,6 @@ public abstract class GroupStatsCollector : StatsCollector
         var groupData = data.GetOrCreateGroupData(message.Chat.Id);
         CollectGroup(message, groupData);
 
-        return Respond(botClient, message, groupData, cancellationToken);
+        return RespondAsync(botClient, message, groupData, cancellationToken);
     }
 }
