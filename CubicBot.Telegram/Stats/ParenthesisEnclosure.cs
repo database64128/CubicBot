@@ -58,7 +58,7 @@ public class ParenthesisEnclosure : UserStatsCollector
             if (msg[i] == '"' && i + 1 < msg.Length)
             {
                 var nextDoubleQuote = msg[(i + 1)..].IndexOf('"');
-                if (nextDoubleQuote != -1 && nextDoubleQuote < msg.Length)
+                if (nextDoubleQuote != -1)
                 {
                     i += 1 + nextDoubleQuote;
                     continue;
