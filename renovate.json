@@ -1,6 +1,20 @@
 {
-  "commitMessagePrefix": "🔼",
-  "extends": [
-    "config:base"
-  ]
+    "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+    "commitMessagePrefix": "🔼",
+    "extends": [
+        "config:base",
+        ":automergeBranch",
+        ":automergeDigest",
+        ":automergeMinor",
+        ":disableRateLimiting"
+    ],
+    "packageRules": [
+        {
+            "matchPackageNames": [
+                "System.Interactive.Async",
+                "System.Linq.Async"
+            ],
+            "groupName": "Ix.NET"
+        }
+    ]
 }
