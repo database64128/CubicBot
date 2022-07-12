@@ -104,6 +104,16 @@ namespace CubicBot.Telegram.Commands
                 responseSB.AppendLine($"Commands handled: {targetUserData.CommandsHandled}");
             }
 
+            if (config.Stats.EnableGrass)
+            {
+                responseSB.AppendLine($"生草数量: {targetUserData.GrassGrown}");
+            }
+
+            if (config.Stats.EnableParenthesisEnclosure)
+            {
+                responseSB.AppendLine($"括号发一半数量: {targetUserData.ParenthesesUnenclosed}");
+            }
+
             #region 1. Common
             if (config.Commands.EnableCommon)
             {
@@ -210,11 +220,14 @@ namespace CubicBot.Telegram.Commands
             }
             #endregion
 
-            if (config.Stats.EnableGrass)
+            #region 9. Systemd
+            if (config.Commands.EnableSystemd)
             {
                 responseSB.AppendLine();
-                responseSB.AppendLine($"生草数量: {targetUserData.GrassGrown}");
+                responseSB.AppendLine("9. Systemd");
+                responseSB.AppendLine($"Systemctl commands used: {targetUserData.SystemctlCommandsUsed}");
             }
+            #endregion
 
             if (responseSB.Length == 0)
             {
