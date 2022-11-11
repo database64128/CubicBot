@@ -59,20 +59,20 @@ internal class ConfigSetBinder : BinderBase<ConfigChangeSet>
     }
 
     protected override ConfigChangeSet GetBoundValue(BindingContext bindingContext) => new(
-        bindingContext.ParseResult.GetValueForOption(_botTokenOption),
-        bindingContext.ParseResult.GetValueForOption(_enableCommandsModuleOption),
-        bindingContext.ParseResult.GetValueForOption(_enableStatsModuleOption),
-        bindingContext.ParseResult.GetValueForOption(_enablePersonalCommandsOption),
-        bindingContext.ParseResult.GetValueForOption(_enableCommonCommandsOption),
-        bindingContext.ParseResult.GetValueForOption(_enableDiceCommandsOption),
-        bindingContext.ParseResult.GetValueForOption(_enableConsentNotNeededCommandsOption),
-        bindingContext.ParseResult.GetValueForOption(_enableNonVeganCommandsOption),
-        bindingContext.ParseResult.GetValueForOption(_enableLawEnforcementCommandsOption),
-        bindingContext.ParseResult.GetValueForOption(_enablePublicServicesCommandsOption),
-        bindingContext.ParseResult.GetValueForOption(_enableChineseCommandsOption),
-        bindingContext.ParseResult.GetValueForOption(_enableChineseTasksCommandsOption),
-        bindingContext.ParseResult.GetValueForOption(_enableSystemdCommandsOption),
-        bindingContext.ParseResult.GetValueForOption(_enableGrassStatsOption),
-        bindingContext.ParseResult.GetValueForOption(_enableCommandStatsOption),
-        bindingContext.ParseResult.GetValueForOption(_enableMessageCounterOption));
+        bindingContext.ParseResult.GetValue(_botTokenOption),
+        bindingContext.ParseResult.GetValue(_enableCommandsModuleOption),
+        bindingContext.ParseResult.GetValue(_enableStatsModuleOption),
+        bindingContext.ParseResult.GetValue(_enablePersonalCommandsOption),
+        bindingContext.ParseResult.GetValue(_enableCommonCommandsOption),
+        bindingContext.ParseResult.GetValue(_enableDiceCommandsOption),
+        bindingContext.ParseResult.GetValue(_enableConsentNotNeededCommandsOption),
+        bindingContext.ParseResult.GetValue(_enableNonVeganCommandsOption),
+        bindingContext.ParseResult.GetValue(_enableLawEnforcementCommandsOption),
+        bindingContext.ParseResult.GetValue(_enablePublicServicesCommandsOption),
+        bindingContext.ParseResult.GetValue(_enableChineseCommandsOption),
+        bindingContext.ParseResult.GetValue(_enableChineseTasksCommandsOption),
+        bindingContext.ParseResult.GetValue(_enableSystemdCommandsOption),
+        bindingContext.ParseResult.GetValue(_enableGrassStatsOption),
+        bindingContext.ParseResult.GetValue(_enableCommandStatsOption),
+        bindingContext.ParseResult.GetValue(_enableMessageCounterOption));
 }
