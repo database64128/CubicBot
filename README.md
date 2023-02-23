@@ -47,6 +47,7 @@ A stupid and annoying chatbot for your group chats.
 
 - `/cook`: 😋 Who cooks the best food in the world? Me!
 - `/throw`: 🥺 Throw me a bone.
+- `/catch`: 😏 Catch me if you can.
 - `/force`: ☮️ Use of force not recommended.
 - `/touch`: 🥲 No touching.
 - `/fuck`: 😍 Feeling horny as fuck?

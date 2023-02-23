@@ -27,6 +27,7 @@ namespace CubicBot.Telegram.Commands
         {
             new("cook", "😋 Who cooks the best food in the world? Me!", CookAsync, userOrMemberStatsCollector: CountCooks),
             new("throw", "🥺 Throw me a bone.", ThrowAsync, userOrMemberStatsCollector: CountThrows),
+            new("catch", "😏 Catch me if you can.", CatchAsync, userOrMemberStatsCollector: CountCatches),
             new("force", "☮️ Use of force not recommended.", ForceAsync, userOrMemberStatsCollector: CountForceUsed),
             new("touch", "🥲 No touching.", TouchAsync, userOrMemberStatsCollector: CountTouches),
             new("fuck", "😍 Feeling horny as fuck?", FuckAsync, userOrMemberStatsCollector: CountSex),
@@ -105,6 +106,43 @@ namespace CubicBot.Telegram.Commands
             if (replyToUserData is not null)
             {
                 replyToUserData.ThrownByOthers++;
+            }
+        }
+
+        public static Task CatchAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
+        {
+            var userId = ChatHelper.GetMessageSenderId(message);
+            var groupId = ChatHelper.GetChatGroupId(message.Chat);
+            var pronounSubject = data.GetPronounSubject(userId, groupId);
+            var pronounObject = data.GetPronounObject(userId, groupId);
+            var pronounPossessiveDeterminer = data.GetPronounPossessiveDeterminer(userId, groupId);
+            var catchTargetFirstname = message.ReplyToMessage?.From?.FirstName;
+            var catchPhrase = catchTargetFirstname switch
+            {
+                null => "was caught",
+                _ => $"caught {catchTargetFirstname}",
+            };
+
+            argument ??= Random.Shared.Next(7) switch
+            {
+                0 => "by surprise. 😲",
+                1 => "in a box and launched into space. 🚀",
+                2 => "eating food picked up from the floor. 🍽️",
+                3 => $"stalking {pronounObject} on Instagram. 📷",
+                4 => $"sexting {pronounPossessiveDeterminer} best friend. 💋",
+                5 => $"naked in {pronounPossessiveDeterminer} bed and was turned on by what {pronounSubject} saw. 😍",
+                _ => $"masturbating to {pronounPossessiveDeterminer} profile picture. 💦",
+            };
+
+            return botClient.SendTextMessageWithRetryAsync(message.Chat.Id, $"{message.From?.FirstName} {catchPhrase} {argument}", cancellationToken: cancellationToken);
+        }
+
+        public static void CountCatches(Message message, string? argument, UserData userData, GroupData? groupData, UserData? replyToUserData)
+        {
+            userData.PersonsCaught++;
+            if (replyToUserData is not null)
+            {
+                replyToUserData.CaughtByOthers++;
             }
         }
 

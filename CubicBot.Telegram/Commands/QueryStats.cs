@@ -156,6 +156,8 @@ namespace CubicBot.Telegram.Commands
                 responseSB.AppendLine($"Cooked as meals: {targetUserData.CookedByOthers}");
                 responseSB.AppendLine($"Times throwing people: {targetUserData.PersonsThrown}");
                 responseSB.AppendLine($"Times being thrown: {targetUserData.ThrownByOthers}");
+                responseSB.AppendLine($"Times catching people: {targetUserData.PersonsCaught}");
+                responseSB.AppendLine($"Times being caught: {targetUserData.CaughtByOthers}");
                 responseSB.AppendLine($"Times using force: {targetUserData.ForceUsed}");
                 responseSB.AppendLine($"Times being forced: {targetUserData.ForcedByOthers}");
                 responseSB.AppendLine($"Times touching someone: {targetUserData.TouchesGiven}");

@@ -41,6 +41,8 @@ public class UserData : IParenthesisEnclosureControl
     public ulong CookedByOthers { get; set; }
     public ulong PersonsThrown { get; set; }
     public ulong ThrownByOthers { get; set; }
+    public ulong PersonsCaught { get; set; }
+    public ulong CaughtByOthers { get; set; }
     public ulong ForceUsed { get; set; }
     public ulong ForcedByOthers { get; set; }
     public ulong TouchesGiven { get; set; }
