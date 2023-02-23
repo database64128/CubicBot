@@ -37,6 +37,7 @@ namespace CubicBot.Telegram.Commands
             new("call_cops", "📞 Hello, this is 911. What's your emergency?", CallCopsAsync, userOrMemberStatsCollector: CountCopCalls),
             new("arrest", "🚓 Do I still have the right to remain silent?", ArrestAsync, userOrMemberStatsCollector: CountArrests),
             new("guilty_or_not", "🧑‍⚖️ Yes, your honor.", GuiltyOrNotAsync, userOrMemberStatsCollector: CountLawsuits),
+            new("overthrow", "🏛️ Welcome to Capitol Hill!", OverthrowAsync, userOrMemberStatsCollector: CountOverthrows),
         };
 
         public static Task CallCopsAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
@@ -135,6 +136,43 @@ namespace CubicBot.Telegram.Commands
                 if (replyToUserData is not null)
                 {
                     replyToUserData.VerdictsReceived++;
+                }
+            }
+        }
+
+        public static async Task OverthrowAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
+        {
+            var targetMessage = message.ReplyToMessage ?? message;
+            var userId = ChatHelper.GetMessageSenderId(targetMessage);
+            var groupId = ChatHelper.GetChatGroupId(targetMessage.Chat);
+            var pronounPossessiveDeterminer = data.GetPronounPossessiveDeterminer(userId, groupId);
+
+            var member = await botClient.GetChatMemberAsync(message.Chat.Id, userId, cancellationToken);
+            var title = member switch
+            {
+                ChatMemberAdministrator admin => admin.CustomTitle ?? "admin",
+                ChatMemberOwner owner => owner.CustomTitle ?? "owner",
+                _ => "member",
+            };
+
+            var text = Random.Shared.Next(4) switch // 25% success rate
+            {
+                0 => $"{message.From?.FirstName} was overthrown by {targetMessage.From?.FirstName} and stripped of {pronounPossessiveDeterminer} {title} title. 🔫",
+                _ => $"{targetMessage.From?.FirstName} failed to overthrow {message.From?.FirstName} and was taken into custody by the FBI. {PoliceOfficers[Random.Shared.Next(PoliceOfficers.Length)]}",
+            };
+
+            await botClient.SendTextMessageWithRetryAsync(message.Chat.Id, text, cancellationToken: cancellationToken);
+        }
+
+        public static void CountOverthrows(Message message, string? argument, UserData userData, GroupData? groupData, UserData? replyToUserData)
+        {
+            userData.OverthrowAttempts++;
+            if (groupData is not null)
+            {
+                groupData.OverthrowAttempts++;
+                if (replyToUserData is not null)
+                {
+                    replyToUserData.OverthrowAttemptsReceived++;
                 }
             }
         }

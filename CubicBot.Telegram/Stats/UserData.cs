@@ -58,6 +58,8 @@ public class UserData : IParenthesisEnclosureControl
     public ulong ArrestsReceived { get; set; }
     public ulong VerdictsGiven { get; set; }
     public ulong VerdictsReceived { get; set; }
+    public ulong OverthrowAttempts { get; set; }
+    public ulong OverthrowAttemptsReceived { get; set; }
     #endregion
 
     #region 6. Public Services

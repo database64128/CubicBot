@@ -59,6 +59,7 @@ A stupid and annoying chatbot for your group chats.
 - `/call_cops`: 📞 Hello, this is 911. What's your emergency?
 - `/arrest`: 🚓 Do I still have the right to remain silent?
 - `/guilty_or_not`: 🧑‍⚖️ Yes, your honor.
+- `/overthrow`: 🏛️ Welcome to Capitol Hill!
 
 #### 6. Public Services
 

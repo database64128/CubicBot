@@ -51,6 +51,7 @@ public class GroupData : IParenthesisEnclosureControl
     public ulong CopCallsMade { get; set; }
     public ulong ArrestsMade { get; set; }
     public ulong VerdictsGiven { get; set; }
+    public ulong OverthrowAttempts { get; set; }
     #endregion
 
     #region 6. Public Services
