@@ -394,4 +394,16 @@ public static class ChatHelper
     /// <param name="message">A message.</param>
     /// <returns>A non-null string.</returns>
     public static string GetMessageText(Message message) => message.Text ?? message.Caption ?? "";
+
+    /// <summary>
+    /// Gets the chat's group ID.
+    /// Returns 0 for private chats.
+    /// </summary>
+    /// <param name="chat">A chat.</param>
+    /// <returns>The chat's group ID or 0.</returns>
+    public static long GetChatGroupId(Chat chat) => chat.Type switch
+    {
+        ChatType.Private => 0L,
+        _ => chat.Id,
+    };
 }

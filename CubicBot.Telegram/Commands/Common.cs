@@ -156,11 +156,7 @@ namespace CubicBot.Telegram.Commands
         public static Task MeAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
         {
             var userId = ChatHelper.GetMessageSenderId(message);
-            var groupId = message.Chat.Type switch
-            {
-                ChatType.Private => 0L,
-                _ => message.Chat.Id,
-            };
+            var groupId = ChatHelper.GetChatGroupId(message.Chat);
             var pronounSubject = data.GetPronounSubject(userId, groupId);
 
             argument ??= Random.Shared.Next(4) switch
