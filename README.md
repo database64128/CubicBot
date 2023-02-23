@@ -46,6 +46,7 @@ A stupid and annoying chatbot for your group chats.
 #### 3. Consent Not Needed
 
 - `/cook`: 😋 Who cooks the best food in the world? Me!
+- `/throw`: 🥺 Throw me a bone.
 - `/force`: ☮️ Use of force not recommended.
 - `/touch`: 🥲 No touching.
 - `/fuck`: 😍 Feeling horny as fuck?
@@ -107,7 +108,7 @@ Counts text messages and generates the talkative leaderboard.
 
 ## Build
 
-Prerequisites: .NET 6 SDK
+Prerequisites: .NET 7 SDK
 
 Note for packagers: The application by default uses executable directory as config directory.
 To use user's config directory, define the constant `PACKAGED` when building.
