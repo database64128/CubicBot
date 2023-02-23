@@ -154,6 +154,8 @@ namespace CubicBot.Telegram.Commands
                 responseSB.AppendLine("3. Consent Not Needed");
                 responseSB.AppendLine($"Meals cooked: {targetUserData.MealsCooked}");
                 responseSB.AppendLine($"Cooked as meals: {targetUserData.CookedByOthers}");
+                responseSB.AppendLine($"Times throwing people: {targetUserData.PersonsThrown}");
+                responseSB.AppendLine($"Times being thrown: {targetUserData.ThrownByOthers}");
                 responseSB.AppendLine($"Times using force: {targetUserData.ForceUsed}");
                 responseSB.AppendLine($"Times being forced: {targetUserData.ForcedByOthers}");
                 responseSB.AppendLine($"Times touching someone: {targetUserData.TouchesGiven}");
@@ -183,6 +185,8 @@ namespace CubicBot.Telegram.Commands
                 responseSB.AppendLine($"Arrests received: {targetUserData.ArrestsReceived}");
                 responseSB.AppendLine($"Verdicts given: {targetUserData.VerdictsGiven}");
                 responseSB.AppendLine($"Verdicts received: {targetUserData.VerdictsReceived}");
+                responseSB.AppendLine($"Overthrow attempts: {targetUserData.OverthrowAttempts}");
+                responseSB.AppendLine($"Overthrow attempts received: {targetUserData.OverthrowAttemptsReceived}");
             }
             #endregion
 

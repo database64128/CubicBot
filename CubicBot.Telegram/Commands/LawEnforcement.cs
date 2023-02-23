@@ -157,8 +157,8 @@ namespace CubicBot.Telegram.Commands
 
             var text = Random.Shared.Next(4) switch // 25% success rate
             {
-                0 => $"{message.From?.FirstName} was overthrown by {targetMessage.From?.FirstName} and stripped of {pronounPossessiveDeterminer} {title} title. 🔫",
-                _ => $"{targetMessage.From?.FirstName} failed to overthrow {message.From?.FirstName} and was taken into custody by the FBI. {PoliceOfficers[Random.Shared.Next(PoliceOfficers.Length)]}",
+                0 => $"{targetMessage.From?.FirstName} was overthrown by {message.From?.FirstName} and stripped of {pronounPossessiveDeterminer} {title} title. 🔫",
+                _ => $"{message.From?.FirstName} failed to overthrow {targetMessage.From?.FirstName} and was taken into custody by the FBI. {PoliceOfficers[Random.Shared.Next(PoliceOfficers.Length)]}",
             };
 
             await botClient.SendTextMessageWithRetryAsync(message.Chat.Id, text, cancellationToken: cancellationToken);

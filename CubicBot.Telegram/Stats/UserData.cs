@@ -39,6 +39,8 @@ public class UserData : IParenthesisEnclosureControl
     #region 3. Consent Not Needed
     public ulong MealsCooked { get; set; }
     public ulong CookedByOthers { get; set; }
+    public ulong PersonsThrown { get; set; }
+    public ulong ThrownByOthers { get; set; }
     public ulong ForceUsed { get; set; }
     public ulong ForcedByOthers { get; set; }
     public ulong TouchesGiven { get; set; }

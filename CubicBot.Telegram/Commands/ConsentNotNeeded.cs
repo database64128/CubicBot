@@ -26,6 +26,7 @@ namespace CubicBot.Telegram.Commands
         public static readonly CubicBotCommand[] Commands = new CubicBotCommand[]
         {
             new("cook", "😋 Who cooks the best food in the world? Me!", CookAsync, userOrMemberStatsCollector: CountCooks),
+            new("throw", "🥺 Throw me a bone.", ThrowAsync, userOrMemberStatsCollector: CountThrows),
             new("force", "☮️ Use of force not recommended.", ForceAsync, userOrMemberStatsCollector: CountForceUsed),
             new("touch", "🥲 No touching.", TouchAsync, userOrMemberStatsCollector: CountTouches),
             new("fuck", "😍 Feeling horny as fuck?", FuckAsync, userOrMemberStatsCollector: CountSex),
@@ -36,9 +37,7 @@ namespace CubicBot.Telegram.Commands
             var actionIndex = Random.Shared.Next(11);
             var actionMiddle = actionIndex switch
             {
-                0 => " cooked ",
-                1 => " cooked ",
-                2 => " cooked ",
+                0 or 1 or 2 => " cooked ",
                 3 => " turned ",
                 4 => " grilled ",
                 5 => " squeezed juice out of ",
@@ -77,6 +76,35 @@ namespace CubicBot.Telegram.Commands
             if (replyToUserData is not null)
             {
                 replyToUserData.CookedByOthers++;
+            }
+        }
+
+        public static Task ThrowAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
+        {
+            var firstname = message.ReplyToMessage?.From?.FirstName ?? argument ?? message.From?.FirstName;
+            var text = Random.Shared.Next(11) switch
+            {
+                0 => $"{firstname} was thrown into the trash and buried in a landfill. 🗑️",
+                1 => $"{firstname} was thrown at a wall and smashed into pieces. 🧱",
+                2 => $"{firstname} was thrown under a bus. 🚌",
+                3 => $"{firstname} was thrown out of a window and got hit by a truck. 🚚",
+                4 => $"{firstname} was thrown into an escape room and died from a panic attack. 🚪",
+                5 => $"{firstname} was thrown into a volcano and burned to death. 🌋",
+                6 => $"{firstname} was thrown into a black hole and disappeared. 🌌",
+                7 => $"{firstname} was thrown into a pit of snakes and died from a snake bite. 🐍",
+                8 => $"{firstname} was thrown into a pit of spiders and died from a spider bite. 🕷️",
+                9 => $"{firstname} was thrown into a pit of crocodiles and died from a crocodile bite. 🐊",
+                _ => $"{firstname} was thrown into a pit of sharks and died from a shark bite. 🦈",
+            };
+            return botClient.SendTextMessageWithRetryAsync(message.Chat.Id, text, cancellationToken: cancellationToken);
+        }
+
+        public static void CountThrows(Message message, string? argument, UserData userData, GroupData? groupData, UserData? replyToUserData)
+        {
+            userData.PersonsThrown++;
+            if (replyToUserData is not null)
+            {
+                replyToUserData.ThrownByOthers++;
             }
         }
 
