@@ -1,12 +1,4 @@
-﻿#pragma warning disable IDE0079
-// STJ source generation actually supports record types with constructor parameters.
-// See discussions at https://github.com/dotnet/runtime/issues/58770.
-// Analyzer fix: https://github.com/dotnet/runtime/pull/68064.
-// Warning suppression is needed for .NET 6.
-#pragma warning disable SYSLIB1037
-#pragma warning restore IDE0079
-
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 
 namespace CubicBot.Telegram.Stats;
 
