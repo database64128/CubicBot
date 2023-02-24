@@ -2,7 +2,7 @@
 
 namespace CubicBot.Telegram.Stats;
 
-public class UserData : IParenthesisEnclosureControl
+public class UserData
 {
     #region 0. Personal
     public List<Pronouns> PronounList { get; set; } = new();

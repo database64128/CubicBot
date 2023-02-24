@@ -23,17 +23,23 @@ public class Controls
 
     public static Task ToggleParenthesisEnclosureAssuranceAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
     {
-        var userId = ChatHelper.GetMessageSenderId(message);
+        bool ensureParenthesisEnclosure;
 
-        IParenthesisEnclosureControl control = message.Chat.Type switch
+        if (message.Chat.Type is ChatType.Private)
         {
-            ChatType.Private => data.GetOrCreateUserData(userId),
-            _ => data.GetOrCreateGroupData(message.Chat.Id),
-        };
+            var userId = ChatHelper.GetMessageSenderId(message);
+            var userData = data.GetOrCreateUserData(userId);
+            userData.EnsureParenthesisEnclosure ^= true;
+            ensureParenthesisEnclosure = userData.EnsureParenthesisEnclosure;
+        }
+        else
+        {
+            var groupData = data.GetOrCreateGroupData(message.Chat.Id);
+            groupData.EnsureParenthesisEnclosure ^= true;
+            ensureParenthesisEnclosure = groupData.EnsureParenthesisEnclosure;
+        }
 
-        control.EnsureParenthesisEnclosure ^= true;
-
-        var responseMarkdownV2 = control.EnsureParenthesisEnclosure switch
+        var responseMarkdownV2 = ensureParenthesisEnclosure switch
         {
             true => @"✅ *Parenthesis Enclosure Assurance* is now _enabled_ in this chat\.",
             false => @"❌ *Parenthesis Enclosure Assurance* is now _disabled_ in this chat\.",

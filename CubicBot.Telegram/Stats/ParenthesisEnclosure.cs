@@ -92,13 +92,13 @@ public class ParenthesisEnclosure : UserStatsCollector
 
     public override Task RespondAsync(ITelegramBotClient botClient, Message message, UserData userData, GroupData? groupData, CancellationToken cancellationToken)
     {
-        IParenthesisEnclosureControl control = groupData switch
+        var ensureParenthesisEnclosure = groupData switch
         {
-            null => userData,
-            _ => groupData,
+            null => userData.EnsureParenthesisEnclosure,
+            _ => groupData.EnsureParenthesisEnclosure,
         };
 
-        return control.EnsureParenthesisEnclosure && _compensation.Count > 0
+        return ensureParenthesisEnclosure && _compensation.Count > 0
             ? botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
                                                       GetCompensationString(),
                                                       replyToMessageId: message.MessageId,
