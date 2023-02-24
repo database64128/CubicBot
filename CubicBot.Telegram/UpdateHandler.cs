@@ -2,6 +2,7 @@
 using CubicBot.Telegram.Stats;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,7 +17,7 @@ namespace CubicBot.Telegram
     {
         private readonly List<IDispatch> _dispatches = new();
 
-        public IEnumerable<BotCommand> Commands { get; } = Array.Empty<BotCommand>();
+        public ReadOnlyCollection<CubicBotCommand> Commands { get; }
 
         public UpdateHandler(string botUsername, Config config, Data data)
         {
@@ -25,6 +26,10 @@ namespace CubicBot.Telegram
                 var commandsDispatch = new CommandsDispatch(config, data, botUsername);
                 Commands = commandsDispatch.Commands;
                 _dispatches.Add(commandsDispatch);
+            }
+            else
+            {
+                Commands = Array.Empty<CubicBotCommand>().AsReadOnly();
             }
 
             if (config.EnableStats)
