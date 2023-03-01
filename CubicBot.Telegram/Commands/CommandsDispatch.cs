@@ -5,8 +5,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Telegram.Bot;
-using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
 namespace CubicBot.Telegram.Commands
@@ -91,8 +89,11 @@ namespace CubicBot.Telegram.Commands
             _commandDict = commands.ToDictionary(x => x.Command);
         }
 
-        public Task HandleAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken = default)
+        public Task HandleAsync(MessageContext messageContext, CancellationToken cancellationToken = default)
         {
+            var botClient = messageContext.BotClient;
+            var message = messageContext.Message;
+
             var (command, argument) = ChatHelper.ParseMessageIntoCommandAndArgument(message.Text, _botUsername);
             if (command is null)
             {

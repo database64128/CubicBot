@@ -2,8 +2,6 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Telegram.Bot;
-using Telegram.Bot.Types;
 
 namespace CubicBot.Telegram.Stats
 {
@@ -35,9 +33,9 @@ namespace CubicBot.Telegram.Stats
             }
         }
 
-        public Task HandleAsync(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken = default)
+        public Task HandleAsync(MessageContext messageContext, CancellationToken cancellationToken = default)
         {
-            var tasks = _collectors.Select(collector => collector.CollectAsync(botClient, message, _data, cancellationToken));
+            var tasks = _collectors.Select(collector => collector.CollectAsync(messageContext.BotClient, messageContext.Message, _data, cancellationToken));
             return Task.WhenAll(tasks);
         }
     }
