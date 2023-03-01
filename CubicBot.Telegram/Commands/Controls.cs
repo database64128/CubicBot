@@ -1,6 +1,8 @@
 ﻿using CubicBot.Telegram.Stats;
 using CubicBot.Telegram.Utils;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot;
@@ -9,15 +11,22 @@ using Telegram.Bot.Types.Enums;
 
 namespace CubicBot.Telegram.Commands;
 
-public class Controls
+public sealed class Controls
 {
-    public List<CubicBotCommand> Commands { get; } = new();
+    public ReadOnlyCollection<CubicBotCommand> Commands { get; }
 
     public Controls(Config config)
     {
         if (config.Stats.EnableParenthesisEnclosure)
         {
-            Commands.Add(new("toggle_pea", "🔘 Toggle Parenthesis Enclosure Assurance in this chat.", ToggleParenthesisEnclosureAssuranceAsync));
+            Commands = new(new CubicBotCommand[]
+            {
+                new("toggle_pea", "🔘 Toggle Parenthesis Enclosure Assurance in this chat.", ToggleParenthesisEnclosureAssuranceAsync),
+            });
+        }
+        else
+        {
+            Commands = Array.Empty<CubicBotCommand>().AsReadOnly();
         }
     }
 

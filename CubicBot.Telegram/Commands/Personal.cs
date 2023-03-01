@@ -1,6 +1,7 @@
 ﻿using CubicBot.Telegram.Stats;
 using CubicBot.Telegram.Utils;
 using System;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -13,14 +14,14 @@ namespace CubicBot.Telegram.Commands;
 
 public static class Personal
 {
-    public static readonly CubicBotCommand[] Commands = new CubicBotCommand[]
+    public static readonly ReadOnlyCollection<CubicBotCommand> Commands = new(new CubicBotCommand[]
     {
         new("add_pronouns", "➕ Add pronouns.", AddPronounsAsync),
         new("remove_pronouns", "➖ Remove pronouns.", RemovePronounsAsync),
         new("get_pronouns", "❤️ Get someone's pronouns by replying to someone's message, or display your own pronoun settings.", GetPronounsAsync),
         new("set_default_pronouns", "📛 Set or unset default pronouns for all chats.", SetDefaultPronounsAsync),
         new("set_preferred_pronouns", "🕶️ Set or unset preferred pronouns for this chat.", SetPreferredPronounsAsync),
-    };
+    });
 
     public static Task AddPronounsAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
     {

@@ -1,6 +1,7 @@
 ﻿using CubicBot.Telegram.Stats;
 using CubicBot.Telegram.Utils;
 using System;
+using System.Collections.ObjectModel;
 using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot;
@@ -11,12 +12,12 @@ namespace CubicBot.Telegram.Commands;
 
 public static class Systemd
 {
-    public static readonly CubicBotCommand[] Commands =
+    public static readonly ReadOnlyCollection<CubicBotCommand> Commands = new(new CubicBotCommand[]
     {
         new("systemctl", "➡️ systemctl <command> [unit]", SystemctlAsync, userOrMemberStatsCollector: CountSystemctlCalls),
-    };
+    });
 
-    public static readonly string[] States =
+    private static readonly string[] s_states =
     {
         "[***   ]",
         "[ ***  ]",
@@ -26,11 +27,11 @@ public static class Systemd
         "[**   *]",
     };
 
-    public const string WaitState = "[ WAIT ]";
+    private const string WaitState = "[ WAIT ]";
 
-    public const string OkState = "[  OK  ]";
+    private const string OkState = "[  OK  ]";
 
-    public const string HelpMarkdownV2 = @"
+    private const string HelpMarkdownV2 = @"
 Usage: `/systemctl <command> [unit]`
 Supported commands: *start*, *stop*, *restart*, *reload*\.
 Reply to a message to use the sender's name as the unit\.";
@@ -125,7 +126,7 @@ Reply to a message to use the sender's name as the unit\.";
             await Task.Delay(2000, cancellationToken);
             await botClient.EditMessageTextWithRetryAsync(sent.Chat.Id,
                                                           sent.MessageId,
-                                                          $"`{States[i % States.Length]}{ing}{unit}...`",
+                                                          $"`{s_states[i % s_states.Length]}{ing}{unit}...`",
                                                           ParseMode.MarkdownV2,
                                                           cancellationToken: cancellationToken);
         }

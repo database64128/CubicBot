@@ -2,6 +2,7 @@
 using CubicBot.Telegram.Utils;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot;
@@ -12,7 +13,7 @@ namespace CubicBot.Telegram.Commands;
 
 public static class Dice
 {
-    public static readonly CubicBotCommand[] Commands = new CubicBotCommand[]
+    public static readonly ReadOnlyCollection<CubicBotCommand> Commands = new(new CubicBotCommand[]
     {
             new("dice", "🎲 Dice it!", SendDiceAsync, userOrMemberStatsCollector: CountDices),
             new("dart", "🎯 Oh shoot!", SendDartAsync, userOrMemberStatsCollector: CountDarts),
@@ -20,7 +21,7 @@ public static class Dice
             new("soccer", "⚽ It's your goal!", SendSoccerBallAsync, userOrMemberStatsCollector: CountSoccerGoals),
             new("roll", "🎰 Feeling unlucky as hell?", SendSlotMachineAsync, userOrMemberStatsCollector: CountSlotRolls),
             new("bowl", "🎳 Can you knock them all down?", SendBowlingBallAsync, userOrMemberStatsCollector: CountBowlingBalls),
-    };
+    });
 
     private static int GetCountFromArgument(string? argument = null)
     {

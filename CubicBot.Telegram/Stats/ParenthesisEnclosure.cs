@@ -13,7 +13,7 @@ public class ParenthesisEnclosure : UserStatsCollector
 {
     private readonly List<char> _compensation = new();
 
-    public static readonly Dictionary<char, char> EnclosureDict = new()
+    private static readonly Dictionary<char, char> s_enclosureDict = new()
     {
         // bi-directional
         ['"'] = '"',
@@ -66,7 +66,7 @@ public class ParenthesisEnclosure : UserStatsCollector
             }
 
             // Handle enclosure signs.
-            if (EnclosureDict.TryGetValue(msg[i], out var otherHalf))
+            if (s_enclosureDict.TryGetValue(msg[i], out var otherHalf))
             {
                 var lastThisHalfMatch = _compensation.LastIndexOf(msg[i]);
                 if (lastThisHalfMatch != -1)
