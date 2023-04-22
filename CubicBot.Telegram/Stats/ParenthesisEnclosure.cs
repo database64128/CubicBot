@@ -4,12 +4,10 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
-using Telegram.Bot;
-using Telegram.Bot.Types;
 
 namespace CubicBot.Telegram.Stats;
 
-public class ParenthesisEnclosure : UserStatsCollector
+public sealed class ParenthesisEnclosure : IStatsCollector
 {
     private readonly List<char> _compensation = new();
 
@@ -43,8 +41,6 @@ public class ParenthesisEnclosure : UserStatsCollector
 
     public bool AnalyzeMessage(ReadOnlySpan<char> msg)
     {
-        _compensation.Clear();
-
         for (var i = 0; i < msg.Length; i++)
         {
             // Short-circuit 'x'.
@@ -83,26 +79,31 @@ public class ParenthesisEnclosure : UserStatsCollector
         return _compensation.Count > 0;
     }
 
-    public string GetCompensationString() => new(CollectionsMarshal.AsSpan(_compensation));
-
-    public override bool IsCollectable(Message message) => AnalyzeMessage(ChatHelper.GetMessageText(message));
-
-    public override void CollectUser(Message message, UserData userData, GroupData? groupData) =>
-        userData.ParenthesesUnenclosed += (ulong)_compensation.Count;
-
-    public override Task RespondAsync(ITelegramBotClient botClient, Message message, UserData userData, GroupData? groupData, CancellationToken cancellationToken)
+    public string GetCompensationString()
     {
-        var ensureParenthesisEnclosure = groupData switch
-        {
-            null => userData.EnsureParenthesisEnclosure,
-            _ => groupData.EnsureParenthesisEnclosure,
-        };
+        var compensation = new string(CollectionsMarshal.AsSpan(_compensation));
+        _compensation.Clear();
+        return compensation;
+    }
 
-        return ensureParenthesisEnclosure && _compensation.Count > 0
-            ? botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
-                                                      GetCompensationString(),
-                                                      replyToMessageId: message.MessageId,
-                                                      cancellationToken: cancellationToken)
-            : Task.CompletedTask;
+    public Task CollectAsync(MessageContext messageContext, CancellationToken cancellationToken)
+    {
+        if (AnalyzeMessage(messageContext.Text))
+        {
+            messageContext.MemberOrUserData.ParenthesesUnenclosed += (ulong)_compensation.Count;
+
+            var ensureParenthesisEnclosure = messageContext.GroupData switch
+            {
+                null => messageContext.UserData.EnsureParenthesisEnclosure,
+                _ => messageContext.GroupData.EnsureParenthesisEnclosure,
+            };
+
+            if (ensureParenthesisEnclosure)
+            {
+                return messageContext.ReplyWithTextMessageAndRetryAsync(GetCompensationString(), cancellationToken: cancellationToken);
+            }
+        }
+
+        return Task.CompletedTask;
     }
 }

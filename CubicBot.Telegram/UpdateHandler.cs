@@ -13,7 +13,7 @@ using Telegram.Bot.Types.Enums;
 
 namespace CubicBot.Telegram;
 
-public class UpdateHandler
+public sealed class UpdateHandler
 {
     private readonly Config _config;
     private readonly Data _data;
@@ -54,14 +54,14 @@ public class UpdateHandler
 
                 foreach (var dispatch in _dispatches)
                 {
-                    _ = Task.Run(() => dispatch.HandleAsync(messageContext, cancellationToken), cancellationToken)
-                            .ContinueWith(t =>
-                            {
-                                if (t?.Exception?.InnerException is not null)
+                    _ = dispatch.HandleAsync(messageContext, cancellationToken)
+                                .ContinueWith(t =>
                                 {
-                                    HandleError(t.Exception.InnerException);
-                                }
-                            }, TaskContinuationOptions.OnlyOnFaulted);
+                                    if (t?.Exception?.InnerException is not null)
+                                    {
+                                        HandleError(t.Exception.InnerException);
+                                    }
+                                }, TaskContinuationOptions.OnlyOnFaulted);
                 }
             }
         }

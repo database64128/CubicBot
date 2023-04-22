@@ -2,7 +2,7 @@
 
 namespace CubicBot.Telegram.Stats;
 
-public class GroupData
+public sealed class GroupData
 {
     public ulong MessagesProcessed { get; set; }
     public ulong CommandsHandled { get; set; }

@@ -1,11 +1,8 @@
-﻿using CubicBot.Telegram.Stats;
-using CubicBot.Telegram.Utils;
+﻿using CubicBot.Telegram.Utils;
 using System;
 using System.Collections.ObjectModel;
 using System.Threading;
 using System.Threading.Tasks;
-using Telegram.Bot;
-using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
 namespace CubicBot.Telegram.Commands;
@@ -14,7 +11,7 @@ public static class Systemd
 {
     public static readonly ReadOnlyCollection<CubicBotCommand> Commands = new(new CubicBotCommand[]
     {
-        new("systemctl", "➡️ systemctl <command> [unit]", SystemctlAsync, userOrMemberStatsCollector: CountSystemctlCalls),
+        new("systemctl", "➡️ systemctl <command> [unit]", SystemctlAsync, statsCollector: CountSystemctlCalls),
     });
 
     private static readonly string[] s_states =
@@ -36,18 +33,18 @@ Usage: `/systemctl <command> [unit]`
 Supported commands: *start*, *stop*, *restart*, *reload*\.
 Reply to a message to use the sender's name as the unit\.";
 
-    public static Task SystemctlAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
+    public static Task SystemctlAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
     {
-        if (string.IsNullOrEmpty(argument))
+        if (commandContext.Argument is not string argument)
         {
-            return SendHelpAsync(botClient, message, @"Missing command\.", cancellationToken);
+            return SendHelpAsync(commandContext, @"Missing command\.", cancellationToken);
         }
 
         string command, unit;
         SystemdUnitType unitType = SystemdUnitType.Service;
 
         var spacePos = argument.IndexOf(' ');
-        if (spacePos == -1 && message.ReplyToMessage?.From?.FirstName is string firstname)
+        if (spacePos == -1 && commandContext.Message.ReplyToMessage?.From?.FirstName is string firstname)
         {
             command = argument;
             unit = firstname;
@@ -69,7 +66,7 @@ Reply to a message to use the sender's name as the unit\.";
         }
         else
         {
-            return SendHelpAsync(botClient, message, @"Missing unit\.", cancellationToken);
+            return SendHelpAsync(commandContext, @"Missing unit\.", cancellationToken);
         }
 
         var unsupportedErrMsgMarkdownV2 = unitType switch
@@ -85,28 +82,27 @@ Reply to a message to use the sender's name as the unit\.";
         };
         if (unsupportedErrMsgMarkdownV2 is not null)
         {
-            return SendHelpAsync(botClient, message, unsupportedErrMsgMarkdownV2, cancellationToken);
+            return SendHelpAsync(commandContext, unsupportedErrMsgMarkdownV2, cancellationToken);
         }
 
         return command switch
         {
-            "start" => SystemctlExecAsync(botClient, message, unit, 3, 13, " Starting ", unitType is SystemdUnitType.Target ? " Reached " : " Started ", cancellationToken),
-            "stop" => SystemctlExecAsync(botClient, message, unit, 3, 13, " Stopping ", " Stopped ", cancellationToken),
-            "reload" => SystemctlExecAsync(botClient, message, unit, 3, 6, " Reloading ", " Reloaded ", cancellationToken),
-            "restart" => SystemctlRestartAsync(botClient, message, unit, cancellationToken),
-            _ => SendHelpAsync(botClient, message, @"Invalid command\.", cancellationToken),
+            "start" => SystemctlExecAsync(commandContext, unit, 3, 13, " Starting ", unitType is SystemdUnitType.Target ? " Reached " : " Started ", cancellationToken),
+            "stop" => SystemctlExecAsync(commandContext, unit, 3, 13, " Stopping ", " Stopped ", cancellationToken),
+            "reload" => SystemctlExecAsync(commandContext, unit, 3, 6, " Reloading ", " Reloaded ", cancellationToken),
+            "restart" => SystemctlRestartAsync(commandContext, unit, cancellationToken),
+            _ => SendHelpAsync(commandContext, @"Invalid command\.", cancellationToken),
         };
     }
 
-    private static async Task SystemctlRestartAsync(ITelegramBotClient botClient, Message message, string unit, CancellationToken cancellationToken = default)
+    private static async Task SystemctlRestartAsync(CommandContext commandContext, string unit, CancellationToken cancellationToken = default)
     {
-        await SystemctlExecAsync(botClient, message, unit, 3, 13, " Stopping ", " Stopped ", cancellationToken);
-        await SystemctlExecAsync(botClient, message, unit, 3, 13, " Starting ", " Started ", cancellationToken);
+        await SystemctlExecAsync(commandContext, unit, 3, 13, " Stopping ", " Stopped ", cancellationToken);
+        await SystemctlExecAsync(commandContext, unit, 3, 13, " Starting ", " Started ", cancellationToken);
     }
 
     private static async Task SystemctlExecAsync(
-        ITelegramBotClient botClient,
-        Message message,
+        CommandContext commandContext,
         string unit,
         int roundsMin,
         int roundsMax,
@@ -116,34 +112,30 @@ Reply to a message to use the sender's name as the unit\.";
     {
         unit = ChatHelper.EscapeMarkdownV2CodeBlock(unit);
         var rounds = Random.Shared.Next(roundsMin, roundsMax);
-        var sent = await botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
-                                                                 $"`{WaitState}{ing}{unit}...`",
-                                                                 ParseMode.MarkdownV2,
-                                                                 cancellationToken: cancellationToken);
+        var sent = await commandContext.SendTextMessageWithRetryAsync(
+            $"`{WaitState}{ing}{unit}...`",
+            ParseMode.MarkdownV2,
+            cancellationToken: cancellationToken);
 
         for (var i = 0; i < rounds; i++)
         {
             await Task.Delay(2000, cancellationToken);
-            await botClient.EditMessageTextWithRetryAsync(sent.Chat.Id,
-                                                          sent.MessageId,
-                                                          $"`{s_states[i % s_states.Length]}{ing}{unit}...`",
-                                                          ParseMode.MarkdownV2,
-                                                          cancellationToken: cancellationToken);
+            await commandContext.EditMessageTextWithRetryAsync(
+                sent.MessageId,
+                $"`{s_states[i % s_states.Length]}{ing}{unit}...`",
+                ParseMode.MarkdownV2,
+                cancellationToken: cancellationToken);
         }
 
-        await botClient.EditMessageTextWithRetryAsync(sent.Chat.Id,
-                                                      sent.MessageId,
-                                                      $"`{OkState}{ed}{unit}.`",
-                                                      ParseMode.MarkdownV2,
-                                                      cancellationToken: cancellationToken);
+        await commandContext.EditMessageTextWithRetryAsync(
+            sent.MessageId,
+            $"`{OkState}{ed}{unit}.`",
+            ParseMode.MarkdownV2,
+            cancellationToken: cancellationToken);
     }
 
-    private static Task SendHelpAsync(ITelegramBotClient botClient, Message message, string errMsgMarkdownV2, CancellationToken cancellationToken = default)
-        => botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
-                                                   errMsgMarkdownV2 + HelpMarkdownV2,
-                                                   ParseMode.MarkdownV2,
-                                                   replyToMessageId: message.MessageId,
-                                                   cancellationToken: cancellationToken);
+    private static Task SendHelpAsync(CommandContext commandContext, string errMsgMarkdownV2, CancellationToken cancellationToken = default)
+        => commandContext.ReplyWithTextMessageAndRetryAsync(errMsgMarkdownV2 + HelpMarkdownV2, ParseMode.MarkdownV2, cancellationToken: cancellationToken);
 
-    public static void CountSystemctlCalls(Message message, string? argument, UserData userData, GroupData? groupData, UserData? replyToUserData) => userData.SystemctlCommandsUsed++;
+    public static void CountSystemctlCalls(CommandContext commandContext) => commandContext.MemberOrUserData.SystemctlCommandsUsed++;
 }

@@ -4,7 +4,6 @@ using System;
 using System.Collections.ObjectModel;
 using System.Threading;
 using System.Threading.Tasks;
-using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
@@ -20,17 +19,18 @@ public static class Common
 
     public static readonly ReadOnlyCollection<CubicBotCommand> Commands = new(new CubicBotCommand[]
     {
-        new("apologize", "🥺 Sorry about last night.", ApologizeAsync, userOrMemberStatsCollector: CountApologies),
-        new("chant", "🗣 Say it out loud!", ChantAsync, userOrMemberStatsCollector: CountChants),
-        new("drink", "🥤 I'm thirsty!", DrinkAsync, userOrMemberStatsCollector: CountDrinks),
-        new("me", "🤳 What the hell am I doing?", MeAsync, userOrMemberStatsCollector: CountMes),
-        new("thank", "🦃 Reply to or mention the name of the person you would like to thank.", SayThankAsync, userOrMemberStatsCollector: CountThankYous),
-        new("thanks", "😊 Say thanks to me!", SayThanksAsync, userOrMemberStatsCollector: CountThanks),
-        new("vax", "💉 Gen Z also got the vax!", VaccinateAsync, userOrMemberStatsCollector: CountVaccinations),
+        new("apologize", "🥺 Sorry about last night.", ApologizeAsync, statsCollector: CountApologies),
+        new("chant", "🗣 Say it out loud!", ChantAsync, statsCollector: CountChants),
+        new("drink", "🥤 I'm thirsty!", DrinkAsync, statsCollector: CountDrinks),
+        new("me", "🤳 What the hell am I doing?", MeAsync, statsCollector: CountMes),
+        new("thank", "🦃 Reply to or mention the name of the person you would like to thank.", SayThankAsync, statsCollector: CountThankYous),
+        new("thanks", "😊 Say thanks to me!", SayThanksAsync, statsCollector: CountThanks),
+        new("vax", "💉 Gen Z also got the vax!", VaccinateAsync, statsCollector: CountVaccinations),
     });
 
-    public static Task ApologizeAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
+    public static Task ApologizeAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
     {
+        var message = commandContext.Message;
         var apologyStart = Random.Shared.Next(5) switch
         {
             0 => "Sorry",
@@ -40,66 +40,58 @@ public static class Common
             _ => "I want to apologize",
         };
 
-        if (message.ReplyToMessage is Message targetMessage)
+        if (commandContext.ReplyToMessageContext is MessageContext replyToMessageContext)
         {
-            if (!string.IsNullOrEmpty(argument))
-                argument = $" for {argument}";
+            var argument = commandContext.Argument switch
+            {
+                null => null,
+                _ => $" for {commandContext.Argument}",
+            };
 
-            return botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
-                                                           $"{message.From?.FirstName}: {apologyStart}{argument}, {targetMessage.From?.FirstName}. 🥺",
-                                                           replyToMessageId: targetMessage.MessageId,
-                                                           cancellationToken: cancellationToken);
+            return replyToMessageContext.ReplyWithTextMessageAndRetryAsync($"{message.From?.FirstName}: {apologyStart}{argument}, {replyToMessageContext.Message.From?.FirstName}. 🥺", cancellationToken: cancellationToken);
         }
-        else if (argument is string targetName)
+        else if (commandContext.Argument is string targetName)
         {
-            return botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
-                                                           $"{message.From?.FirstName}: {apologyStart}, {targetName}. 🥺",
-                                                           cancellationToken: cancellationToken);
+            return commandContext.SendTextMessageWithRetryAsync($"{message.From?.FirstName}: {apologyStart}, {targetName}. 🥺", cancellationToken: cancellationToken);
         }
         else
         {
-            return botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
-                                                           $"{apologyStart}, {message.From?.FirstName}. 🥺",
-                                                           replyToMessageId: message.MessageId,
-                                                           cancellationToken: cancellationToken);
+            return commandContext.ReplyWithTextMessageAndRetryAsync($"{apologyStart}, {message.From?.FirstName}. 🥺", cancellationToken: cancellationToken);
         }
     }
 
-    public static void CountApologies(Message message, string? argument, UserData userData, GroupData? groupData, UserData? replyToUserData)
+    public static void CountApologies(CommandContext commandContext)
     {
-        if (replyToUserData is not null)
+        if (commandContext.ReplyToMessageContext?.MemberOrUserData is UserData replyToMemberOrUserData)
         {
-            userData.ApologiesSent++;
-            replyToUserData.ApologiesReceived++;
+            commandContext.MemberOrUserData.ApologiesSent++;
+            replyToMemberOrUserData.ApologiesReceived++;
         }
-        else if (argument is not null)
+        else if (commandContext.Argument is not null)
         {
-            userData.ApologiesSent++;
+            commandContext.MemberOrUserData.ApologiesSent++;
         }
         else
         {
-            userData.ApologiesReceived++;
+            commandContext.MemberOrUserData.ApologiesReceived++;
         }
     }
 
-    public static Task ChantAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
+    public static Task ChantAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
     {
         // Assign default sentence if empty
-        if (string.IsNullOrEmpty(argument))
+        var argument = commandContext.Argument ?? Random.Shared.Next(9) switch
         {
-            argument = Random.Shared.Next(9) switch
-            {
-                0 => "Make it happen!",
-                1 => "Do it now!",
-                2 => "Love wins!",
-                3 => "My body, my choice!",
-                4 => "No justice, no peace!",
-                5 => "No Hate! No Fear! Immigrants are welcome here!",
-                6 => "Climate Change is not a lie, do not let our planet die!",
-                7 => "Waters rise, hear our cries, no more lies for business ties!",
-                _ => "No more secrets, no more lies! No more silence that money buys!",
-            };
-        }
+            0 => "Make it happen!",
+            1 => "Do it now!",
+            2 => "Love wins!",
+            3 => "My body, my choice!",
+            4 => "No justice, no peace!",
+            5 => "No Hate! No Fear! Immigrants are welcome here!",
+            6 => "Climate Change is not a lie, do not let our planet die!",
+            7 => "Waters rise, hear our cries, no more lies for business ties!",
+            _ => "No more secrets, no more lies! No more silence that money buys!",
+        };
 
         // Make sure it ends with '!'
         if (!argument.EndsWith('!'))
@@ -111,59 +103,50 @@ public static class Common
         // Apply bold format and repeat
         argument = $"*{argument}*{Environment.NewLine}*{argument}*{Environment.NewLine}*{argument}*";
 
-        return botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
-                                                       argument,
-                                                       parseMode: ParseMode.MarkdownV2,
-                                                       cancellationToken: cancellationToken);
+        return commandContext.SendTextMessageWithRetryAsync(argument, ParseMode.MarkdownV2, cancellationToken: cancellationToken);
     }
 
-    public static void CountChants(Message message, string? argument, UserData userData, GroupData? groupData, UserData? replyToUserData) => userData.ChantsUsed++;
+    public static void CountChants(CommandContext commandContext) => commandContext.MemberOrUserData.ChantsUsed++;
 
-    public static Task DrinkAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
+    public static Task DrinkAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
     {
-        if (message.ReplyToMessage is Message targetMessage)
+        if (commandContext.ReplyToMessageContext is MessageContext replyToMessageContext)
         {
-            return botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
-                                                           $"{message.From?.FirstName} drank {targetMessage.From?.FirstName}! 🥤🤤",
-                                                           replyToMessageId: targetMessage.MessageId,
-                                                           cancellationToken: cancellationToken);
+            return commandContext.ReplyWithTextMessageAndRetryAsync(
+                $"{commandContext.Message.From?.FirstName} drank {replyToMessageContext.Message.From?.FirstName}! 🥤🤤",
+                cancellationToken: cancellationToken);
         }
-        else if (argument is string targetName)
+        else if (commandContext.Argument is string targetName)
         {
-            return botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
-                                                           $"{message.From?.FirstName} drank {targetName}! 🥤🤤",
-                                                           cancellationToken: cancellationToken);
+            return commandContext.SendTextMessageWithRetryAsync(
+                $"{commandContext.Message.From?.FirstName} drank {targetName}! 🥤🤤",
+                cancellationToken: cancellationToken);
         }
         else
         {
             var beverageIndex = Random.Shared.Next(s_beverages.Length);
             var beverage = s_beverages[beverageIndex];
-            return botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
-                                                           beverage,
-                                                           replyToMessageId: message.MessageId,
-                                                           cancellationToken: cancellationToken);
+            return commandContext.ReplyWithTextMessageAndRetryAsync(beverage, cancellationToken: cancellationToken);
         }
     }
 
-    public static void CountDrinks(Message message, string? argument, UserData userData, GroupData? groupData, UserData? replyToUserData)
+    public static void CountDrinks(CommandContext commandContext)
     {
-        userData.DrinksTaken++;
-        if (replyToUserData is not null)
-        {
-            replyToUserData.DrankByOthers++;
-        }
+        commandContext.MemberOrUserData.DrinksTaken++;
+
+        if (commandContext.ReplyToMessageContext?.MemberOrUserData is UserData replyToMemberOrUserData)
+            replyToMemberOrUserData.DrankByOthers++;
     }
 
-    public static Task MeAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
+    public static Task MeAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
     {
-        var userId = ChatHelper.GetMessageSenderId(message);
-        var groupId = ChatHelper.GetChatGroupId(message.Chat);
-        var pronounSubject = data.GetPronounSubject(userId, groupId);
+        var message = commandContext.Message;
+        var pronouns = commandContext.GetPronounsToUse();
 
-        argument ??= Random.Shared.Next(4) switch
+        var argument = commandContext.Argument ?? Random.Shared.Next(4) switch
         {
             0 => "did nothing and fell asleep. 😴",
-            1 => $"is showing off this new command {pronounSubject} just learned. 😎",
+            1 => $"is showing off this new command {pronouns.Subject} just learned. 😎",
             2 => "got coffee for everyone in this chat. ☕",
             _ => "invoked this command by mistake. 🤪",
         };
@@ -181,75 +164,51 @@ public static class Common
             },
         };
 
-        return botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
-                                                       text,
-                                                       entities: entities,
-                                                       cancellationToken: cancellationToken);
+        return commandContext.SendTextMessageWithRetryAsync(text, entities: entities, cancellationToken: cancellationToken);
     }
 
-    public static void CountMes(Message message, string? argument, UserData userData, GroupData? groupData, UserData? replyToUserData) => userData.MesUsed++;
+    public static void CountMes(CommandContext commandContext) => commandContext.MemberOrUserData.MesUsed++;
 
-    public static Task SayThankAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
+    public static Task SayThankAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
     {
-        if (message.ReplyToMessage is Message targetMessage)
+        if (commandContext.ReplyToMessageContext is MessageContext replyToMessageContext)
         {
-            return botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
-                                                           $"Thank you so much, {targetMessage.From?.FirstName}! 😊",
-                                                           replyToMessageId: targetMessage.MessageId,
-                                                           cancellationToken: cancellationToken);
+            return replyToMessageContext.ReplyWithTextMessageAndRetryAsync($"Thank you so much, {replyToMessageContext.Message.From?.FirstName}! 😊", cancellationToken: cancellationToken);
         }
-        else if (argument is string targetName)
+        else if (commandContext.Argument is string targetName)
         {
-            return botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
-                                                           $"Thank you so much, {targetName}! 😊",
-                                                           cancellationToken: cancellationToken);
+            return commandContext.SendTextMessageWithRetryAsync($"Thank you so much, {targetName}! 😊", cancellationToken: cancellationToken);
         }
         else
         {
-            return botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
-                                                           "You must either reply to a message or specify someone to thank!",
-                                                           replyToMessageId: message.MessageId,
-                                                           cancellationToken: cancellationToken);
+            return commandContext.ReplyWithTextMessageAndRetryAsync("You must either reply to a message or specify someone to thank!", cancellationToken: cancellationToken);
         }
     }
 
-    public static void CountThankYous(Message message, string? argument, UserData userData, GroupData? groupData, UserData? replyToUserData)
+    public static void CountThankYous(CommandContext commandContext)
     {
-        userData.ThankYousSent++;
-        if (replyToUserData is not null)
-        {
-            replyToUserData.ThankYousReceived++;
-        }
+        commandContext.MemberOrUserData.ThankYousSent++;
+
+        if (commandContext.ReplyToMessageContext?.MemberOrUserData is UserData replyToMemberOrUserData)
+            replyToMemberOrUserData.ThankYousReceived++;
     }
 
-    public static Task SayThanksAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
-        => botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
-                                                   "You're welcome! 🦾",
-                                                   replyToMessageId: message.MessageId,
-                                                   cancellationToken: cancellationToken);
+    public static Task SayThanksAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
+        => commandContext.ReplyWithTextMessageAndRetryAsync("You're welcome! 🦾", cancellationToken: cancellationToken);
 
-    public static void CountThanks(Message message, string? argument, UserData userData, GroupData? groupData, UserData? replyToUserData) => userData.ThanksSaid++;
+    public static void CountThanks(CommandContext commandContext) => commandContext.MemberOrUserData.ThanksSaid++;
 
-    public static Task VaccinateAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
-        => botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
-                                                   "💉",
-                                                   replyToMessageId: message.ReplyToMessage?.MessageId,
-                                                   cancellationToken: cancellationToken);
+    public static Task VaccinateAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
+        => commandContext.SendTextMessageWithRetryAsync("💉", replyToMessageId: commandContext.Message.ReplyToMessage?.MessageId, cancellationToken: cancellationToken);
 
-    public static void CountVaccinations(Message message, string? argument, UserData userData, GroupData? groupData, UserData? replyToUserData)
+    public static void CountVaccinations(CommandContext commandContext)
     {
-        userData.VaccinationShotsAdministered++;
-        if (groupData is not null)
-        {
+        commandContext.MemberOrUserData.VaccinationShotsAdministered++;
+
+        if (commandContext.GroupData is GroupData groupData)
             groupData.VaccinationShotsAdministered++;
-            if (replyToUserData is not null)
-            {
-                replyToUserData.VaccinationShotsGot++;
-            }
-            else
-            {
-                userData.VaccinationShotsGot++;
-            }
-        }
+
+        var targetUserData = commandContext.ReplyToMessageContext?.MemberOrUserData ?? commandContext.MemberOrUserData;
+        targetUserData.VaccinationShotsReceived++;
     }
 }

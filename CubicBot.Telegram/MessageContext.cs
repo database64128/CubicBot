@@ -11,6 +11,9 @@ namespace CubicBot.Telegram;
 /// </summary>
 public class MessageContext
 {
+    private readonly Data _data;
+    private MessageContext? _replyToMessageContext;
+
     /// <summary>
     /// Gets the bot client.
     /// </summary>
@@ -20,6 +23,16 @@ public class MessageContext
     /// Gets the message.
     /// </summary>
     public Message Message { get; }
+
+    /// <summary>
+    /// Gets the message's text.
+    /// </summary>
+    public string Text { get; }
+
+    /// <summary>
+    /// Gets the user's ID.
+    /// </summary>
+    public long UserId { get; }
 
     /// <summary>
     /// Gets the user's personal stats object.
@@ -44,49 +57,54 @@ public class MessageContext
     public UserData MemberOrUserData => MemberData ?? UserData;
 
     /// <summary>
-    /// Gets the personal stats object of the user the message was replying to.
+    /// Gets the <see cref="MessageContext"/> of the message replied by the current message.
     /// Null if the message was not a reply.
     /// </summary>
-    public UserData? ReplyToUserData { get; }
-
-    /// <summary>
-    /// Gets the stats object of the group member the message was replying to.
-    /// Null if the message was from a private chat or if the message was not a reply.
-    /// </summary>
-    public UserData? ReplyToMemberData { get; }
-
-    /// <summary>
-    /// Gets the stats object of the user the message was replying to in the current chat.
-    /// Null if the message was not a reply.
-    /// </summary>
-    public UserData? ReplyToMemberOrUserData => ReplyToMemberData ?? ReplyToUserData;
+    public MessageContext? ReplyToMessageContext
+    {
+        get
+        {
+            if (_replyToMessageContext is null && Message.ReplyToMessage is not null)
+            {
+                _replyToMessageContext = new(BotClient, Message.ReplyToMessage, _data);
+            }
+            return _replyToMessageContext;
+        }
+    }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="MessageContext"/> class.
     /// </summary>
     public MessageContext(ITelegramBotClient botClient, Message message, Data data)
     {
+        _data = data;
         BotClient = botClient;
         Message = message;
-
-        var userId = ChatHelper.GetMessageSenderId(message);
-        UserData = data.GetOrCreateUserData(userId);
-
-        var replyToUserId = 0L;
-        if (message.ReplyToMessage is not null)
-        {
-            replyToUserId = ChatHelper.GetMessageSenderId(message.ReplyToMessage);
-            ReplyToUserData = data.GetOrCreateUserData(replyToUserId);
-        }
+        Text = ChatHelper.GetMessageText(message);
+        UserId = ChatHelper.GetMessageSenderId(message);
+        UserData = data.GetOrCreateUserData(UserId);
 
         if (message.Chat.Type is not ChatType.Private)
         {
             GroupData = data.GetOrCreateGroupData(message.Chat.Id);
-            MemberData = GroupData.GetOrCreateUserData(userId);
-            if (message.ReplyToMessage is not null)
-            {
-                ReplyToMemberData = GroupData.GetOrCreateUserData(replyToUserId);
-            }
+            MemberData = GroupData.GetOrCreateUserData(UserId);
         }
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="MessageContext"/> class
+    /// from an existing <see cref="MessageContext"/> object.
+    /// </summary>
+    public MessageContext(MessageContext messageContext)
+    {
+        _data = messageContext._data;
+        _replyToMessageContext = messageContext._replyToMessageContext;
+        BotClient = messageContext.BotClient;
+        Message = messageContext.Message;
+        Text = messageContext.Text;
+        UserId = messageContext.UserId;
+        UserData = messageContext.UserData;
+        GroupData = messageContext.GroupData;
+        MemberData = messageContext.MemberData;
     }
 }

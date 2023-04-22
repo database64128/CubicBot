@@ -2,7 +2,7 @@
 
 namespace CubicBot.Telegram.Stats;
 
-public class UserData
+public sealed class UserData
 {
     #region 0. Personal
     public List<Pronouns> PronounList { get; set; } = new();
@@ -24,7 +24,7 @@ public class UserData
     public ulong ThankYousReceived { get; set; }
     public ulong ThanksSaid { get; set; }
     public ulong VaccinationShotsAdministered { get; set; }
-    public ulong VaccinationShotsGot { get; set; }
+    public ulong VaccinationShotsReceived { get; set; }
     #endregion
 
     #region 2. Dice

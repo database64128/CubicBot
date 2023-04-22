@@ -8,20 +8,23 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot;
-using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
 namespace CubicBot.Telegram.Commands;
 
 public sealed class QueryStats
 {
+    private readonly Config _config;
+
     public ReadOnlyCollection<CubicBotCommand> Commands { get; }
 
     public QueryStats(Config config)
     {
+        _config = config;
+
         var commands = new List<CubicBotCommand>()
         {
-            new("get_stats", "📅 View your stats in this chat, or reply to a message to view the sender's stats in this chat.", QueryUserStats, userOrMemberRespondAsync: SendUserStats),
+            new("get_stats", "📅 View your stats in this chat, or reply to a message to view the sender's stats in this chat.", QueryUserStats),
         };
 
         if (config.Stats.EnableCommandStats)
@@ -92,36 +95,34 @@ public sealed class QueryStats
         Commands = commands.AsReadOnly();
     }
 
-    public static Task QueryUserStats(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default) => Task.CompletedTask;
-
-    private static Task SendUserStats(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, UserData userData, GroupData? groupData, UserData? replyToUserData, CancellationToken cancellationToken = default)
+    public Task QueryUserStats(CommandContext commandContext, CancellationToken cancellationToken = default)
     {
-        var targetUserData = replyToUserData ?? userData;
+        var targetUserData = commandContext.ReplyToMessageContext?.MemberOrUserData ?? commandContext.MemberOrUserData;
 
         var responseSB = new StringBuilder();
 
-        if (config.Stats.EnableMessageCounter)
+        if (_config.Stats.EnableMessageCounter)
         {
             responseSB.AppendLine($"Messages processed: {targetUserData.MessagesProcessed}");
         }
 
-        if (config.Stats.EnableCommandStats)
+        if (_config.Stats.EnableCommandStats)
         {
             responseSB.AppendLine($"Commands handled: {targetUserData.CommandsHandled}");
         }
 
-        if (config.Stats.EnableGrass)
+        if (_config.Stats.EnableGrass)
         {
             responseSB.AppendLine($"生草数量: {targetUserData.GrassGrown}");
         }
 
-        if (config.Stats.EnableParenthesisEnclosure)
+        if (_config.Stats.EnableParenthesisEnclosure)
         {
             responseSB.AppendLine($"括号发一半数量: {targetUserData.ParenthesesUnenclosed}");
         }
 
         #region 1. Common
-        if (config.Commands.EnableCommon)
+        if (_config.Commands.EnableCommon)
         {
             responseSB.AppendLine();
             responseSB.AppendLine("1. Common");
@@ -135,12 +136,12 @@ public sealed class QueryStats
             responseSB.AppendLine($"Thank-yous received: {targetUserData.ThankYousReceived}");
             responseSB.AppendLine($"Thanks said: {targetUserData.ThanksSaid}");
             responseSB.AppendLine($"Vaccination shots administered: {targetUserData.VaccinationShotsAdministered}");
-            responseSB.AppendLine($"Vaccination shots taken: {targetUserData.VaccinationShotsGot}");
+            responseSB.AppendLine($"Vaccination shots received: {targetUserData.VaccinationShotsReceived}");
         }
         #endregion
 
         #region 2. Dice
-        if (config.Commands.EnableDice)
+        if (_config.Commands.EnableDice)
         {
             responseSB.AppendLine();
             responseSB.AppendLine("2. Dice");
@@ -154,7 +155,7 @@ public sealed class QueryStats
         #endregion
 
         #region 3. Consent Not Needed
-        if (config.Commands.EnableConsentNotNeeded)
+        if (_config.Commands.EnableConsentNotNeeded)
         {
             responseSB.AppendLine();
             responseSB.AppendLine("3. Consent Not Needed");
@@ -174,7 +175,7 @@ public sealed class QueryStats
         #endregion
 
         #region 4. Not A Vegan
-        if (config.Commands.EnableNonVegan)
+        if (_config.Commands.EnableNonVegan)
         {
             responseSB.AppendLine();
             responseSB.AppendLine("4. Not A Vegan");
@@ -184,7 +185,7 @@ public sealed class QueryStats
         #endregion
 
         #region 5. Law Enforcement
-        if (config.Commands.EnableLawEnforcement)
+        if (_config.Commands.EnableLawEnforcement)
         {
             responseSB.AppendLine();
             responseSB.AppendLine("5. Law Enforcement");
@@ -199,7 +200,7 @@ public sealed class QueryStats
         #endregion
 
         #region 6. Public Services
-        if (config.Commands.EnablePublicServices)
+        if (_config.Commands.EnablePublicServices)
         {
             responseSB.AppendLine();
             responseSB.AppendLine("6. Public Services");
@@ -209,7 +210,7 @@ public sealed class QueryStats
         #endregion
 
         #region 7. Chinese
-        if (config.Commands.EnableChinese)
+        if (_config.Commands.EnableChinese)
         {
             responseSB.AppendLine();
             responseSB.AppendLine("7. 查水表");
@@ -219,7 +220,7 @@ public sealed class QueryStats
         #endregion
 
         #region 8. Chinese Tasks
-        if (config.Commands.EnableChineseTasks)
+        if (_config.Commands.EnableChineseTasks)
         {
             responseSB.AppendLine();
             responseSB.AppendLine("8. 任务");
@@ -233,7 +234,7 @@ public sealed class QueryStats
         #endregion
 
         #region 9. Systemd
-        if (config.Commands.EnableSystemd)
+        if (_config.Commands.EnableSystemd)
         {
             responseSB.AppendLine();
             responseSB.AppendLine("9. Systemd");
@@ -246,71 +247,54 @@ public sealed class QueryStats
             responseSB.Append("No stats.");
         }
 
-        return botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
-                                                       responseSB.ToString(),
-                                                       replyToMessageId: message.MessageId,
-                                                       cancellationToken: cancellationToken);
+        return commandContext.ReplyWithTextMessageAndRetryAsync(responseSB.ToString(), cancellationToken: cancellationToken);
     }
 
     #region 1. Common
-    public static Task SendApologeticLeaderboardAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
-        => SendLeaderboardAsync(botClient,
-                                message,
-                                data,
+    public static Task SendApologeticLeaderboardAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
+        => SendLeaderboardAsync(commandContext,
                                 "🙏 Who's the most apologetic person in this chat?",
                                 null,
                                 x => x.ApologiesSent,
                                 cancellationToken);
 
-    public static Task SendApologiesAcceptedLeaderboardAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
-        => SendLeaderboardAsync(botClient,
-                                message,
-                                data,
+    public static Task SendApologiesAcceptedLeaderboardAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
+        => SendLeaderboardAsync(commandContext,
                                 "😭 Apologies Accepted",
                                 null,
                                 x => x.ApologiesReceived,
                                 cancellationToken);
 
-    public static Task SendChantsLeaderboardAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
-        => SendLeaderboardAsync(botClient,
-                                message,
-                                data,
+    public static Task SendChantsLeaderboardAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
+        => SendLeaderboardAsync(commandContext,
                                 "📢 Who chants the most in this chat?",
                                 null,
                                 x => x.ChantsUsed,
                                 cancellationToken);
 
-    public static Task SendDrinkLeaderboardAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
-        => SendLeaderboardAsync(botClient,
-                                message,
-                                data,
+    public static Task SendDrinkLeaderboardAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
+        => SendLeaderboardAsync(commandContext,
                                 "🍺 Who drinks the most in this chat?",
                                 null,
                                 x => x.DrinksTaken,
                                 cancellationToken);
 
-    public static Task SendLoveThemselvesLeaderboardAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
-        => SendLeaderboardAsync(botClient,
-                                message,
-                                data,
+    public static Task SendLoveThemselvesLeaderboardAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
+        => SendLeaderboardAsync(commandContext,
                                 "🤳 Who loves themselves the most in this chat?",
                                 null,
                                 x => x.MesUsed,
                                 cancellationToken);
 
-    public static Task SendThankfulLeaderboardAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
-        => SendLeaderboardAsync(botClient,
-                                message,
-                                data,
+    public static Task SendThankfulLeaderboardAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
+        => SendLeaderboardAsync(commandContext,
                                 "😊 Who's the most thankful person in this chat?",
                                 null,
                                 x => x.ThankYousSent,
                                 cancellationToken);
 
-    public static Task SendAppreciatedLeaderboardAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
-        => SendLeaderboardAsync(botClient,
-                                message,
-                                data,
+    public static Task SendAppreciatedLeaderboardAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
+        => SendLeaderboardAsync(commandContext,
                                 "💖 Who's the most appreciated person in this chat?",
                                 null,
                                 x => x.ThankYousReceived,
@@ -318,55 +302,43 @@ public sealed class QueryStats
     #endregion
 
     #region 2. Dice
-    public static Task SendDicesLeaderboardAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
-        => SendLeaderboardAsync(botClient,
-                                message,
-                                data,
+    public static Task SendDicesLeaderboardAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
+        => SendLeaderboardAsync(commandContext,
                                 "🎲 Dices Thrown",
                                 x => x.DicesThrown,
                                 x => x.DicesThrown,
                                 cancellationToken);
 
-    public static Task SendDartsLeaderboardAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
-        => SendLeaderboardAsync(botClient,
-                                message,
-                                data,
+    public static Task SendDartsLeaderboardAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
+        => SendLeaderboardAsync(commandContext,
                                 "🎯 Darts Thrown",
                                 x => x.DartsThrown,
                                 x => x.DartsThrown,
                                 cancellationToken);
 
-    public static Task SendBasketballsLeaderboardAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
-        => SendLeaderboardAsync(botClient,
-                                message,
-                                data,
+    public static Task SendBasketballsLeaderboardAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
+        => SendLeaderboardAsync(commandContext,
                                 "🏀 Basketballs Thrown",
                                 x => x.BasketballsThrown,
                                 x => x.BasketballsThrown,
                                 cancellationToken);
 
-    public static Task SendSoccerGoalsLeaderboardAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
-        => SendLeaderboardAsync(botClient,
-                                message,
-                                data,
+    public static Task SendSoccerGoalsLeaderboardAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
+        => SendLeaderboardAsync(commandContext,
                                 "⚽ Soccer Goals",
                                 x => x.SoccerGoals,
                                 x => x.SoccerGoals,
                                 cancellationToken);
 
-    public static Task SendSlotsRolledLeaderboardAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
-        => SendLeaderboardAsync(botClient,
-                                message,
-                                data,
+    public static Task SendSlotsRolledLeaderboardAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
+        => SendLeaderboardAsync(commandContext,
                                 "🎰 Slots Rolled",
                                 x => x.SlotMachineRolled,
                                 x => x.SlotMachineRolled,
                                 cancellationToken);
 
-    public static Task SendPinsKnockedLeaderboardAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
-        => SendLeaderboardAsync(botClient,
-                                message,
-                                data,
+    public static Task SendPinsKnockedLeaderboardAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
+        => SendLeaderboardAsync(commandContext,
                                 "🎳 Pins Knocked",
                                 x => x.PinsKnocked,
                                 x => x.PinsKnocked,
@@ -374,10 +346,8 @@ public sealed class QueryStats
     #endregion
 
     #region 3. Consent Not Needed
-    public static Task SendSexualLeaderboardAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
-        => SendLeaderboardAsync(botClient,
-                                message,
-                                data,
+    public static Task SendSexualLeaderboardAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
+        => SendLeaderboardAsync(commandContext,
                                 "💋 Who's the most sexual person in this chat?",
                                 x => x.SexInitiated,
                                 x => x.SexInitiated,
@@ -385,10 +355,8 @@ public sealed class QueryStats
     #endregion
 
     #region 5. Law Enforcement
-    public static Task SendCriminalLeaderboardAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
-        => SendLeaderboardAsync(botClient,
-                                message,
-                                data,
+    public static Task SendCriminalLeaderboardAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
+        => SendLeaderboardAsync(commandContext,
                                 "🦹 Criminals",
                                 x => x.ArrestsMade,
                                 x => x.ArrestsReceived,
@@ -396,19 +364,15 @@ public sealed class QueryStats
     #endregion
 
     #region 7. Chinese
-    public static Task SendInterrogationsInitiatedLeaderboardAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
-        => SendLeaderboardAsync(botClient,
-                                message,
-                                data,
+    public static Task SendInterrogationsInitiatedLeaderboardAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
+        => SendLeaderboardAsync(commandContext,
                                 "🔫 发起喝茶排行榜",
                                 x => x.InterrogationsInitiated,
                                 x => x.InterrogationsInitiated,
                                 cancellationToken);
 
-    public static Task SendInterrogatedLeaderboardAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
-        => SendLeaderboardAsync(botClient,
-                                message,
-                                data,
+    public static Task SendInterrogatedLeaderboardAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
+        => SendLeaderboardAsync(commandContext,
                                 "☕ 被请喝茶排行榜",
                                 x => x.Members.Select(x => x.Value.InterrogatedByOthers)
                                               .Aggregate(0Ul, (x, y) => x + y),
@@ -417,48 +381,38 @@ public sealed class QueryStats
     #endregion
 
     #region 9. Systemd
-    public static Task SendSystemdFandomLeaderboardAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
-        => SendLeaderboardAsync(botClient,
-                                message,
-                                data,
+    public static Task SendSystemdFandomLeaderboardAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
+        => SendLeaderboardAsync(commandContext,
                                 "🐧 Who's the biggest systemd fan in this chat?",
                                 null,
                                 x => x.SystemctlCommandsUsed,
                                 cancellationToken);
     #endregion
 
-    public static Task SendGrassGrownLeaderboardAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
-        => SendLeaderboardAsync(botClient,
-                                message,
-                                data,
+    public static Task SendGrassGrownLeaderboardAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
+        => SendLeaderboardAsync(commandContext,
                                 "🌿 生草排行榜",
                                 x => x.Members.Select(x => x.Value.GrassGrown)
                                               .Aggregate(0Ul, (x, y) => x + y),
                                 x => x.GrassGrown,
                                 cancellationToken);
 
-    public static Task SendDemandingLeaderboardAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
-        => SendLeaderboardAsync(botClient,
-                                message,
-                                data,
+    public static Task SendDemandingLeaderboardAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
+        => SendLeaderboardAsync(commandContext,
                                 "👉 Who's the most demanding person in this chat?",
                                 x => x.CommandsHandled,
                                 x => x.CommandsHandled,
                                 cancellationToken);
 
-    public static Task SendTalkativeLeaderboardAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
-        => SendLeaderboardAsync(botClient,
-                                message,
-                                data,
+    public static Task SendTalkativeLeaderboardAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
+        => SendLeaderboardAsync(commandContext,
                                 "🗣️ Who's the most talkative person in this chat?",
                                 x => x.MessagesProcessed,
                                 x => x.MessagesProcessed,
                                 cancellationToken);
 
-    public static Task SendParenthesesUnenclosedLeaderboardAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
-        => SendLeaderboardAsync(botClient,
-                                message,
-                                data,
+    public static Task SendParenthesesUnenclosedLeaderboardAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
+        => SendLeaderboardAsync(commandContext,
                                 "🌓 括号发一半排行榜",
                                 x => x.Members.Select(x => x.Value.ParenthesesUnenclosed)
                                               .Aggregate(0Ul, (x, y) => x + y),
@@ -466,52 +420,34 @@ public sealed class QueryStats
                                 cancellationToken);
 
     private static async Task SendLeaderboardAsync(
-        ITelegramBotClient botClient,
-        Message message,
-        Data data,
+        CommandContext commandContext,
         string? title,
         Func<GroupData, ulong>? getTotal,
         Func<UserData, ulong> getStats,
         CancellationToken cancellationToken = default)
     {
-        if (message.Chat.Type is ChatType.Private)
+        var groupData = commandContext.GroupData;
+        if (groupData is null)
         {
-            await botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
-                                                          "This command can only be used in group chats.",
-                                                          replyToMessageId: message.MessageId,
-                                                          cancellationToken: cancellationToken);
-
+            await commandContext.ReplyWithTextMessageAndRetryAsync("This command can only be used in group chats.", cancellationToken: cancellationToken);
             return;
         }
 
-        if (!data.Groups.TryGetValue(message.Chat.Id, out var groupData) || groupData.Members.Count == 0)
-        {
-            await botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
-                                                          "No stats.",
-                                                          replyToMessageId: message.MessageId,
-                                                          cancellationToken: cancellationToken);
-
-            return;
-        }
-
-        var sendDummyReplyTask = botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
-                                                                         "Querying user information...",
-                                                                         replyToMessageId: message.MessageId,
-                                                                         cancellationToken: cancellationToken);
+        var sendDummyReplyTask = commandContext.ReplyWithTextMessageAndRetryAsync("Querying user information...", cancellationToken: cancellationToken);
 
         var generateLeaderboardTasks = groupData.Members.OrderByDescending(x => getStats(x.Value))
                                                         .Take(10)
-                                                        .Select(async x => (await GetChatMemberFirstName(botClient, message.Chat.Id, x.Key, cancellationToken), getStats(x.Value)));
-        (string firstName, ulong stats)[]? leaderboard = (await Task.WhenAll(generateLeaderboardTasks)).ToArray();
+                                                        .Select(async x => (await GetChatMemberFirstName(commandContext, x.Key, cancellationToken), getStats(x.Value)));
+        (string firstName, ulong stats)[] leaderboard = (await Task.WhenAll(generateLeaderboardTasks)).ToArray();
 
         var dummyReply = await sendDummyReplyTask;
 
         if (leaderboard.Length == 0 || leaderboard[0].stats == 0UL)
         {
-            await botClient.EditMessageTextWithRetryAsync(message.Chat.Id,
-                                                          dummyReply.MessageId,
-                                                          "No stats.",
-                                                          cancellationToken: cancellationToken);
+            await commandContext.EditMessageTextWithRetryAsync(
+                dummyReply.MessageId,
+                "No stats.",
+                cancellationToken: cancellationToken);
 
             return;
         }
@@ -541,20 +477,20 @@ public sealed class QueryStats
 
         replyBuilder.AppendLine("```");
 
-        await botClient.EditMessageTextWithRetryAsync(message.Chat.Id,
-                                                      dummyReply.MessageId,
-                                                      replyBuilder.ToString(),
-                                                      ParseMode.MarkdownV2,
-                                                      cancellationToken: cancellationToken);
+        await commandContext.EditMessageTextWithRetryAsync(
+            dummyReply.MessageId,
+            replyBuilder.ToString(),
+            ParseMode.MarkdownV2,
+            cancellationToken: cancellationToken);
     }
 
-    private static async Task<string> GetChatMemberFirstName(ITelegramBotClient botClient, ChatId chatId, long userId, CancellationToken cancellationToken = default)
+    private static async Task<string> GetChatMemberFirstName(CommandContext commandContext, long userId, CancellationToken cancellationToken = default)
     {
         string firstName;
 
         try
         {
-            var chatMember = await botClient.GetChatMemberAsync(chatId, userId, cancellationToken);
+            var chatMember = await commandContext.BotClient.GetChatMemberAsync(commandContext.Message.Chat.Id, userId, cancellationToken);
             firstName = chatMember.User.FirstName;
         }
         catch

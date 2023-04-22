@@ -6,7 +6,7 @@ namespace CubicBot.Telegram.CLI
 {
     public static class ConfigCommand
     {
-        public static async Task<int> Get(CancellationToken cancellationToken = default)
+        public static async Task<int> GetAsync(CancellationToken cancellationToken = default)
         {
             var (config, loadConfigErrMsg) = await Config.LoadConfigAsync(cancellationToken);
             if (loadConfigErrMsg is not null)
@@ -38,7 +38,24 @@ namespace CubicBot.Telegram.CLI
             return 0;
         }
 
-        public static async Task<int> Set(ConfigChangeSet configChangeSet, CancellationToken cancellationToken = default)
+        public static async Task<int> SetAsync(
+            string? botToken,
+            bool? enableCommandsMod,
+            bool? enableStatsMod,
+            bool? enablePersonalCommands,
+            bool? enableCommonCommands,
+            bool? enableDiceCommands,
+            bool? enableConsentNotNeededCommands,
+            bool? enableNonVeganCommands,
+            bool? enableLawEnforcementCommands,
+            bool? enablePublicServicesCommands,
+            bool? enableChineseCommands,
+            bool? enableChineseTasksCommands,
+            bool? enableSystemdCommands,
+            bool? enableGrassStats,
+            bool? enableCommandStats,
+            bool? enableMessageCounter,
+            CancellationToken cancellationToken = default)
         {
             var (config, loadConfigErrMsg) = await Config.LoadConfigAsync(cancellationToken);
             if (loadConfigErrMsg is not null)
@@ -47,39 +64,39 @@ namespace CubicBot.Telegram.CLI
                 return 1;
             }
 
-            if (!string.IsNullOrEmpty(configChangeSet.BotToken))
-                config.BotToken = configChangeSet.BotToken;
-            if (configChangeSet.EnableCommandsMod is bool eCM)
+            if (!string.IsNullOrEmpty(botToken))
+                config.BotToken = botToken;
+            if (enableCommandsMod is bool eCM)
                 config.EnableCommands = eCM;
-            if (configChangeSet.EnableStatsMod is bool eSM)
+            if (enableStatsMod is bool eSM)
                 config.EnableStats = eSM;
 
-            if (configChangeSet.EnablePersonalCommands is bool ePC)
+            if (enablePersonalCommands is bool ePC)
                 config.Commands.EnablePersonal = ePC;
-            if (configChangeSet.EnableCommonCommands is bool eCC)
+            if (enableCommonCommands is bool eCC)
                 config.Commands.EnableCommon = eCC;
-            if (configChangeSet.EnableDiceCommands is bool eDC)
+            if (enableDiceCommands is bool eDC)
                 config.Commands.EnableDice = eDC;
-            if (configChangeSet.EnableConsentNotNeededCommands is bool eCNNC)
+            if (enableConsentNotNeededCommands is bool eCNNC)
                 config.Commands.EnableConsentNotNeeded = eCNNC;
-            if (configChangeSet.EnableNonVeganCommands is bool eNVC)
+            if (enableNonVeganCommands is bool eNVC)
                 config.Commands.EnableNonVegan = eNVC;
-            if (configChangeSet.EnableLawEnforcementCommands is bool eLEC)
+            if (enableLawEnforcementCommands is bool eLEC)
                 config.Commands.EnableLawEnforcement = eLEC;
-            if (configChangeSet.EnablePublicServicesCommands is bool ePSC)
+            if (enablePublicServicesCommands is bool ePSC)
                 config.Commands.EnablePublicServices = ePSC;
-            if (configChangeSet.EnableChineseCommands is bool eCNC)
+            if (enableChineseCommands is bool eCNC)
                 config.Commands.EnableChinese = eCNC;
-            if (configChangeSet.EnableChineseTasksCommands is bool eCNTC)
+            if (enableChineseTasksCommands is bool eCNTC)
                 config.Commands.EnableChineseTasks = eCNTC;
-            if (configChangeSet.EnableSystemdCommands is bool eSC)
+            if (enableSystemdCommands is bool eSC)
                 config.Commands.EnableSystemd = eSC;
 
-            if (configChangeSet.EnableGrassStats is bool eGS)
+            if (enableGrassStats is bool eGS)
                 config.Stats.EnableGrass = eGS;
-            if (configChangeSet.EnableCommandStats is bool eCS)
+            if (enableCommandStats is bool eCS)
                 config.Stats.EnableCommandStats = eCS;
-            if (configChangeSet.EnableMessageCounter is bool eMC)
+            if (enableMessageCounter is bool eMC)
                 config.Stats.EnableMessageCounter = eMC;
 
             var saveConfigErrMsg = await Config.SaveConfigAsync(config, cancellationToken);

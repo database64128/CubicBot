@@ -4,90 +4,159 @@ using System.CommandLine;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CubicBot.Telegram
+namespace CubicBot.Telegram;
+
+internal class Program
 {
-    internal class Program
+    private static Task Main(string[] args)
     {
-        private static Task Main(string[] args)
+        var botTokenOption = new CliOption<string?>("--bot-token")
         {
-            var botTokenOption = new Option<string?>("--bot-token", "Telegram bot token.");
-            var enableCommandsModuleOption = new Option<bool?>("--enable-commands-mod", "Whether to enable the commands module.");
-            var enableStatsModuleOption = new Option<bool?>("--enable-stats-mod", "Whether to enable the stats module.");
+            Description = "Telegram bot token.",
+        };
+        var enableCommandsModuleOption = new CliOption<bool?>("--enable-commands-mod")
+        {
+            Description = "Whether to enable the commands module.",
+        };
+        var enableStatsModuleOption = new CliOption<bool?>("--enable-stats-mod")
+        {
+            Description = "Whether to enable the stats module.",
+        };
 
-            var enablePersonalCommandsOption = new Option<bool?>("--enable-personal-commands", "Whether to enable personal commands.");
-            var enableCommonCommandsOption = new Option<bool?>("--enable-common-commands", "Whether to enable common commands.");
-            var enableDiceCommandsOption = new Option<bool?>("--enable-dice-commands", "Whether to enable dice commands.");
-            var enableConsentNotNeededCommandsOption = new Option<bool?>("--enable-consent-not-needed-commands", "Whether to enable consent not needed commands.");
-            var enableNonVeganCommandsOption = new Option<bool?>("--enable-non-vegan-commands", "Whether to enable non-vegan commands.");
-            var enableLawEnforcementCommandsOption = new Option<bool?>("--enable-law-enforcement-commands", "Whether to enable law enforcement commands.");
-            var enablePublicServicesCommandsOption = new Option<bool?>("--enable-public-services-commands", "Whether to enable public services commands.");
-            var enableChineseCommandsOption = new Option<bool?>("--enable-chinese-commands", "Whether to enable Chinese commands.");
-            var enableChineseTasksCommandsOption = new Option<bool?>("--enable-chinese-tasks-commands", "Whether to enable Chinese tasks commands.");
-            var enableSystemdCommandsOption = new Option<bool?>("--enable-systemd-commands", "Whether to enable systemd commands.");
+        var enablePersonalCommandsOption = new CliOption<bool?>("--enable-personal-commands")
+        {
+            Description = "Whether to enable personal commands.",
+        };
+        var enableCommonCommandsOption = new CliOption<bool?>("--enable-common-commands")
+        {
+            Description = "Whether to enable common commands.",
+        };
+        var enableDiceCommandsOption = new CliOption<bool?>("--enable-dice-commands")
+        {
+            Description = "Whether to enable dice commands.",
+        };
+        var enableConsentNotNeededCommandsOption = new CliOption<bool?>("--enable-consent-not-needed-commands")
+        {
+            Description = "Whether to enable consent not needed commands.",
+        };
+        var enableNonVeganCommandsOption = new CliOption<bool?>("--enable-non-vegan-commands")
+        {
+            Description = "Whether to enable non-vegan commands.",
+        };
+        var enableLawEnforcementCommandsOption = new CliOption<bool?>("--enable-law-enforcement-commands")
+        {
+            Description = "Whether to enable law enforcement commands.",
+        };
+        var enablePublicServicesCommandsOption = new CliOption<bool?>("--enable-public-services-commands")
+        {
+            Description = "Whether to enable public services commands.",
+        };
+        var enableChineseCommandsOption = new CliOption<bool?>("--enable-chinese-commands")
+        {
+            Description = "Whether to enable Chinese commands.",
+        };
+        var enableChineseTasksCommandsOption = new CliOption<bool?>("--enable-chinese-tasks-commands")
+        {
+            Description = "Whether to enable Chinese tasks commands.",
+        };
+        var enableSystemdCommandsOption = new CliOption<bool?>("--enable-systemd-commands")
+        {
+            Description = "Whether to enable systemd commands.",
+        };
 
-            var enableGrassStatsOption = new Option<bool?>("--enable-grass-stats", "Whether to enable grass stats.");
-            var enableCommandStatsOption = new Option<bool?>("--enable-command-stats", "Whether to enable command stats.");
-            var enableMessageCounterOption = new Option<bool?>("--enable-message-counter", "Whether to enable message counter.");
+        var enableGrassStatsOption = new CliOption<bool?>("--enable-grass-stats")
+        {
+            Description = "Whether to enable grass stats.",
+        };
+        var enableCommandStatsOption = new CliOption<bool?>("--enable-command-stats")
+        {
+            Description = "Whether to enable command stats.",
+        };
+        var enableMessageCounterOption = new CliOption<bool?>("--enable-message-counter")
+        {
+            Description = "Whether to enable message counter.",
+        };
 
-            var configGetCommand = new Command("get", "Print config.");
+        var configGetCommand = new CliCommand("get", "Print config.");
 
-            var configSetCommand = new Command("set", "Change config.")
-            {
-                botTokenOption,
-                enableCommandsModuleOption,
-                enableStatsModuleOption,
-                enablePersonalCommandsOption,
-                enableCommonCommandsOption,
-                enableDiceCommandsOption,
-                enableConsentNotNeededCommandsOption,
-                enableNonVeganCommandsOption,
-                enableLawEnforcementCommandsOption,
-                enablePublicServicesCommandsOption,
-                enableChineseCommandsOption,
-                enableChineseTasksCommandsOption,
-                enableSystemdCommandsOption,
-                enableGrassStatsOption,
-                enableCommandStatsOption,
-                enableMessageCounterOption,
-            };
+        var configSetCommand = new CliCommand("set", "Change config.")
+        {
+            botTokenOption,
+            enableCommandsModuleOption,
+            enableStatsModuleOption,
+            enablePersonalCommandsOption,
+            enableCommonCommandsOption,
+            enableDiceCommandsOption,
+            enableConsentNotNeededCommandsOption,
+            enableNonVeganCommandsOption,
+            enableLawEnforcementCommandsOption,
+            enablePublicServicesCommandsOption,
+            enableChineseCommandsOption,
+            enableChineseTasksCommandsOption,
+            enableSystemdCommandsOption,
+            enableGrassStatsOption,
+            enableCommandStatsOption,
+            enableMessageCounterOption,
+        };
 
-            var configSetBinder = new ConfigSetBinder(
-                botTokenOption,
-                enableCommandsModuleOption,
-                enableStatsModuleOption,
-                enablePersonalCommandsOption,
-                enableCommonCommandsOption,
-                enableDiceCommandsOption,
-                enableConsentNotNeededCommandsOption,
-                enableNonVeganCommandsOption,
-                enableLawEnforcementCommandsOption,
-                enablePublicServicesCommandsOption,
-                enableChineseCommandsOption,
-                enableChineseTasksCommandsOption,
-                enableSystemdCommandsOption,
-                enableGrassStatsOption,
-                enableCommandStatsOption,
-                enableMessageCounterOption);
+        configGetCommand.SetAction((_, cancellationToken) => ConfigCommand.GetAsync(cancellationToken));
+        configSetCommand.SetAction((parseResult, cancellationToken) =>
+        {
+            var botToken = parseResult.GetValue(botTokenOption);
+            var enableCommandsModule = parseResult.GetValue(enableCommandsModuleOption);
+            var enableStatsModule = parseResult.GetValue(enableStatsModuleOption);
+            var enablePersonalCommands = parseResult.GetValue(enablePersonalCommandsOption);
+            var enableCommonCommands = parseResult.GetValue(enableCommonCommandsOption);
+            var enableDiceCommands = parseResult.GetValue(enableDiceCommandsOption);
+            var enableConsentNotNeededCommands = parseResult.GetValue(enableConsentNotNeededCommandsOption);
+            var enableNonVeganCommands = parseResult.GetValue(enableNonVeganCommandsOption);
+            var enableLawEnforcementCommands = parseResult.GetValue(enableLawEnforcementCommandsOption);
+            var enablePublicServicesCommands = parseResult.GetValue(enablePublicServicesCommandsOption);
+            var enableChineseCommands = parseResult.GetValue(enableChineseCommandsOption);
+            var enableChineseTasksCommands = parseResult.GetValue(enableChineseTasksCommandsOption);
+            var enableSystemdCommands = parseResult.GetValue(enableSystemdCommandsOption);
+            var enableGrassStats = parseResult.GetValue(enableGrassStatsOption);
+            var enableCommandStats = parseResult.GetValue(enableCommandStatsOption);
+            var enableMessageCounter = parseResult.GetValue(enableMessageCounterOption);
+            return ConfigCommand.SetAsync(
+                botToken,
+                enableCommandsModule,
+                enableStatsModule,
+                enablePersonalCommands,
+                enableCommonCommands,
+                enableDiceCommands,
+                enableConsentNotNeededCommands,
+                enableNonVeganCommands,
+                enableLawEnforcementCommands,
+                enablePublicServicesCommands,
+                enableChineseCommands,
+                enableChineseTasksCommands,
+                enableSystemdCommands,
+                enableGrassStats,
+                enableCommandStats,
+                enableMessageCounter,
+                cancellationToken);
+        });
 
-            configGetCommand.SetHandler(ConfigCommand.Get);
-            configSetCommand.SetHandler(ConfigCommand.Set, configSetBinder);
+        var configCommand = new CliCommand("config", "Print or change config.")
+        {
+            configGetCommand,
+            configSetCommand,
+        };
 
-            var configCommand = new Command("config", "Print or change config.")
-            {
-                configGetCommand,
-                configSetCommand,
-            };
+        var rootCommand = new CliRootCommand("A stupid and annoying chatbot for your group chats.")
+        {
+            configCommand,
+        };
 
-            var rootCommand = new RootCommand("A stupid and annoying chatbot for your group chats.")
-            {
-                configCommand,
-            };
+        rootCommand.Options.Add(botTokenOption);
+        rootCommand.SetAction((parseResult, cancellationToken) =>
+        {
+            var botToken = parseResult.GetValue(botTokenOption);
+            return BotRunner.RunBotAsync(botToken, cancellationToken);
+        });
 
-            rootCommand.Options.Add(botTokenOption);
-            rootCommand.SetHandler(BotRunner.RunBot, botTokenOption);
-
-            Console.OutputEncoding = Encoding.UTF8;
-            return rootCommand.InvokeAsync(args);
-        }
+        Console.OutputEncoding = Encoding.UTF8;
+        return rootCommand.Parse(args).InvokeAsync();
     }
 }

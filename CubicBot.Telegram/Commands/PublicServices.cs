@@ -5,12 +5,10 @@ using System.Collections.ObjectModel;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Telegram.Bot;
-using Telegram.Bot.Types;
 
 namespace CubicBot.Telegram.Commands;
 
-public class PublicServices
+public static class PublicServices
 {
     private static readonly string[] s_medicalWorkers =
     {
@@ -38,11 +36,11 @@ public class PublicServices
 
     public static readonly ReadOnlyCollection<CubicBotCommand> Commands = new(new CubicBotCommand[]
     {
-        new("call_ambulance", "🚑 Busy saving lives?", CallAmbulance, userOrMemberStatsCollector: CountAmbulanceCalls),
-        new("call_fire_dept", "🚒 The flames! Beautiful, aren't they?", CallFireDeptAsync, userOrMemberStatsCollector: CountFireCalls),
+        new("call_ambulance", "🚑 Busy saving lives?", CallAmbulance, statsCollector: CountAmbulanceCalls),
+        new("call_fire_dept", "🚒 The flames! Beautiful, aren't they?", CallFireDeptAsync, statsCollector: CountFireCalls),
     });
 
-    public static Task CallAmbulance(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
+    public static Task CallAmbulance(CommandContext commandContext, CancellationToken cancellationToken = default)
     {
         var sb = new StringBuilder($"📱9️⃣1️⃣1️⃣📲📞👌{Environment.NewLine}");
         var count = Random.Shared.Next(24, 97);
@@ -65,19 +63,19 @@ public class PublicServices
             }
         }
 
-        return botClient.SendTextMessageWithRetryAsync(message.Chat.Id, sb.ToString(), cancellationToken: cancellationToken);
+        return commandContext.SendTextMessageWithRetryAsync(sb.ToString(), cancellationToken: cancellationToken);
     }
 
-    public static void CountAmbulanceCalls(Message message, string? argument, UserData userData, GroupData? groupData, UserData? replyToUserData)
+    public static void CountAmbulanceCalls(CommandContext commandContext)
     {
-        userData.AmbulancesCalled++;
-        if (groupData is not null)
+        commandContext.MemberOrUserData.AmbulancesCalled++;
+        if (commandContext.GroupData is GroupData groupData)
         {
             groupData.AmbulancesCalled++;
         }
     }
 
-    public static Task CallFireDeptAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
+    public static Task CallFireDeptAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
     {
         var sb = new StringBuilder($"📱9️⃣1️⃣1️⃣📲📞👌{Environment.NewLine}");
         var count = Random.Shared.Next(24, 97);
@@ -100,13 +98,13 @@ public class PublicServices
             }
         }
 
-        return botClient.SendTextMessageWithRetryAsync(message.Chat.Id, sb.ToString(), cancellationToken: cancellationToken);
+        return commandContext.SendTextMessageWithRetryAsync(sb.ToString(), cancellationToken: cancellationToken);
     }
 
-    public static void CountFireCalls(Message message, string? argument, UserData userData, GroupData? groupData, UserData? replyToUserData)
+    public static void CountFireCalls(CommandContext commandContext)
     {
-        userData.FiresReported++;
-        if (groupData is not null)
+        commandContext.MemberOrUserData.FiresReported++;
+        if (commandContext.GroupData is GroupData groupData)
         {
             groupData.FiresReported++;
         }

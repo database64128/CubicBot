@@ -2,12 +2,10 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Telegram.Bot;
-using Telegram.Bot.Types;
 
 namespace CubicBot.Telegram.Stats;
 
-public class Grass : UserStatsCollector
+public sealed class Grass : IStatsCollector
 {
     private static readonly string[] s_grassSeeds =
     {
@@ -16,26 +14,20 @@ public class Grass : UserStatsCollector
 
     private static bool IsGrowingGrass(string msg) => msg != "" && s_grassSeeds.Any(seed => msg.Contains(seed));
 
-    private static Task NotifyGrassGrowthAchievementAsync(ITelegramBotClient botClient, Message message, ulong count, CancellationToken cancellationToken = default)
-        => botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
-                                                   $"🏆 Achievement Unlocked: {count} Grass Grown",
-                                                   replyToMessageId: message.MessageId,
-                                                   cancellationToken: cancellationToken);
-
-    public override bool IsCollectable(Message message) => IsGrowingGrass(ChatHelper.GetMessageText(message));
-
-    public override void CollectUser(Message message, UserData userData, GroupData? groupData) => userData.GrassGrown++;
-
-    public override Task RespondAsync(ITelegramBotClient botClient, Message message, UserData userData, GroupData? groupData, CancellationToken cancellationToken)
+    public Task CollectAsync(MessageContext messageContext, CancellationToken cancellationToken)
     {
-        var i = userData.GrassGrown;
-        if ((i & (i - 1)) == 0 && i > 4) // 8, 16, 32...
+        if (IsGrowingGrass(messageContext.Text))
         {
-            return NotifyGrassGrowthAchievementAsync(botClient, message, i, cancellationToken);
+            var grassGrown = messageContext.MemberOrUserData.GrassGrown;
+            grassGrown++;
+            messageContext.MemberOrUserData.GrassGrown = grassGrown;
+
+            if ((grassGrown & (grassGrown - 1UL)) == 0UL && grassGrown > 4UL) // 8, 16, 32...
+            {
+                return messageContext.ReplyWithTextMessageAndRetryAsync($"🏆 Achievement Unlocked: {grassGrown} Grass Grown", cancellationToken: cancellationToken); ;
+            }
         }
-        else
-        {
-            return Task.CompletedTask;
-        }
+
+        return Task.CompletedTask;
     }
 }

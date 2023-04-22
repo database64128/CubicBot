@@ -1,12 +1,9 @@
 ﻿using CubicBot.Telegram.Stats;
 using CubicBot.Telegram.Utils;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading;
 using System.Threading.Tasks;
-using Telegram.Bot;
-using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
 namespace CubicBot.Telegram.Commands;
@@ -15,12 +12,12 @@ public static class Dice
 {
     public static readonly ReadOnlyCollection<CubicBotCommand> Commands = new(new CubicBotCommand[]
     {
-            new("dice", "🎲 Dice it!", SendDiceAsync, userOrMemberStatsCollector: CountDices),
-            new("dart", "🎯 Oh shoot!", SendDartAsync, userOrMemberStatsCollector: CountDarts),
-            new("basketball", "🏀 404 Basket Not Found", SendBasketballAsync, userOrMemberStatsCollector: CountBasketballsThrown),
-            new("soccer", "⚽ It's your goal!", SendSoccerBallAsync, userOrMemberStatsCollector: CountSoccerGoals),
-            new("roll", "🎰 Feeling unlucky as hell?", SendSlotMachineAsync, userOrMemberStatsCollector: CountSlotRolls),
-            new("bowl", "🎳 Can you knock them all down?", SendBowlingBallAsync, userOrMemberStatsCollector: CountBowlingBalls),
+        new("dice", "🎲 Dice it!", SendDiceAsync, statsCollector: CountDices),
+        new("dart", "🎯 Oh shoot!", SendDartAsync, statsCollector: CountDarts),
+        new("basketball", "🏀 404 Basket Not Found", SendBasketballAsync, statsCollector: CountBasketballsThrown),
+        new("soccer", "⚽ It's your goal!", SendSoccerBallAsync, statsCollector: CountSoccerGoals),
+        new("roll", "🎰 Feeling unlucky as hell?", SendSlotMachineAsync, statsCollector: CountSlotRolls),
+        new("bowl", "🎳 Can you knock them all down?", SendBowlingBallAsync, statsCollector: CountBowlingBalls),
     });
 
     private static int GetCountFromArgument(string? argument = null)
@@ -31,86 +28,86 @@ public static class Dice
             return Random.Shared.Next(1, 4);
     }
 
-    private static Task SendAnimatedEmojiAsync(ITelegramBotClient botClient, Message message, string? argument, Emoji emoji, CancellationToken cancellationToken = default)
+    private static Task SendAnimatedEmojiAsync(CommandContext commandContext, Emoji emoji, CancellationToken cancellationToken = default)
     {
-        var count = GetCountFromArgument(argument);
-        var tasks = new List<Task>();
+        var count = GetCountFromArgument(commandContext.Argument);
+        var tasks = new Task[count];
 
-        for (var i = 0; i < count; i++)
+        for (var i = 0; i < tasks.Length; i++)
         {
-            tasks.Add(botClient.SendDiceWithRetryAsync(message.Chat.Id, emoji, disableNotification: true, cancellationToken: cancellationToken));
+            tasks[i] = (commandContext.SendDiceWithRetryAsync(emoji, disableNotification: true, cancellationToken: cancellationToken));
         }
 
         return Task.WhenAll(tasks);
     }
 
-    public static Task SendDiceAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
-        => SendAnimatedEmojiAsync(botClient, message, argument, Emoji.Dice, cancellationToken);
+    public static Task SendDiceAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
+        => SendAnimatedEmojiAsync(commandContext, Emoji.Dice, cancellationToken);
 
-    public static void CountDices(Message message, string? argument, UserData userData, GroupData? groupData, UserData? replyToUserData)
+    public static void CountDices(CommandContext commandContext)
     {
-        userData.DicesThrown++;
-        if (groupData is not null)
+        commandContext.MemberOrUserData.DicesThrown++;
+        if (commandContext.GroupData is GroupData groupData)
         {
             groupData.DicesThrown++;
         }
     }
 
-    public static Task SendDartAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
-        => SendAnimatedEmojiAsync(botClient, message, argument, Emoji.Darts, cancellationToken);
+    public static Task SendDartAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
+        => SendAnimatedEmojiAsync(commandContext, Emoji.Darts, cancellationToken);
 
-    public static void CountDarts(Message message, string? argument, UserData userData, GroupData? groupData, UserData? replyToUserData)
+    public static void CountDarts(CommandContext commandContext)
     {
-        userData.DartsThrown++;
-        if (groupData is not null)
+        commandContext.MemberOrUserData.DartsThrown++;
+        if (commandContext.GroupData is GroupData groupData)
         {
             groupData.DartsThrown++;
         }
     }
 
-    public static Task SendBasketballAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
-        => SendAnimatedEmojiAsync(botClient, message, argument, Emoji.Basketball, cancellationToken);
+    public static Task SendBasketballAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
+        => SendAnimatedEmojiAsync(commandContext, Emoji.Basketball, cancellationToken);
 
-    public static void CountBasketballsThrown(Message message, string? argument, UserData userData, GroupData? groupData, UserData? replyToUserData)
+    public static void CountBasketballsThrown(CommandContext commandContext)
     {
-        userData.BasketballsThrown++;
-        if (groupData is not null)
+        commandContext.MemberOrUserData.BasketballsThrown++;
+        if (commandContext.GroupData is GroupData groupData)
         {
             groupData.BasketballsThrown++;
         }
     }
 
-    public static Task SendSoccerBallAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
-        => SendAnimatedEmojiAsync(botClient, message, argument, Emoji.Football, cancellationToken);
+    public static Task SendSoccerBallAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
+        => SendAnimatedEmojiAsync(commandContext, Emoji.Football, cancellationToken);
 
-    public static void CountSoccerGoals(Message message, string? argument, UserData userData, GroupData? groupData, UserData? replyToUserData)
+    public static void CountSoccerGoals(CommandContext commandContext)
     {
-        userData.SoccerGoals++;
-        if (groupData is not null)
+        commandContext.MemberOrUserData.SoccerGoals++;
+        if (commandContext.GroupData is GroupData groupData)
         {
             groupData.SoccerGoals++;
         }
     }
 
-    public static Task SendSlotMachineAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
-        => SendAnimatedEmojiAsync(botClient, message, argument, Emoji.SlotMachine, cancellationToken);
+    public static Task SendSlotMachineAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
+        => SendAnimatedEmojiAsync(commandContext, Emoji.SlotMachine, cancellationToken);
 
-    public static void CountSlotRolls(Message message, string? argument, UserData userData, GroupData? groupData, UserData? replyToUserData)
+    public static void CountSlotRolls(CommandContext commandContext)
     {
-        userData.SlotMachineRolled++;
-        if (groupData is not null)
+        commandContext.MemberOrUserData.SlotMachineRolled++;
+        if (commandContext.GroupData is GroupData groupData)
         {
             groupData.SlotMachineRolled++;
         }
     }
 
-    public static Task SendBowlingBallAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
-        => SendAnimatedEmojiAsync(botClient, message, argument, Emoji.Bowling, cancellationToken);
+    public static Task SendBowlingBallAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
+        => SendAnimatedEmojiAsync(commandContext, Emoji.Bowling, cancellationToken);
 
-    public static void CountBowlingBalls(Message message, string? argument, UserData userData, GroupData? groupData, UserData? replyToUserData)
+    public static void CountBowlingBalls(CommandContext commandContext)
     {
-        userData.PinsKnocked++;
-        if (groupData is not null)
+        commandContext.MemberOrUserData.PinsKnocked++;
+        if (commandContext.GroupData is GroupData groupData)
         {
             groupData.PinsKnocked++;
         }

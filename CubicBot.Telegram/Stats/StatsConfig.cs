@@ -1,6 +1,6 @@
 ﻿namespace CubicBot.Telegram.Stats;
 
-public class StatsConfig
+public sealed class StatsConfig
 {
     public bool EnableGrass { get; set; } = true;
 

@@ -4,8 +4,6 @@ using System;
 using System.Collections.ObjectModel;
 using System.Threading;
 using System.Threading.Tasks;
-using Telegram.Bot;
-using Telegram.Bot.Types;
 
 namespace CubicBot.Telegram.Commands;
 
@@ -27,41 +25,32 @@ public static class NonVegan
 
     public static readonly ReadOnlyCollection<CubicBotCommand> Commands = new(new CubicBotCommand[]
     {
-        new("eat", "☃️ Do you want to eat a snowman?", EatAsync, userOrMemberStatsCollector: CountEats),
+        new("eat", "☃️ Do you want to eat a snowman?", EatAsync, statsCollector: CountEats),
     });
 
-    public static Task EatAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
+    public static Task EatAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
     {
-        if (message.ReplyToMessage is Message targetMessage)
+        if (commandContext.ReplyToMessageContext is MessageContext replyToMessageContext)
         {
-            return botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
-                                                           $"{message.From?.FirstName} ate {targetMessage.From?.FirstName}! 🍴😋",
-                                                           replyToMessageId: targetMessage.MessageId,
-                                                           cancellationToken: cancellationToken);
+            return replyToMessageContext.ReplyWithTextMessageAndRetryAsync($"{commandContext.Message.From?.FirstName} ate {replyToMessageContext.Message.From?.FirstName}! 🍴😋", cancellationToken: cancellationToken);
         }
-        else if (argument is string targetName)
+        else if (commandContext.Argument is string targetName)
         {
-            return botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
-                                                           $"{message.From?.FirstName} ate {targetName}! 🍴😋",
-                                                           cancellationToken: cancellationToken);
+            return commandContext.SendTextMessageWithRetryAsync($"{commandContext.Message.From?.FirstName} ate {targetName}! 🍴😋", cancellationToken: cancellationToken);
         }
         else
         {
             var foodIndex = Random.Shared.Next(s_food.Length);
             var food = s_food[foodIndex];
-            return botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
-                                                           food,
-                                                           replyToMessageId: message.MessageId,
-                                                           cancellationToken: cancellationToken);
+            return commandContext.ReplyWithTextMessageAndRetryAsync(food, cancellationToken: cancellationToken);
         }
     }
 
-    public static void CountEats(Message message, string? argument, UserData userData, GroupData? groupData, UserData? replyToUserData)
+    public static void CountEats(CommandContext commandContext)
     {
-        userData.FoodEaten++;
-        if (replyToUserData is not null)
-        {
-            replyToUserData.EatenByOthers++;
-        }
+        commandContext.MemberOrUserData.FoodEaten++;
+
+        if (commandContext.ReplyToMessageContext?.MemberOrUserData is UserData replyToMemberOrUserData)
+            replyToMemberOrUserData.EatenByOthers++;
     }
 }

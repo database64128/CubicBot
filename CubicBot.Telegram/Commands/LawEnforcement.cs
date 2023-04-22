@@ -35,13 +35,13 @@ public static class LawEnforcement
 
     public static readonly ReadOnlyCollection<CubicBotCommand> Commands = new(new CubicBotCommand[]
     {
-        new("call_cops", "📞 Hello, this is 911. What's your emergency?", CallCopsAsync, userOrMemberStatsCollector: CountCopCalls),
-        new("arrest", "🚓 Do I still have the right to remain silent?", ArrestAsync, userOrMemberStatsCollector: CountArrests),
-        new("guilty_or_not", "🧑‍⚖️ Yes, your honor.", GuiltyOrNotAsync, userOrMemberStatsCollector: CountLawsuits),
-        new("overthrow", "🏛️ Welcome to Capitol Hill!", OverthrowAsync, userOrMemberStatsCollector: CountOverthrows),
+        new("call_cops", "📞 Hello, this is 911. What's your emergency?", CallCopsAsync, statsCollector: CountCopCalls),
+        new("arrest", "🚓 Do I still have the right to remain silent?", ArrestAsync, statsCollector: CountArrests),
+        new("guilty_or_not", "🧑‍⚖️ Yes, your honor.", GuiltyOrNotAsync, statsCollector: CountLawsuits),
+        new("overthrow", "🏛️ Welcome to Capitol Hill!", OverthrowAsync, statsCollector: CountOverthrows),
     });
 
-    public static Task CallCopsAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
+    public static Task CallCopsAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
     {
         var sb = new StringBuilder($"📱9️⃣1️⃣1️⃣📲📞👌{Environment.NewLine}");
         var count = Random.Shared.Next(24, 97);
@@ -64,56 +64,46 @@ public static class LawEnforcement
             }
         }
 
-        return botClient.SendTextMessageWithRetryAsync(message.Chat.Id, sb.ToString(), cancellationToken: cancellationToken);
+        return commandContext.SendTextMessageWithRetryAsync(sb.ToString(), cancellationToken: cancellationToken);
     }
 
-    public static void CountCopCalls(Message message, string? argument, UserData userData, GroupData? groupData, UserData? replyToUserData)
+    public static void CountCopCalls(CommandContext commandContext)
     {
-        userData.CopCallsMade++;
-        if (groupData is not null)
+        commandContext.MemberOrUserData.CopCallsMade++;
+        if (commandContext.GroupData is GroupData groupData)
         {
             groupData.CopCallsMade++;
         }
     }
 
-    public static Task ArrestAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
+    public static Task ArrestAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
     {
-        var reasonIndex = Random.Shared.Next(s_reasonsForArrest.Length);
-        var reason = argument ?? s_reasonsForArrest[reasonIndex];
+        var reason = commandContext.Argument ?? s_reasonsForArrest[Random.Shared.Next(s_reasonsForArrest.Length)];
 
-        if (message.ReplyToMessage is Message targetMessage)
+        if (commandContext.ReplyToMessageContext is MessageContext replyToMessageContext)
         {
-            return botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
-                                                           $"{targetMessage.From?.FirstName} has been arrested for {reason}.",
-                                                           replyToMessageId: targetMessage.MessageId,
-                                                           cancellationToken: cancellationToken);
+            return replyToMessageContext.ReplyWithTextMessageAndRetryAsync($"{replyToMessageContext.Message.From?.FirstName} has been arrested for {reason}.", cancellationToken: cancellationToken);
         }
         else
         {
-            return botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
-                                                           $"{message.From?.FirstName} has been arrested for {reason}.",
-                                                           cancellationToken: cancellationToken);
+            return commandContext.SendTextMessageWithRetryAsync($"{commandContext.Message.From?.FirstName} has been arrested for {reason}.", cancellationToken: cancellationToken);
         }
     }
 
-    public static void CountArrests(Message message, string? argument, UserData userData, GroupData? groupData, UserData? replyToUserData)
+    public static void CountArrests(CommandContext commandContext)
     {
-        userData.ArrestsMade++;
-        if (groupData is not null)
-        {
+        commandContext.MemberOrUserData.ArrestsMade++;
+
+        if (commandContext.GroupData is GroupData groupData)
             groupData.ArrestsMade++;
-            if (replyToUserData is not null)
-            {
-                replyToUserData.ArrestsReceived++;
-            }
-            else
-            {
-                userData.ArrestsReceived++;
-            }
-        }
+
+        if (commandContext.ReplyToMessageContext?.MemberOrUserData is UserData replyToMemberOrUserData)
+            replyToMemberOrUserData.ArrestsReceived++;
+        else
+            commandContext.MemberOrUserData.ArrestsReceived++;
     }
 
-    public static Task GuiltyOrNotAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
+    public static Task GuiltyOrNotAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
     {
         var verdict = Random.Shared.Next(3) switch
         {
@@ -122,59 +112,63 @@ public static class LawEnforcement
             _ => "The jury failed to reach a consensus.",
         };
 
-        return botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
-                                                       verdict,
-                                                       replyToMessageId: message.ReplyToMessage?.MessageId,
-                                                       cancellationToken: cancellationToken);
+        return commandContext.SendTextMessageWithRetryAsync(
+            verdict,
+            replyToMessageId: commandContext.Message.ReplyToMessage?.MessageId,
+            cancellationToken: cancellationToken);
     }
 
-    public static void CountLawsuits(Message message, string? argument, UserData userData, GroupData? groupData, UserData? replyToUserData)
+    public static void CountLawsuits(CommandContext commandContext)
     {
-        userData.VerdictsGiven++;
-        if (groupData is not null)
-        {
+        commandContext.MemberOrUserData.VerdictsGiven++;
+
+        if (commandContext.GroupData is GroupData groupData)
             groupData.VerdictsGiven++;
-            if (replyToUserData is not null)
-            {
-                replyToUserData.VerdictsReceived++;
-            }
-        }
+
+        if (commandContext.ReplyToMessageContext?.MemberOrUserData is UserData replyToMemberOrUserData)
+            replyToMemberOrUserData.VerdictsReceived++;
     }
 
-    public static async Task OverthrowAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
+    public static async Task OverthrowAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
     {
-        var targetMessage = message.ReplyToMessage ?? message;
-        var userId = ChatHelper.GetMessageSenderId(targetMessage);
-        var groupId = ChatHelper.GetChatGroupId(targetMessage.Chat);
-        var pronounPossessiveDeterminer = data.GetPronounPossessiveDeterminer(userId, groupId);
+        var message = commandContext.Message;
+        var targetMessageContext = commandContext.ReplyToMessageContext ?? commandContext;
+        var targetMessage = targetMessageContext.Message;
+        var pronouns = targetMessageContext.GetPronounsToUse();
 
-        var member = await botClient.GetChatMemberAsync(message.Chat.Id, userId, cancellationToken);
-        var title = member switch
+        string title;
+
+        try
         {
-            ChatMemberAdministrator admin => admin.CustomTitle ?? "admin",
-            ChatMemberOwner owner => owner.CustomTitle ?? "owner",
-            _ => "member",
-        };
+            title = await commandContext.BotClient.GetChatMemberAsync(message.Chat.Id, targetMessageContext.UserId, cancellationToken) switch
+            {
+                ChatMemberAdministrator admin => admin.CustomTitle ?? "admin",
+                ChatMemberOwner owner => owner.CustomTitle ?? "owner",
+                _ => "member",
+            };
+        }
+        catch
+        {
+            title = "member";
+        }
 
         var text = Random.Shared.Next(4) switch // 25% success rate
         {
-            0 => $"{targetMessage.From?.FirstName} was overthrown by {message.From?.FirstName} and stripped of {pronounPossessiveDeterminer} {title} title. 🔫",
+            0 => $"{targetMessage.From?.FirstName} was overthrown by {message.From?.FirstName} and stripped of {pronouns.PossessiveDeterminer} {title} title. 🔫",
             _ => $"{message.From?.FirstName} failed to overthrow {targetMessage.From?.FirstName} and was taken into custody by the FBI. {s_policeOfficers[Random.Shared.Next(s_policeOfficers.Length)]}",
         };
 
-        await botClient.SendTextMessageWithRetryAsync(message.Chat.Id, text, cancellationToken: cancellationToken);
+        await commandContext.SendTextMessageWithRetryAsync(text, cancellationToken: cancellationToken);
     }
 
-    public static void CountOverthrows(Message message, string? argument, UserData userData, GroupData? groupData, UserData? replyToUserData)
+    public static void CountOverthrows(CommandContext commandContext)
     {
-        userData.OverthrowAttempts++;
-        if (groupData is not null)
-        {
+        commandContext.MemberOrUserData.OverthrowAttempts++;
+
+        if (commandContext.GroupData is GroupData groupData)
             groupData.OverthrowAttempts++;
-            if (replyToUserData is not null)
-            {
-                replyToUserData.OverthrowAttemptsReceived++;
-            }
-        }
+
+        if (commandContext.ReplyToMessageContext?.MemberOrUserData is UserData replyToMemberOrUserData)
+            replyToMemberOrUserData.OverthrowAttemptsReceived++;
     }
 }

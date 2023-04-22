@@ -5,8 +5,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading;
 using System.Threading.Tasks;
-using Telegram.Bot;
-using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
 namespace CubicBot.Telegram.Commands;
@@ -30,22 +28,21 @@ public sealed class Controls
         }
     }
 
-    public static Task ToggleParenthesisEnclosureAssuranceAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
+    public static Task ToggleParenthesisEnclosureAssuranceAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
     {
         bool ensureParenthesisEnclosure;
 
-        if (message.Chat.Type is ChatType.Private)
+        if (commandContext.GroupData is GroupData groupData)
         {
-            var userId = ChatHelper.GetMessageSenderId(message);
-            var userData = data.GetOrCreateUserData(userId);
-            userData.EnsureParenthesisEnclosure ^= true;
-            ensureParenthesisEnclosure = userData.EnsureParenthesisEnclosure;
+            ensureParenthesisEnclosure = groupData.EnsureParenthesisEnclosure;
+            ensureParenthesisEnclosure ^= true;
+            groupData.EnsureParenthesisEnclosure = ensureParenthesisEnclosure;
         }
         else
         {
-            var groupData = data.GetOrCreateGroupData(message.Chat.Id);
-            groupData.EnsureParenthesisEnclosure ^= true;
-            ensureParenthesisEnclosure = groupData.EnsureParenthesisEnclosure;
+            ensureParenthesisEnclosure = commandContext.UserData.EnsureParenthesisEnclosure;
+            ensureParenthesisEnclosure ^= true;
+            commandContext.UserData.EnsureParenthesisEnclosure = ensureParenthesisEnclosure;
         }
 
         var responseMarkdownV2 = ensureParenthesisEnclosure switch
@@ -54,10 +51,6 @@ public sealed class Controls
             false => @"❌ *Parenthesis Enclosure Assurance* is now _disabled_ in this chat\.",
         };
 
-        return botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
-                                                       responseMarkdownV2,
-                                                       ParseMode.MarkdownV2,
-                                                       replyToMessageId: message.MessageId,
-                                                       cancellationToken: cancellationToken);
+        return commandContext.ReplyWithTextMessageAndRetryAsync(responseMarkdownV2, ParseMode.MarkdownV2, cancellationToken: cancellationToken);
     }
 }

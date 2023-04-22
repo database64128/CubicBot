@@ -1,17 +1,17 @@
-﻿using Telegram.Bot.Types;
+﻿using System.Threading;
+using System.Threading.Tasks;
 
 namespace CubicBot.Telegram.Stats;
 
-public class MessageCounter : UserStatsCollector
+public sealed class MessageCounter : IStatsCollector
 {
-    public override bool IsCollectable(Message message) => true;
-
-    public override void CollectUser(Message message, UserData userData, GroupData? groupData)
+    public Task CollectAsync(MessageContext messageContext, CancellationToken _ = default)
     {
-        userData.MessagesProcessed++;
-        if (groupData is not null)
-        {
+        messageContext.MemberOrUserData.MessagesProcessed++;
+
+        if (messageContext.GroupData is GroupData groupData)
             groupData.MessagesProcessed++;
-        }
+
+        return Task.CompletedTask;
     }
 }

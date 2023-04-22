@@ -4,8 +4,6 @@ using System;
 using System.Collections.ObjectModel;
 using System.Threading;
 using System.Threading.Tasks;
-using Telegram.Bot;
-using Telegram.Bot.Types;
 
 namespace CubicBot.Telegram.Commands;
 
@@ -39,30 +37,28 @@ public static class Chinese
 
     public static readonly ReadOnlyCollection<CubicBotCommand> Commands = new(new CubicBotCommand[]
     {
-        new("interrogate", "🔫 开门，查水表！", InterrogateAsync, userOrMemberStatsCollector: CountInterrogations),
+        new("interrogate", "🔫 开门，查水表！", InterrogateAsync, statsCollector: CountInterrogations),
     });
 
-    public static Task InterrogateAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
+    public static Task InterrogateAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
     {
         var randomIndex = Random.Shared.Next(s_questions.Length);
         var randomQuestion = s_questions[randomIndex];
 
-        return botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
-                                                       randomQuestion,
-                                                       replyToMessageId: message.ReplyToMessage?.MessageId,
-                                                       cancellationToken: cancellationToken);
+        return commandContext.SendTextMessageWithRetryAsync(
+            randomQuestion,
+            replyToMessageId: commandContext.Message.ReplyToMessage?.MessageId,
+            cancellationToken: cancellationToken);
     }
 
-    public static void CountInterrogations(Message message, string? argument, UserData userData, GroupData? groupData, UserData? replyToUserData)
+    public static void CountInterrogations(CommandContext commandContext)
     {
-        userData.InterrogationsInitiated++;
-        if (groupData is not null)
-        {
+        commandContext.MemberOrUserData.InterrogationsInitiated++;
+
+        if (commandContext.GroupData is GroupData groupData)
             groupData.InterrogationsInitiated++;
-            if (replyToUserData is not null)
-            {
-                replyToUserData.InterrogatedByOthers++;
-            }
-        }
+
+        if (commandContext.ReplyToMessageContext?.MemberOrUserData is UserData replyToMemberOrUserData)
+            replyToMemberOrUserData.InterrogatedByOthers++;
     }
 }

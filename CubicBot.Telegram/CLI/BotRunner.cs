@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,7 +9,7 @@ namespace CubicBot.Telegram.CLI
 {
     public static class BotRunner
     {
-        public static async Task<int> RunBot(string? botToken, CancellationToken cancellationToken = default)
+        public static async Task<int> RunBotAsync(string? botToken, CancellationToken cancellationToken = default)
         {
             var (config, loadConfigErrMsg) = await Config.LoadConfigAsync(cancellationToken);
             if (loadConfigErrMsg is not null)
@@ -18,15 +17,6 @@ namespace CubicBot.Telegram.CLI
                 Console.WriteLine(loadConfigErrMsg);
                 return 1;
             }
-
-            var (data, loadDataErrMsg) = await Data.LoadDataAsync(cancellationToken);
-            if (loadDataErrMsg is not null)
-            {
-                Console.WriteLine(loadDataErrMsg);
-                return 1;
-            }
-
-            _ = Task.Run(() => SaveDataHourlyAsync(data, cancellationToken), CancellationToken.None);
 
             // Priority: commandline option > environment variable > config file
             if (string.IsNullOrEmpty(botToken))
@@ -38,6 +28,15 @@ namespace CubicBot.Telegram.CLI
                 Console.WriteLine("Please provide a bot token with command line option `--bot-token`, environment variable `TELEGRAM_BOT_TOKEN`, or in the config file.");
                 return -1;
             }
+
+            var (data, loadDataErrMsg) = await Data.LoadDataAsync(cancellationToken);
+            if (loadDataErrMsg is not null)
+            {
+                Console.WriteLine(loadDataErrMsg);
+                return 1;
+            }
+
+            var saveDataTask = SaveDataHourlyAsync(data, cancellationToken);
 
             try
             {
@@ -71,36 +70,27 @@ namespace CubicBot.Telegram.CLI
                 Console.WriteLine(ex);
             }
 
-            var saveDataErrMsg = await Data.SaveDataAsync(data, CancellationToken.None);
-            if (saveDataErrMsg is not null)
-            {
-                Console.WriteLine(saveDataErrMsg);
-                return 1;
-            }
-
+            await saveDataTask;
             return 0;
         }
 
         private static async Task SaveDataHourlyAsync(Data data, CancellationToken cancellationToken = default)
         {
-            try
+            while (!cancellationToken.IsCancellationRequested)
             {
-                while (true)
+                try
                 {
                     await Task.Delay(TimeSpan.FromHours(1.0), cancellationToken);
-                    var saveDataErrMsg = await Data.SaveDataAsync(data, cancellationToken);
-                    if (saveDataErrMsg is not null)
-                    {
-                        Console.WriteLine(saveDataErrMsg);
-                    }
                 }
-            }
-            catch (TaskCanceledException)
-            {
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
+                catch (TaskCanceledException)
+                {
+                }
+
+                var saveDataErrMsg = await Data.SaveDataAsync(data, CancellationToken.None);
+                if (saveDataErrMsg is not null)
+                {
+                    Console.WriteLine(saveDataErrMsg);
+                }
             }
         }
     }

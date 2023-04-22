@@ -4,8 +4,6 @@ using System;
 using System.Collections.ObjectModel;
 using System.Threading;
 using System.Threading.Tasks;
-using Telegram.Bot;
-using Telegram.Bot.Types;
 
 namespace CubicBot.Telegram.Commands;
 
@@ -47,88 +45,67 @@ public static class ChineseTasks
 
     public static readonly ReadOnlyCollection<CubicBotCommand> Commands = new(new CubicBotCommand[]
     {
-        new("ok", "👌 好的，没问题！", OKAsync, userOrMemberStatsCollector: CountOKs),
-        new("assign", "📛 交给你了！", AssignAsync, userOrMemberStatsCollector: CountAssignments),
-        new("unassign", "💢 不干了！", UnassignAsync, userOrMemberStatsCollector: CountUnassign),
+        new("ok", "👌 好的，没问题！", OKAsync, statsCollector: CountOKs),
+        new("assign", "📛 交给你了！", AssignAsync, statsCollector: CountAssignments),
+        new("unassign", "💢 不干了！", UnassignAsync, statsCollector: CountUnassign),
     });
 
-    public static Task OKAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
+    public static Task OKAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
     {
         var randomIndex = Random.Shared.Next(s_okAnswers.Length);
         var randomOKAnswer = s_okAnswers[randomIndex];
-
-        return botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
-                                                       randomOKAnswer,
-                                                       replyToMessageId: message.ReplyToMessage?.MessageId,
-                                                       cancellationToken: cancellationToken);
+        return commandContext.SendTextMessageWithRetryAsync(
+            randomOKAnswer,
+            replyToMessageId: commandContext.Message.ReplyToMessage?.MessageId,
+            cancellationToken: cancellationToken);
     }
 
-    public static void CountOKs(Message message, string? argument, UserData userData, GroupData? groupData, UserData? replyToUserData)
+    public static void CountOKs(CommandContext commandContext)
     {
-        userData.OkaysSaid++;
-        if (replyToUserData is not null)
-        {
-            replyToUserData.OkaysReceived++;
-        }
+        commandContext.MemberOrUserData.OkaysSaid++;
+
+        if (commandContext.ReplyToMessageContext?.MemberOrUserData is UserData replyToMemberOrUserData)
+            replyToMemberOrUserData.OkaysReceived++;
     }
 
-    public static async Task AssignAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
+    public static async Task AssignAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
     {
-        if (message.ReplyToMessage is null) // self assign
+        var replyToMessageContext = commandContext.ReplyToMessageContext;
+        if (replyToMessageContext is null) // self assign
         {
-            await botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
-                                                          $"{message.From?.FirstName}: 交  给  我  了",
-                                                          cancellationToken: cancellationToken);
+            await commandContext.SendTextMessageWithRetryAsync($"{commandContext.Message.From?.FirstName}: 交  给  我  了", cancellationToken: cancellationToken);
         }
         else // assign to someone else
         {
-            await botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
-                                                          "交  给  你  了",
-                                                          replyToMessageId: message.ReplyToMessage.MessageId,
-                                                          cancellationToken: cancellationToken);
+            await replyToMessageContext.ReplyWithTextMessageAndRetryAsync("交  给  你  了", cancellationToken: cancellationToken);
 
             var randomIndex = Random.Shared.Next(s_okAnswers.Length);
             var randomOKAnswer = s_okAnswers[randomIndex];
 
-            await botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
-                                                          $"{message.ReplyToMessage.From?.FirstName}: {randomOKAnswer}",
-                                                          replyToMessageId: message.MessageId,
-                                                          cancellationToken: cancellationToken);
+            await commandContext.ReplyWithTextMessageAndRetryAsync($"{replyToMessageContext.Message.From?.FirstName}: {randomOKAnswer}", cancellationToken: cancellationToken);
         }
     }
 
-    public static void CountAssignments(Message message, string? argument, UserData userData, GroupData? groupData, UserData? replyToUserData)
+    public static void CountAssignments(CommandContext commandContext)
     {
-        userData.AssignmentsCreated++;
-        if (replyToUserData is not null)
-        {
-            replyToUserData.AssignmentsReceived++;
-        }
-        else
-        {
-            userData.AssignmentsReceived++;
-        }
+        commandContext.MemberOrUserData.AssignmentsCreated++;
+
+        var targetUserData = commandContext.ReplyToMessageContext?.MemberOrUserData ?? commandContext.MemberOrUserData;
+        targetUserData.AssignmentsReceived++;
     }
 
-    public static Task UnassignAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
+    public static Task UnassignAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
     {
+        var message = commandContext.Message;
         var targetName = message.ReplyToMessage?.From?.FirstName ?? message.From?.FirstName;
-        return botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
-                                                       $"{targetName}: 不  干  了",
-                                                       replyToMessageId: message.MessageId,
-                                                       cancellationToken: cancellationToken);
+        return commandContext.ReplyWithTextMessageAndRetryAsync($"{targetName}: 不  干  了", cancellationToken: cancellationToken);
     }
 
-    public static void CountUnassign(Message message, string? argument, UserData userData, GroupData? groupData, UserData? replyToUserData)
+    public static void CountUnassign(CommandContext commandContext)
     {
-        userData.UnassignInitiated++;
-        if (replyToUserData is not null)
-        {
-            replyToUserData.UnassignReceived++;
-        }
-        else
-        {
-            userData.UnassignReceived++;
-        }
+        commandContext.MemberOrUserData.UnassignInitiated++;
+
+        var targetUserData = commandContext.ReplyToMessageContext?.MemberOrUserData ?? commandContext.MemberOrUserData;
+        targetUserData.UnassignReceived++;
     }
 }

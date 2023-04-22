@@ -4,7 +4,6 @@ using System;
 using System.Collections.ObjectModel;
 using System.Threading;
 using System.Threading.Tasks;
-using Telegram.Bot;
 using Telegram.Bot.Types;
 
 namespace CubicBot.Telegram.Commands;
@@ -26,15 +25,15 @@ public static class ConsentNotNeeded
 
     public static readonly ReadOnlyCollection<CubicBotCommand> Commands = new(new CubicBotCommand[]
     {
-        new("cook", "😋 Who cooks the best food in the world? Me!", CookAsync, userOrMemberStatsCollector: CountCooks),
-        new("throw", "🥺 Throw me a bone.", ThrowAsync, userOrMemberStatsCollector: CountThrows),
-        new("catch", "😏 Catch me if you can.", CatchAsync, userOrMemberStatsCollector: CountCatches),
-        new("force", "☮️ Use of force not recommended.", ForceAsync, userOrMemberStatsCollector: CountForceUsed),
-        new("touch", "🥲 No touching.", TouchAsync, userOrMemberStatsCollector: CountTouches),
-        new("fuck", "😍 Feeling horny as fuck?", FuckAsync, userOrMemberStatsCollector: CountSex),
+        new("cook", "😋 Who cooks the best food in the world? Me!", CookAsync, statsCollector: CountCooks),
+        new("throw", "🥺 Throw me a bone.", ThrowAsync, statsCollector: CountThrows),
+        new("catch", "😏 Catch me if you can.", CatchAsync, statsCollector: CountCatches),
+        new("force", "☮️ Use of force not recommended.", ForceAsync, statsCollector: CountForceUsed),
+        new("touch", "🥲 No touching.", TouchAsync, statsCollector: CountTouches),
+        new("fuck", "😍 Feeling horny as fuck?", FuckAsync, statsCollector: CountSex),
     });
 
-    public static Task CookAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
+    public static Task CookAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
     {
         var actionIndex = Random.Shared.Next(11);
         var actionMiddle = actionIndex switch
@@ -69,21 +68,21 @@ public static class ConsentNotNeeded
         var cooksAndFoodIndex = Random.Shared.Next(s_cooksAndFood.Length);
         var cookOrFood = s_cooksAndFood[cooksAndFoodIndex];
 
-        return DoActionAsync(botClient, message, argument, actionMiddle, actionEnd, cookOrFood, cancellationToken);
+        return DoActionAsync(commandContext, actionMiddle, actionEnd, cookOrFood, cancellationToken);
     }
 
-    public static void CountCooks(Message message, string? argument, UserData userData, GroupData? groupData, UserData? replyToUserData)
+    public static void CountCooks(CommandContext commandContext)
     {
-        userData.MealsCooked++;
-        if (replyToUserData is not null)
-        {
-            replyToUserData.CookedByOthers++;
-        }
+        commandContext.MemberOrUserData.MealsCooked++;
+
+        if (commandContext.ReplyToMessageContext?.MemberOrUserData is UserData replyToMemberOrUserData)
+            replyToMemberOrUserData.CookedByOthers++;
     }
 
-    public static Task ThrowAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
+    public static Task ThrowAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
     {
-        var firstname = message.ReplyToMessage?.From?.FirstName ?? argument ?? message.From?.FirstName;
+        var message = commandContext.Message;
+        var firstname = message.ReplyToMessage?.From?.FirstName ?? commandContext.Argument ?? message.From?.FirstName;
         var text = Random.Shared.Next(11) switch
         {
             0 => $"{firstname} was thrown into the trash and buried in a landfill. 🗑️",
@@ -98,85 +97,74 @@ public static class ConsentNotNeeded
             9 => $"{firstname} was thrown into a pit of crocodiles and died from a crocodile bite. 🐊",
             _ => $"{firstname} was thrown into a pit of sharks and died from a shark bite. 🦈",
         };
-        return botClient.SendTextMessageWithRetryAsync(message.Chat.Id, text, cancellationToken: cancellationToken);
+        return commandContext.SendTextMessageWithRetryAsync(text, cancellationToken: cancellationToken);
     }
 
-    public static void CountThrows(Message message, string? argument, UserData userData, GroupData? groupData, UserData? replyToUserData)
+    public static void CountThrows(CommandContext commandContext)
     {
-        userData.PersonsThrown++;
-        if (replyToUserData is not null)
-        {
-            replyToUserData.ThrownByOthers++;
-        }
+        commandContext.MemberOrUserData.PersonsThrown++;
+
+        if (commandContext.ReplyToMessageContext?.MemberOrUserData is UserData replyToMemberOrUserData)
+            replyToMemberOrUserData.ThrownByOthers++;
     }
 
-    public static Task CatchAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
+    public static Task CatchAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
     {
-        var userId = ChatHelper.GetMessageSenderId(message);
-        var groupId = ChatHelper.GetChatGroupId(message.Chat);
-        var pronounSubject = data.GetPronounSubject(userId, groupId);
-        var pronounObject = data.GetPronounObject(userId, groupId);
-        var pronounPossessiveDeterminer = data.GetPronounPossessiveDeterminer(userId, groupId);
-        var catchTargetFirstname = message.ReplyToMessage?.From?.FirstName;
-        var catchPhrase = catchTargetFirstname switch
+        var message = commandContext.Message;
+        var pronouns = commandContext.GetPronounsToUse();
+        var catchPhrase = message.ReplyToMessage?.From switch
         {
+            User replyToUser => $"caught {replyToUser.FirstName}",
             null => "was caught",
-            _ => $"caught {catchTargetFirstname}",
         };
 
-        argument ??= Random.Shared.Next(7) switch
+        var argument = commandContext.Argument ?? Random.Shared.Next(7) switch
         {
             0 => "by surprise. 😲",
             1 => "in a box and launched into space. 🚀",
             2 => "eating food picked up from the floor. 🍽️",
-            3 => $"stalking {pronounObject} on Instagram. 📷",
-            4 => $"sexting {pronounPossessiveDeterminer} best friend. 💋",
-            5 => $"naked in {pronounPossessiveDeterminer} bed and was turned on by what {pronounSubject} saw. 😍",
-            _ => $"masturbating to {pronounPossessiveDeterminer} profile picture. 💦",
+            3 => $"stalking {pronouns.Object} on Instagram. 📷",
+            4 => $"sexting {pronouns.PossessiveDeterminer} best friend. 💋",
+            5 => $"naked in {pronouns.PossessiveDeterminer} bed and was turned on by what {pronouns.Subject} saw. 😍",
+            _ => $"masturbating to {pronouns.PossessiveDeterminer} profile picture. 💦",
         };
 
-        return botClient.SendTextMessageWithRetryAsync(message.Chat.Id, $"{message.From?.FirstName} {catchPhrase} {argument}", cancellationToken: cancellationToken);
+        return commandContext.SendTextMessageWithRetryAsync($"{message.From?.FirstName} {catchPhrase} {argument}", cancellationToken: cancellationToken);
     }
 
-    public static void CountCatches(Message message, string? argument, UserData userData, GroupData? groupData, UserData? replyToUserData)
+    public static void CountCatches(CommandContext commandContext)
     {
-        userData.PersonsCaught++;
-        if (replyToUserData is not null)
-        {
-            replyToUserData.CaughtByOthers++;
-        }
+        commandContext.MemberOrUserData.PersonsCaught++;
+
+        if (commandContext.ReplyToMessageContext?.MemberOrUserData is UserData replyToMemberOrUserData)
+            replyToMemberOrUserData.CaughtByOthers++;
     }
 
-    public static Task ForceAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
+    public static Task ForceAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
     {
         var index = Random.Shared.Next(s_forcedToDo.Length);
-        var forcedToDo = argument ?? s_forcedToDo[index];
+        var forcedToDo = commandContext.Argument ?? s_forcedToDo[index];
+        var message = commandContext.Message;
 
-        if (message.ReplyToMessage is Message targetMessage)
+        if (commandContext.ReplyToMessageContext is MessageContext replyToMessageContext)
         {
-            return botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
-                                                           $"{message.From?.FirstName} forced {targetMessage.From?.FirstName} to {forcedToDo}.",
-                                                           replyToMessageId: targetMessage.MessageId,
-                                                           cancellationToken: cancellationToken);
+            return replyToMessageContext.ReplyWithTextMessageAndRetryAsync($"{message.From?.FirstName} forced {replyToMessageContext.Message.From?.FirstName} to {forcedToDo}.", cancellationToken: cancellationToken);
         }
         else
         {
-            return botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
-                                                           $"{message.From?.FirstName} was forced to {forcedToDo}.",
-                                                           cancellationToken: cancellationToken);
+            return commandContext.SendTextMessageWithRetryAsync($"{message.From?.FirstName} was forced to {forcedToDo}.", cancellationToken: cancellationToken);
         }
     }
 
-    public static void CountForceUsed(Message message, string? argument, UserData userData, GroupData? groupData, UserData? replyToUserData)
+    public static void CountForceUsed(CommandContext commandContext)
     {
-        userData.ForceUsed++;
-        if (replyToUserData is not null)
-        {
-            replyToUserData.ForcedByOthers++;
-        }
+        commandContext.MemberOrUserData.ForceUsed++;
+
+        if (commandContext.ReplyToMessageContext?.MemberOrUserData is UserData replyToMemberOrUserData)
+            replyToMemberOrUserData.ForcedByOthers++;
     }
 
-    public static Task TouchAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
+    public static Task TouchAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
     {
         var actionIndex = Random.Shared.Next(6);
         var actionMiddle = actionIndex switch
@@ -208,19 +196,18 @@ public static class ConsentNotNeeded
             _ => "🍆",
         };
 
-        return DoActionAsync(botClient, message, argument, actionMiddle, actionEnd, selfEmoji, cancellationToken);
+        return DoActionAsync(commandContext, actionMiddle, actionEnd, selfEmoji, cancellationToken);
     }
 
-    public static void CountTouches(Message message, string? argument, UserData userData, GroupData? groupData, UserData? replyToUserData)
+    public static void CountTouches(CommandContext commandContext)
     {
-        userData.TouchesGiven++;
-        if (replyToUserData is not null)
-        {
-            replyToUserData.TouchesReceived++;
-        }
+        commandContext.MemberOrUserData.TouchesGiven++;
+
+        if (commandContext.ReplyToMessageContext?.MemberOrUserData is UserData replyToMemberOrUserData)
+            replyToMemberOrUserData.TouchesReceived++;
     }
 
-    public static Task FuckAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
+    public static Task FuckAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
     {
         var symbol = Random.Shared.Next(3) switch
         {
@@ -229,62 +216,44 @@ public static class ConsentNotNeeded
             _ => "🖕",
         };
 
-        if (message.ReplyToMessage is Message targetMessage)
+        if (commandContext.ReplyToMessageContext is MessageContext replyToMessageContext)
         {
-            return botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
-                                                           symbol,
-                                                           replyToMessageId: targetMessage.MessageId,
-                                                           cancellationToken: cancellationToken);
+            return replyToMessageContext.ReplyWithTextMessageAndRetryAsync(symbol, cancellationToken: cancellationToken);
         }
-        else if (argument is string targetName)
+        else if (commandContext.Argument is string targetName)
         {
-            return botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
-                                                           $"🖕 {targetName}",
-                                                           cancellationToken: cancellationToken);
+            return commandContext.SendTextMessageWithRetryAsync($"🖕 {targetName}", cancellationToken: cancellationToken);
         }
         else
         {
-            return botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
-                                                           symbol,
-                                                           replyToMessageId: message.MessageId,
-                                                           cancellationToken: cancellationToken);
+            return commandContext.ReplyWithTextMessageAndRetryAsync(symbol, cancellationToken: cancellationToken);
         }
     }
 
-    public static void CountSex(Message message, string? argument, UserData userData, GroupData? groupData, UserData? replyToUserData)
+    public static void CountSex(CommandContext commandContext)
     {
-        userData.SexInitiated++;
-        if (groupData is not null)
-        {
+        commandContext.MemberOrUserData.SexInitiated++;
+
+        if (commandContext.GroupData is GroupData groupData)
             groupData.SexInitiated++;
-            if (replyToUserData is not null)
-            {
-                replyToUserData.SexReceived++;
-            }
-        }
+
+        if (commandContext.ReplyToMessageContext?.MemberOrUserData is UserData replyToMemberOrUserData)
+            replyToMemberOrUserData.SexReceived++;
     }
 
-    private static Task DoActionAsync(ITelegramBotClient botClient, Message message, string? argument, string actionMiddle, string actionEnd, string selfEmoji, CancellationToken cancellationToken = default)
+    private static Task DoActionAsync(CommandContext commandContext, string actionMiddle, string actionEnd, string selfEmoji, CancellationToken cancellationToken = default)
     {
-        if (message.ReplyToMessage is Message targetMessage)
+        if (commandContext.ReplyToMessageContext is MessageContext replyToMessageContext)
         {
-            return botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
-                                                           $"{message.From?.FirstName}{actionMiddle}{targetMessage.From?.FirstName}{actionEnd}",
-                                                           replyToMessageId: targetMessage.MessageId,
-                                                           cancellationToken: cancellationToken);
+            return replyToMessageContext.ReplyWithTextMessageAndRetryAsync($"{commandContext.Message.From?.FirstName}{actionMiddle}{replyToMessageContext.Message.From?.FirstName}{actionEnd}", cancellationToken: cancellationToken);
         }
-        else if (argument is string targetName)
+        else if (commandContext.Argument is string targetName)
         {
-            return botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
-                                                           $"{message.From?.FirstName}{actionMiddle}{targetName}{actionEnd}",
-                                                           cancellationToken: cancellationToken);
+            return commandContext.SendTextMessageWithRetryAsync($"{commandContext.Message.From?.FirstName}{actionMiddle}{targetName}{actionEnd}", cancellationToken: cancellationToken);
         }
         else
         {
-            return botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
-                                                           selfEmoji,
-                                                           replyToMessageId: message.MessageId,
-                                                           cancellationToken: cancellationToken);
+            return commandContext.ReplyWithTextMessageAndRetryAsync(selfEmoji, cancellationToken: cancellationToken);
         }
     }
 }

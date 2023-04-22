@@ -1,13 +1,10 @@
 ﻿using CubicBot.Telegram.Stats;
 using CubicBot.Telegram.Utils;
-using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Telegram.Bot;
-using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
 namespace CubicBot.Telegram.Commands;
@@ -23,17 +20,16 @@ public static class Personal
         new("set_preferred_pronouns", "🕶️ Set or unset preferred pronouns for this chat.", SetPreferredPronounsAsync),
     });
 
-    public static Task AddPronounsAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
+    public static Task AddPronounsAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
     {
         string? responseMarkdownV2;
         const string helpMarkdownV2 = @"This command accepts *subject* _\(they\)_ form, *subject/object* _\(they/them\)_ form, or *subject/object/possessive\_pronoun* _\(they/them/theirs\)_ form for commonly known pronouns\. For uncommon pronouns, you must use the full *subject/object/possessive\_determiner/possessive\_pronoun/reflexive* _\(they/them/their/theirs/themselves\)_ form\.";
-        var userId = ChatHelper.GetMessageSenderId(message);
 
-        if (!string.IsNullOrEmpty(argument))
+        if (commandContext.Argument is string argument)
         {
             if (Pronouns.TryParse(argument, out var pronouns))
             {
-                var pronounsList = data.GetOrCreateUserData(userId).PronounList;
+                var pronounsList = commandContext.UserData.PronounList;
                 if (!pronounsList.Contains(pronouns))
                 {
                     pronounsList.Add(pronouns);
@@ -54,18 +50,14 @@ public static class Personal
             responseMarkdownV2 = helpMarkdownV2;
         }
 
-        return botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
-                                                       responseMarkdownV2,
-                                                       ParseMode.MarkdownV2,
-                                                       replyToMessageId: message.MessageId,
-                                                       cancellationToken: cancellationToken);
+        return commandContext.ReplyWithTextMessageAndRetryAsync(responseMarkdownV2, ParseMode.MarkdownV2, cancellationToken: cancellationToken);
     }
 
-    public static Task RemovePronounsAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
+    public static Task RemovePronounsAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
     {
         string? responseMarkdownV2;
-        var userId = ChatHelper.GetMessageSenderId(message);
-        var pronounsList = data.GetOrCreateUserData(userId).PronounList;
+        var argument = commandContext.Argument;
+        var pronounsList = commandContext.UserData.PronounList;
 
         if (string.IsNullOrEmpty(argument))
         {
@@ -96,62 +88,65 @@ public static class Personal
             responseMarkdownV2 = $@"❌ Failed to parse *{ChatHelper.EscapeMarkdownV2Plaintext(argument)}*\. Please follow the same format requirements as `/add\_pronouns`\.";
         }
 
-        return botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
-                                                       responseMarkdownV2,
-                                                       ParseMode.MarkdownV2,
-                                                       replyToMessageId: message.MessageId,
-                                                       cancellationToken: cancellationToken);
+        return commandContext.ReplyWithTextMessageAndRetryAsync(responseMarkdownV2, ParseMode.MarkdownV2, cancellationToken: cancellationToken);
     }
 
-    public static Task GetPronounsAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
+    public static Task GetPronounsAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
     {
-        long userId;
-        var groupId = ChatHelper.GetChatGroupId(message.Chat);
-
         // query someone else
-        if (message.ReplyToMessage is Message targetMessage)
+        if (commandContext.ReplyToMessageContext is MessageContext replyToMessageContext)
         {
-            userId = ChatHelper.GetMessageSenderId(targetMessage);
-            var firstname = targetMessage.From?.FirstName ?? string.Empty;
+            var firstname = replyToMessageContext.Message.From?.FirstName ?? string.Empty;
             var firstnameEscaped = ChatHelper.EscapeMarkdownV2Plaintext(firstname);
-            var pronouns = data.GetPronounsToUse(userId, groupId);
+            var pronouns = replyToMessageContext.MemberOrUserData.PreferredPronouns?.ToString()
+                ?? replyToMessageContext.UserData.DefaultPronouns?.ToString()
+                ?? string.Join(", ", replyToMessageContext.UserData.PronounList.Select(x => ChatHelper.EscapeMarkdownV2Plaintext(x.ToString())));
+
             var responseMarkdownV2 = pronouns.Length switch
             {
-                0 => $@"*{firstnameEscaped}* has not set any pronouns yet\. You may address *{firstnameEscaped}* by *{Pronouns.Neutral.ToSubjectObject()}*\.",
-                _ => $@"You may address *{firstnameEscaped}* by {string.Join(", ", pronouns.Select(x => $"*{ChatHelper.EscapeMarkdownV2Plaintext(x.ToSubjectObject())}*"))}\.",
+                0 => $@"*{firstnameEscaped}* has not set any pronouns yet\. You may address *{firstnameEscaped}* by *{Pronouns.Neutral.ToString()}*\.",
+                _ => $@"You may address *{firstnameEscaped}* by *{pronouns}*\.",
             };
-            return botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
-                                                           responseMarkdownV2,
-                                                           ParseMode.MarkdownV2,
-                                                           replyToMessageId: message.MessageId,
-                                                           cancellationToken: cancellationToken);
+
+            return commandContext.ReplyWithTextMessageAndRetryAsync(responseMarkdownV2, ParseMode.MarkdownV2, cancellationToken: cancellationToken);
         }
 
         // self query
-        userId = ChatHelper.GetMessageSenderId(message);
-        var (allPronouns, defaultPronouns, preferredPronouns) = data.GetPronounsInfo(userId, groupId);
         var responseSB = new StringBuilder();
+        var userData = commandContext.UserData;
+        var pronounList = userData.PronounList;
 
-        responseSB.AppendLine($"Pronouns: {allPronouns.Length}");
-        foreach (var p in allPronouns)
+        responseSB.AppendLine($"Pronouns: {pronounList.Count}");
+        foreach (var p in pronounList)
         {
             responseSB.AppendLine($"- {p}");
         }
 
-        responseSB.AppendLine($"Default pronouns: {(defaultPronouns is null ? "Not set" : defaultPronouns)}");
-        responseSB.AppendLine($"Preferred pronouns in this chat: {(preferredPronouns is null ? "Not set" : preferredPronouns)}");
+        var defaultPronouns = userData.DefaultPronouns;
+        var defaultPronounsStatus = defaultPronouns switch
+        {
+            null => "Not set",
+            _ => defaultPronouns.ToString(),
+        };
 
-        return botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
-                                                       responseSB.ToString(),
-                                                       replyToMessageId: message.MessageId,
-                                                       cancellationToken: cancellationToken);
+        var preferredPronouns = commandContext.MemberOrUserData.PreferredPronouns;
+        var preferredPronounsStatus = preferredPronouns switch
+        {
+            null => "Not set",
+            _ => preferredPronouns.ToString(),
+        };
+
+        responseSB.AppendLine($"Default pronouns: {defaultPronounsStatus}");
+        responseSB.AppendLine($"Preferred pronouns in this chat: {preferredPronounsStatus}");
+
+        return commandContext.ReplyWithTextMessageAndRetryAsync(responseSB.ToString(), cancellationToken: cancellationToken);
     }
 
-    public static Task SetDefaultPronounsAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
+    public static Task SetDefaultPronounsAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
     {
         string? responseMarkdownV2;
-        var userId = ChatHelper.GetMessageSenderId(message);
-        var userData = data.GetOrCreateUserData(userId);
+        var argument = commandContext.Argument;
+        var userData = commandContext.UserData;
 
         if (string.IsNullOrEmpty(argument)) // unset
         {
@@ -185,40 +180,20 @@ public static class Personal
             responseMarkdownV2 = $@"❌ Failed to parse *{ChatHelper.EscapeMarkdownV2Plaintext(argument)}*\. Please follow the same format requirements as `/add\_pronouns`\.";
         }
 
-        return botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
-                                                       responseMarkdownV2,
-                                                       ParseMode.MarkdownV2,
-                                                       replyToMessageId: message.MessageId,
-                                                       cancellationToken: cancellationToken);
+        return commandContext.ReplyWithTextMessageAndRetryAsync(responseMarkdownV2, ParseMode.MarkdownV2, cancellationToken: cancellationToken);
     }
 
-    public static Task SetPreferredPronounsAsync(ITelegramBotClient botClient, Message message, string? argument, Config config, Data data, CancellationToken cancellationToken = default)
+    public static Task SetPreferredPronounsAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
     {
         string responseMarkdownV2;
-        var userId = ChatHelper.GetMessageSenderId(message);
-        var userData = data.GetOrCreateUserData(userId);
-
-        var memberData = message.Chat.Type switch
-        {
-            ChatType.Private => null,
-            _ => data.GetOrCreateGroupData(message.Chat.Id).GetOrCreateUserData(userId),
-        };
-        var preferredPronouns = message.Chat.Type switch
-        {
-            ChatType.Private => userData.PreferredPronouns,
-            _ => memberData!.PreferredPronouns, // null forgiving reason: safeguarded by previous lines.
-        };
-        Action<Pronouns?> setPreferredPronouns = message.Chat.Type switch
-        {
-            ChatType.Private => x => userData.PreferredPronouns = x,
-            _ => x => memberData!.PreferredPronouns = x, // null forgiving reason: safeguarded by previous lines.
-        };
+        var argument = commandContext.Argument;
+        var memberOrUserData = commandContext.MemberOrUserData;
 
         if (string.IsNullOrEmpty(argument)) // unset
         {
-            if (preferredPronouns is not null)
+            if (memberOrUserData.PreferredPronouns is Pronouns preferredPronouns)
             {
-                setPreferredPronouns(null);
+                memberOrUserData.PreferredPronouns = null;
                 responseMarkdownV2 = $@"➖ Successfully unset your previous preferred pronouns *{ChatHelper.EscapeMarkdownV2Plaintext(preferredPronouns.ToString())}* in this chat\!";
             }
             else
@@ -228,14 +203,15 @@ public static class Personal
         }
         else if (Pronouns.TryParse(argument, out var pronouns)) // set
         {
+            var userData = commandContext.UserData;
             if (userData.PronounList.Contains(pronouns))
             {
-                setPreferredPronouns(pronouns);
+                memberOrUserData.PreferredPronouns = pronouns;
                 responseMarkdownV2 = $@"🥳 Successfully set *{ChatHelper.EscapeMarkdownV2Plaintext(pronouns.ToString())}* as your preferred pronouns in this chat\!";
             }
             else
             {
-                setPreferredPronouns(pronouns);
+                memberOrUserData.PreferredPronouns = pronouns;
                 userData.PronounList.Add(pronouns);
                 responseMarkdownV2 = $@"🥳 Successfully added and set *{ChatHelper.EscapeMarkdownV2Plaintext(pronouns.ToString())}* as your preferred pronouns in this chat\!";
             }
@@ -245,10 +221,6 @@ public static class Personal
             responseMarkdownV2 = $@"❌ Failed to parse *{ChatHelper.EscapeMarkdownV2Plaintext(argument)}*\. Please follow the same format requirements as `/add\_pronouns`\.";
         }
 
-        return botClient.SendTextMessageWithRetryAsync(message.Chat.Id,
-                                                       responseMarkdownV2,
-                                                       ParseMode.MarkdownV2,
-                                                       replyToMessageId: message.MessageId,
-                                                       cancellationToken: cancellationToken);
+        return commandContext.ReplyWithTextMessageAndRetryAsync(responseMarkdownV2, ParseMode.MarkdownV2, cancellationToken: cancellationToken);
     }
 }
