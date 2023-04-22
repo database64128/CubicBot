@@ -49,31 +49,25 @@ public sealed class Config
     /// Loads config from config.json.
     /// </summary>
     /// <param name="cancellationToken">A token that may be used to cancel the read operation.</param>
-    /// <returns>
-    /// A ValueTuple containing a <see cref="Config"/> object and an optional error message.
-    /// </returns>
-    public static async Task<(Config config, string? errMsg)> LoadConfigAsync(CancellationToken cancellationToken = default)
+    /// <returns>The <see cref="Config"/> object.</returns>
+    public static async Task<Config> LoadConfigAsync(CancellationToken cancellationToken = default)
     {
-        var (config, errMsg) = await FileHelper.LoadJsonAsync("config.json", ConfigJsonSerializerContext.Default.Config, cancellationToken);
-        if (errMsg is null && config.Version != DefaultVersion)
+        var config = await FileHelper.LoadFromJsonFileAsync("config.json", ConfigJsonSerializerContext.Default.Config, cancellationToken);
+        if (config.Version != DefaultVersion)
         {
             config.UpdateConfig();
-            errMsg = await SaveConfigAsync(config, cancellationToken);
+            await config.SaveAsync(cancellationToken);
         }
-        return (config, errMsg);
+        return config;
     }
 
     /// <summary>
     /// Saves config to config.json.
     /// </summary>
-    /// <param name="config">The <see cref="Config"/> object to save.</param>
     /// <param name="cancellationToken">A token that may be used to cancel the write operation.</param>
-    /// <returns>
-    /// An optional error message.
-    /// Null if no errors occurred.
-    /// </returns>
-    public static Task<string?> SaveConfigAsync(Config config, CancellationToken cancellationToken = default)
-        => FileHelper.SaveJsonAsync("config.json", config, ConfigJsonSerializerContext.Default.Config, false, false, cancellationToken);
+    /// <returns>A task that represents the asynchronous write operation.</returns>
+    public Task SaveAsync(CancellationToken cancellationToken = default)
+        => FileHelper.SaveToJsonFileAsync("config.json", this, ConfigJsonSerializerContext.Default.Config, cancellationToken);
 
     /// <summary>
     /// Updates the current object to the latest version.

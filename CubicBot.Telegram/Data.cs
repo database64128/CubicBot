@@ -88,31 +88,25 @@ public sealed class Data
     /// Loads data from data.json.
     /// </summary>
     /// <param name="cancellationToken">A token that may be used to cancel the read operation.</param>
-    /// <returns>
-    /// A ValueTuple containing a <see cref="Data"/> object and an optional error message.
-    /// </returns>
-    public static async Task<(Data data, string? errMsg)> LoadDataAsync(CancellationToken cancellationToken = default)
+    /// <returns>The <see cref="Data"/> object.</returns>
+    public static async Task<Data> LoadDataAsync(CancellationToken cancellationToken = default)
     {
-        var (data, errMsg) = await FileHelper.LoadJsonAsync("data.json", DataJsonSerializerContext.Default.Data, cancellationToken);
-        if (errMsg is null && data.Version != DefaultVersion)
+        var data = await FileHelper.LoadFromJsonFileAsync("data.json", DataJsonSerializerContext.Default.Data, cancellationToken);
+        if (data.Version != DefaultVersion)
         {
             data.UpdateConfig();
-            errMsg = await SaveDataAsync(data, cancellationToken);
+            await data.SaveAsync(cancellationToken);
         }
-        return (data, errMsg);
+        return data;
     }
 
     /// <summary>
     /// Saves data to data.json.
     /// </summary>
-    /// <param name="data">The <see cref="Data"/> object to save.</param>
     /// <param name="cancellationToken">A token that may be used to cancel the write operation.</param>
-    /// <returns>
-    /// An optional error message.
-    /// Null if no errors occurred.
-    /// </returns>
-    public static Task<string?> SaveDataAsync(Data data, CancellationToken cancellationToken = default)
-        => FileHelper.SaveJsonAsync("data.json", data, DataJsonSerializerContext.Default.Data, false, false, cancellationToken);
+    /// <returns>A task that represents the asynchronous write operation.</returns>
+    public Task SaveAsync(CancellationToken cancellationToken = default)
+        => FileHelper.SaveToJsonFileAsync("data.json", this, DataJsonSerializerContext.Default.Data, cancellationToken);
 
     /// <summary>
     /// Updates the current object to the latest version.
