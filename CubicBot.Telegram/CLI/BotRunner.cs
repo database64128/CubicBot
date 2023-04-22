@@ -66,6 +66,9 @@ public static class BotRunner
             var updateReceiver = new QueuedUpdateReceiver(bot, null, UpdateHandler.HandleErrorAsync);
             await updateHandler.HandleUpdateStreamAsync(bot, updateReceiver, cancellationToken);
         }
+        catch (OperationCanceledException)
+        {
+        }
         catch (Exception ex)
         {
             Console.WriteLine($"Failed to start Telegram bot: {ex.Message}");
