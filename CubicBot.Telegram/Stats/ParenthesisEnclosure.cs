@@ -82,12 +82,13 @@ public sealed class ParenthesisEnclosure : IStatsCollector
     public string GetCompensationString()
     {
         var compensation = new string(CollectionsMarshal.AsSpan(_compensation));
-        _compensation.Clear();
         return compensation;
     }
 
     public Task CollectAsync(MessageContext messageContext, CancellationToken cancellationToken)
     {
+        var task = Task.CompletedTask;
+
         if (AnalyzeMessage(messageContext.Text))
         {
             messageContext.MemberOrUserData.ParenthesesUnenclosed += (ulong)_compensation.Count;
@@ -100,10 +101,12 @@ public sealed class ParenthesisEnclosure : IStatsCollector
 
             if (ensureParenthesisEnclosure)
             {
-                return messageContext.ReplyWithTextMessageAndRetryAsync(GetCompensationString(), cancellationToken: cancellationToken);
+                task = messageContext.ReplyWithTextMessageAndRetryAsync(GetCompensationString(), cancellationToken: cancellationToken);
             }
+
+            _compensation.Clear();
         }
 
-        return Task.CompletedTask;
+        return task;
     }
 }
