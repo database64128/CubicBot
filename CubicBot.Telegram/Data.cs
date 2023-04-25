@@ -1,5 +1,6 @@
 ﻿using CubicBot.Telegram.Stats;
 using CubicBot.Telegram.Utils;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,25 +9,16 @@ namespace CubicBot.Telegram;
 
 public sealed class Data
 {
-    /// Gets the default config version
+    /// <summary>
+    /// Defines the default data version
     /// used by this version of the app.
     /// </summary>
-    public static int DefaultVersion => 1;
+    public const int DefaultVersion = 2;
 
     /// <summary>
-    /// Gets or sets the config version number.
+    /// Gets or sets the data version number.
     /// </summary>
     public int Version { get; set; } = DefaultVersion;
-
-    /// <summary>
-    /// Gets or sets the number of processed messages.
-    /// </summary>
-    public ulong MessagesProcessed { get; set; }
-
-    /// <summary>
-    /// Gets or sets the number of handled commands.
-    /// </summary>
-    public ulong CommandsHandled { get; set; }
 
     /// <summary>
     /// Gets or sets the dictionary that stores user stats.
@@ -51,16 +43,12 @@ public sealed class Data
     /// <returns>The user's stats object.</returns>
     public UserData GetOrCreateUserData(long id)
     {
-        if (Users.TryGetValue(id, out var userData))
+        if (!Users.TryGetValue(id, out var userData))
         {
-            return userData;
+            userData = new();
+            Users.Add(id, userData);
         }
-        else
-        {
-            var newUserData = new UserData();
-            Users.Add(id, newUserData);
-            return newUserData;
-        }
+        return userData;
     }
 
     /// <summary>
@@ -72,16 +60,12 @@ public sealed class Data
     /// <returns>The group's stats object.</returns>
     public GroupData GetOrCreateGroupData(long id)
     {
-        if (Groups.TryGetValue(id, out var groupData))
+        if (!Groups.TryGetValue(id, out var groupData))
         {
-            return groupData;
+            groupData = new();
+            Groups.Add(id, groupData);
         }
-        else
-        {
-            var newGroupData = new GroupData();
-            Groups.Add(id, newGroupData);
-            return newGroupData;
-        }
+        return groupData;
     }
 
     /// <summary>
@@ -89,12 +73,12 @@ public sealed class Data
     /// </summary>
     /// <param name="cancellationToken">A token that may be used to cancel the read operation.</param>
     /// <returns>The <see cref="Data"/> object.</returns>
-    public static async Task<Data> LoadDataAsync(CancellationToken cancellationToken = default)
+    public static async Task<Data> LoadAsync(CancellationToken cancellationToken = default)
     {
         var data = await FileHelper.LoadFromJsonFileAsync("data.json", DataJsonSerializerContext.Default.Data, cancellationToken);
         if (data.Version != DefaultVersion)
         {
-            data.UpdateConfig();
+            data.UpdateDataVersion();
             await data.SaveAsync(cancellationToken);
         }
         return data;
@@ -109,17 +93,35 @@ public sealed class Data
         => FileHelper.SaveToJsonFileAsync("data.json", this, DataJsonSerializerContext.Default.Data, cancellationToken);
 
     /// <summary>
-    /// Updates the current object to the latest version.
+    /// Updates data to the latest version.
     /// </summary>
-    public void UpdateConfig()
+    public void UpdateDataVersion()
     {
         switch (Version)
         {
-            case 0: // nothing to do
+            case 0:
                 Version++;
-                goto default; // go to the next update path
+                goto case 1;
+
+            case 1:
+                foreach (var (_, groupData) in Groups)
+                {
+                    foreach (var (_, userData) in groupData.Members)
+                    {
+                        groupData.InterrogatedByOthers += userData.InterrogatedByOthers;
+                        groupData.GrassGrown += userData.GrassGrown;
+                        groupData.ParenthesesUnenclosed += userData.ParenthesesUnenclosed;
+                    }
+                }
+
+                Version++;
+                goto case 2;
+
+            case DefaultVersion:
+                return;
+
             default:
-                break;
+                throw new NotSupportedException($"Data version {Version} is not supported.");
         }
     }
 }

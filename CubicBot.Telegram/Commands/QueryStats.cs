@@ -374,8 +374,7 @@ public sealed class QueryStats
     public static Task SendInterrogatedLeaderboardAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
         => SendLeaderboardAsync(commandContext,
                                 "☕ 被请喝茶排行榜",
-                                x => x.Members.Select(x => x.Value.InterrogatedByOthers)
-                                              .Aggregate(0Ul, (x, y) => x + y),
+                                x => x.InterrogatedByOthers,
                                 x => x.InterrogatedByOthers,
                                 cancellationToken);
     #endregion
@@ -392,8 +391,7 @@ public sealed class QueryStats
     public static Task SendGrassGrownLeaderboardAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
         => SendLeaderboardAsync(commandContext,
                                 "🌿 生草排行榜",
-                                x => x.Members.Select(x => x.Value.GrassGrown)
-                                              .Aggregate(0Ul, (x, y) => x + y),
+                                x => x.GrassGrown,
                                 x => x.GrassGrown,
                                 cancellationToken);
 
@@ -414,8 +412,7 @@ public sealed class QueryStats
     public static Task SendParenthesesUnenclosedLeaderboardAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
         => SendLeaderboardAsync(commandContext,
                                 "🌓 括号发一半排行榜",
-                                x => x.Members.Select(x => x.Value.ParenthesesUnenclosed)
-                                              .Aggregate(0Ul, (x, y) => x + y),
+                                x => x.ParenthesesUnenclosed,
                                 x => x.ParenthesesUnenclosed,
                                 cancellationToken);
 
@@ -438,7 +435,7 @@ public sealed class QueryStats
         var generateLeaderboardTasks = groupData.Members.OrderByDescending(x => getStats(x.Value))
                                                         .Take(10)
                                                         .Select(async x => (await GetChatMemberFirstName(commandContext, x.Key, cancellationToken), getStats(x.Value)));
-        (string firstName, ulong stats)[] leaderboard = (await Task.WhenAll(generateLeaderboardTasks)).ToArray();
+        (string firstName, ulong stats)[] leaderboard = await Task.WhenAll(generateLeaderboardTasks);
 
         var dummyReply = await sendDummyReplyTask;
 

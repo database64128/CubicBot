@@ -2,16 +2,13 @@
 
 namespace CubicBot.Telegram.Stats;
 
-public sealed class UserData
+public sealed class UserData : ChatData
 {
     #region 0. Personal
     public List<Pronouns> PronounList { get; set; } = new();
     public Pronouns? DefaultPronouns { get; set; }
     public Pronouns? PreferredPronouns { get; set; }
     #endregion
-
-    public ulong MessagesProcessed { get; set; }
-    public ulong CommandsHandled { get; set; }
 
     #region 1. Common
     public ulong ApologiesSent { get; set; }
@@ -23,17 +20,7 @@ public sealed class UserData
     public ulong ThankYousSent { get; set; }
     public ulong ThankYousReceived { get; set; }
     public ulong ThanksSaid { get; set; }
-    public ulong VaccinationShotsAdministered { get; set; }
     public ulong VaccinationShotsReceived { get; set; }
-    #endregion
-
-    #region 2. Dice
-    public ulong DicesThrown { get; set; }
-    public ulong DartsThrown { get; set; }
-    public ulong BasketballsThrown { get; set; }
-    public ulong SoccerGoals { get; set; }
-    public ulong SlotMachineRolled { get; set; }
-    public ulong PinsKnocked { get; set; }
     #endregion
 
     #region 3. Consent Not Needed
@@ -47,7 +34,6 @@ public sealed class UserData
     public ulong ForcedByOthers { get; set; }
     public ulong TouchesGiven { get; set; }
     public ulong TouchesReceived { get; set; }
-    public ulong SexInitiated { get; set; }
     public ulong SexReceived { get; set; }
     #endregion
 
@@ -57,23 +43,9 @@ public sealed class UserData
     #endregion
 
     #region 5. Law Enforcement
-    public ulong CopCallsMade { get; set; }
-    public ulong ArrestsMade { get; set; }
     public ulong ArrestsReceived { get; set; }
-    public ulong VerdictsGiven { get; set; }
     public ulong VerdictsReceived { get; set; }
-    public ulong OverthrowAttempts { get; set; }
     public ulong OverthrowAttemptsReceived { get; set; }
-    #endregion
-
-    #region 6. Public Services
-    public ulong AmbulancesCalled { get; set; }
-    public ulong FiresReported { get; set; }
-    #endregion
-
-    #region 7. Chinese
-    public ulong InterrogationsInitiated { get; set; }
-    public ulong InterrogatedByOthers { get; set; }
     #endregion
 
     #region 8. Chinese Tasks
@@ -88,15 +60,4 @@ public sealed class UserData
     #region 9. Systemd
     public ulong SystemctlCommandsUsed { get; set; }
     #endregion
-
-    public ulong GrassGrown { get; set; }
-
-    /// <summary>
-    /// Gets or sets whether to ensure private chat messages are properly
-    /// enclosed in parentheses if any.
-    /// This property does not apply to group chats.
-    /// </summary>
-    public bool EnsureParenthesisEnclosure { get; set; }
-
-    public ulong ParenthesesUnenclosed { get; set; }
 }

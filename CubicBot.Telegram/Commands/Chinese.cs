@@ -58,7 +58,15 @@ public static class Chinese
         if (commandContext.GroupData is GroupData groupData)
             groupData.InterrogationsInitiated++;
 
-        if (commandContext.ReplyToMessageContext?.MemberOrUserData is UserData replyToMemberOrUserData)
-            replyToMemberOrUserData.InterrogatedByOthers++;
+        if (commandContext.ReplyToMessageContext is MessageContext replyToMessageContext)
+            CountInterrogatedByOthers(replyToMessageContext);
+    }
+
+    private static void CountInterrogatedByOthers(MessageContext messageContext)
+    {
+        messageContext.MemberOrUserData.InterrogatedByOthers++;
+
+        if (messageContext.GroupData is GroupData groupData)
+            groupData.InterrogatedByOthers++;
     }
 }

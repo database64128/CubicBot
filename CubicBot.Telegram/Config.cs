@@ -1,6 +1,7 @@
 ﻿using CubicBot.Telegram.Commands;
 using CubicBot.Telegram.Stats;
 using CubicBot.Telegram.Utils;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -8,10 +9,11 @@ namespace CubicBot.Telegram;
 
 public sealed class Config
 {
-    /// Gets the default config version
+    /// <summary>
+    /// Defines the default config version
     /// used by this version of the app.
     /// </summary>
-    public static int DefaultVersion => 1;
+    public const int DefaultVersion = 1;
 
     /// <summary>
     /// Gets or sets the config version number.
@@ -50,12 +52,12 @@ public sealed class Config
     /// </summary>
     /// <param name="cancellationToken">A token that may be used to cancel the read operation.</param>
     /// <returns>The <see cref="Config"/> object.</returns>
-    public static async Task<Config> LoadConfigAsync(CancellationToken cancellationToken = default)
+    public static async Task<Config> LoadAsync(CancellationToken cancellationToken = default)
     {
         var config = await FileHelper.LoadFromJsonFileAsync("config.json", ConfigJsonSerializerContext.Default.Config, cancellationToken);
         if (config.Version != DefaultVersion)
         {
-            config.UpdateConfig();
+            config.UpdateConfigVersion();
             await config.SaveAsync(cancellationToken);
         }
         return config;
@@ -70,17 +72,19 @@ public sealed class Config
         => FileHelper.SaveToJsonFileAsync("config.json", this, ConfigJsonSerializerContext.Default.Config, cancellationToken);
 
     /// <summary>
-    /// Updates the current object to the latest version.
+    /// Updates config to the latest version.
     /// </summary>
-    public void UpdateConfig()
+    public void UpdateConfigVersion()
     {
         switch (Version)
         {
-            case 0: // nothing to do
+            case 0:
                 Version++;
-                goto default; // go to the next update path
+                goto case 1;
+            case DefaultVersion:
+                return;
             default:
-                break;
+                throw new NotSupportedException($"Config version {Version} is not supported.");
         }
     }
 }

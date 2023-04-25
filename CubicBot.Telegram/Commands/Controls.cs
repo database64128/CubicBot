@@ -1,5 +1,4 @@
-﻿using CubicBot.Telegram.Stats;
-using CubicBot.Telegram.Utils;
+﻿using CubicBot.Telegram.Utils;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -30,20 +29,9 @@ public sealed class Controls
 
     public static Task ToggleParenthesisEnclosureAssuranceAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
     {
-        bool ensureParenthesisEnclosure;
-
-        if (commandContext.GroupData is GroupData groupData)
-        {
-            ensureParenthesisEnclosure = groupData.EnsureParenthesisEnclosure;
-            ensureParenthesisEnclosure ^= true;
-            groupData.EnsureParenthesisEnclosure = ensureParenthesisEnclosure;
-        }
-        else
-        {
-            ensureParenthesisEnclosure = commandContext.UserData.EnsureParenthesisEnclosure;
-            ensureParenthesisEnclosure ^= true;
-            commandContext.UserData.EnsureParenthesisEnclosure = ensureParenthesisEnclosure;
-        }
+        var ensureParenthesisEnclosure = commandContext.ChatData.EnsureParenthesisEnclosure;
+        ensureParenthesisEnclosure ^= true;
+        commandContext.ChatData.EnsureParenthesisEnclosure = ensureParenthesisEnclosure;
 
         var responseMarkdownV2 = ensureParenthesisEnclosure switch
         {

@@ -97,10 +97,8 @@ public static class LawEnforcement
         if (commandContext.GroupData is GroupData groupData)
             groupData.ArrestsMade++;
 
-        if (commandContext.ReplyToMessageContext?.MemberOrUserData is UserData replyToMemberOrUserData)
-            replyToMemberOrUserData.ArrestsReceived++;
-        else
-            commandContext.MemberOrUserData.ArrestsReceived++;
+        var targetUserData = commandContext.ReplyToMessageContext?.MemberOrUserData ?? commandContext.MemberOrUserData;
+        targetUserData.ArrestsReceived++;
     }
 
     public static Task GuiltyOrNotAsync(CommandContext commandContext, CancellationToken cancellationToken = default)

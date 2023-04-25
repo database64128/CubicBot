@@ -52,9 +52,14 @@ public class MessageContext
     public UserData? MemberData { get; }
 
     /// <summary>
+    /// Gets the stats object of the current chat.
+    /// </summary>
+    public ChatData ChatData { get; }
+
+    /// <summary>
     /// Gets the user's stats object in the current chat.
     /// </summary>
-    public UserData MemberOrUserData => MemberData ?? UserData;
+    public UserData MemberOrUserData { get; }
 
     /// <summary>
     /// Gets the <see cref="MessageContext"/> of the message replied by the current message.
@@ -88,6 +93,13 @@ public class MessageContext
         {
             GroupData = data.GetOrCreateGroupData(message.Chat.Id);
             MemberData = GroupData.GetOrCreateUserData(UserId);
+            ChatData = GroupData;
+            MemberOrUserData = MemberData;
+        }
+        else
+        {
+            ChatData = UserData;
+            MemberOrUserData = UserData;
         }
     }
 
@@ -106,5 +118,7 @@ public class MessageContext
         UserData = messageContext.UserData;
         GroupData = messageContext.GroupData;
         MemberData = messageContext.MemberData;
+        ChatData = messageContext.ChatData;
+        MemberOrUserData = messageContext.MemberOrUserData;
     }
 }

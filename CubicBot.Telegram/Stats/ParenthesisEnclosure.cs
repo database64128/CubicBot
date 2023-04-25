@@ -93,13 +93,12 @@ public sealed class ParenthesisEnclosure : IStatsCollector
         {
             messageContext.MemberOrUserData.ParenthesesUnenclosed += (ulong)_compensation.Count;
 
-            var ensureParenthesisEnclosure = messageContext.GroupData switch
+            if (messageContext.GroupData is GroupData groupData)
             {
-                null => messageContext.UserData.EnsureParenthesisEnclosure,
-                _ => messageContext.GroupData.EnsureParenthesisEnclosure,
-            };
+                groupData.ParenthesesUnenclosed += (ulong)_compensation.Count;
+            }
 
-            if (ensureParenthesisEnclosure)
+            if (messageContext.ChatData.EnsureParenthesisEnclosure)
             {
                 task = messageContext.ReplyWithTextMessageAndRetryAsync(GetCompensationString(), cancellationToken: cancellationToken);
             }

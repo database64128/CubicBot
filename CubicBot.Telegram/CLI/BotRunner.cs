@@ -15,7 +15,7 @@ public static class BotRunner
 
         try
         {
-            config = await Config.LoadConfigAsync(cancellationToken);
+            config = await Config.LoadAsync(cancellationToken);
         }
         catch (Exception ex)
         {
@@ -38,7 +38,7 @@ public static class BotRunner
 
         try
         {
-            data = await Data.LoadDataAsync(cancellationToken);
+            data = await Data.LoadAsync(cancellationToken);
         }
         catch (Exception ex)
         {

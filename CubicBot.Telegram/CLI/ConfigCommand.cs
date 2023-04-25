@@ -12,7 +12,7 @@ public static class ConfigCommand
 
         try
         {
-            config = await Config.LoadConfigAsync(cancellationToken);
+            config = await Config.LoadAsync(cancellationToken);
         }
         catch (Exception ex)
         {
@@ -66,7 +66,7 @@ public static class ConfigCommand
 
         try
         {
-            config = await Config.LoadConfigAsync(cancellationToken);
+            config = await Config.LoadAsync(cancellationToken);
         }
         catch (Exception ex)
         {
