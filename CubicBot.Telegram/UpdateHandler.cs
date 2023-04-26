@@ -15,32 +15,38 @@ namespace CubicBot.Telegram;
 
 public sealed class UpdateHandler
 {
-    private readonly Config _config;
     private readonly Data _data;
     private readonly List<IDispatch> _dispatches = new();
-
-    public ReadOnlyCollection<CubicBotCommand> Commands { get; }
+    private readonly ReadOnlyCollection<CubicBotCommand> _commands;
 
     public UpdateHandler(string botUsername, Config config, Data data)
     {
-        _config = config;
         _data = data;
 
         if (config.EnableCommands)
         {
             var commandsDispatch = new CommandsDispatch(config, data, botUsername);
-            Commands = commandsDispatch.Commands;
+            _commands = commandsDispatch.Commands;
             _dispatches.Add(commandsDispatch);
         }
         else
         {
-            Commands = Array.Empty<CubicBotCommand>().AsReadOnly();
+            _commands = Array.Empty<CubicBotCommand>().AsReadOnly();
         }
 
         if (config.EnableStats)
         {
             var statsDispatch = new StatsDispatch(config.Stats, data);
             _dispatches.Add(statsDispatch);
+        }
+    }
+
+    public async Task RegisterCommandsAsync(ITelegramBotClient botClient, CancellationToken cancellationToken = default)
+    {
+        if (_commands.Count > 0)
+        {
+            await botClient.SetMyCommandsAsync(_commands, null, null, cancellationToken);
+            Console.WriteLine($"Registered {_commands.Count} bot commands.");
         }
     }
 

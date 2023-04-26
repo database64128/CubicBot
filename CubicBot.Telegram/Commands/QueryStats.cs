@@ -2,7 +2,6 @@
 using CubicBot.Telegram.Utils;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -16,16 +15,11 @@ public sealed class QueryStats
 {
     private readonly Config _config;
 
-    public ReadOnlyCollection<CubicBotCommand> Commands { get; }
-
-    public QueryStats(Config config)
+    public QueryStats(Config config, List<CubicBotCommand> commands)
     {
         _config = config;
 
-        var commands = new List<CubicBotCommand>()
-        {
-            new("get_stats", "📅 View your stats in this chat, or reply to a message to view the sender's stats in this chat.", QueryUserStats),
-        };
+        commands.Add(new("get_stats", "📅 View your stats in this chat, or reply to a message to view the sender's stats in this chat.", QueryUserStats));
 
         if (config.Stats.EnableCommandStats)
         {
@@ -91,8 +85,6 @@ public sealed class QueryStats
         {
             commands.Add(new("leaderboard_half_parentheses", "🌓 括号发一半排行榜", SendParenthesesUnenclosedLeaderboardAsync));
         }
-
-        Commands = commands.AsReadOnly();
     }
 
     public Task QueryUserStats(CommandContext commandContext, CancellationToken cancellationToken = default)

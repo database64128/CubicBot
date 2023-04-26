@@ -1,7 +1,7 @@
 ﻿using CubicBot.Telegram.Stats;
 using CubicBot.Telegram.Utils;
 using System;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -43,12 +43,12 @@ public static class ChineseTasks
         "🆗",
     };
 
-    public static readonly ReadOnlyCollection<CubicBotCommand> Commands = new(new CubicBotCommand[]
+    public static void AddCommands(List<CubicBotCommand> commands)
     {
-        new("ok", "👌 好的，没问题！", OKAsync, statsCollector: CountOKs),
-        new("assign", "📛 交给你了！", AssignAsync, statsCollector: CountAssignments),
-        new("unassign", "💢 不干了！", UnassignAsync, statsCollector: CountUnassign),
-    });
+        commands.Add(new("ok", "👌 好的，没问题！", OKAsync, statsCollector: CountOKs));
+        commands.Add(new("assign", "📛 交给你了！", AssignAsync, statsCollector: CountAssignments));
+        commands.Add(new("unassign", "💢 不干了！", UnassignAsync, statsCollector: CountUnassign));
+    }
 
     public static Task OKAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
     {

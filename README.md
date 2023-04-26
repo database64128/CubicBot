@@ -32,7 +32,7 @@ A stupid and annoying chatbot for your group chats.
 - `/me`: 🤳 What the hell am I doing?
 - `/thank`: 🦃 Reply to or mention the name of the person you would like to thank.
 - `/thanks`: 😊 Say thanks to me!
-- `/vax`: 💉 Gen Z also got the vax!
+- `/vax`: 💉 This ain't Space Needle!
 
 #### 2. Dice
 

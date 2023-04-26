@@ -1,7 +1,7 @@
 ﻿using CubicBot.Telegram.Stats;
 using CubicBot.Telegram.Utils;
 using System;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -23,10 +23,10 @@ public static class NonVegan
         "🍫", "🍿", "🍩", "🍪", "🌰", "🥜", "🍯",
     };
 
-    public static readonly ReadOnlyCollection<CubicBotCommand> Commands = new(new CubicBotCommand[]
+    public static void AddCommands(List<CubicBotCommand> commands)
     {
-        new("eat", "☃️ Do you want to eat a snowman?", EatAsync, statsCollector: CountEats),
-    });
+        commands.Add(new("eat", "☃️ Do you want to eat a snowman?", EatAsync, statsCollector: CountEats));
+    }
 
     public static Task EatAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
     {

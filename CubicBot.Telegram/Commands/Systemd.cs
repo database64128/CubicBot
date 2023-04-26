@@ -1,6 +1,6 @@
 ﻿using CubicBot.Telegram.Utils;
 using System;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot.Types.Enums;
@@ -9,11 +9,6 @@ namespace CubicBot.Telegram.Commands;
 
 public static class Systemd
 {
-    public static readonly ReadOnlyCollection<CubicBotCommand> Commands = new(new CubicBotCommand[]
-    {
-        new("systemctl", "➡️ systemctl <command> [unit]", SystemctlAsync, statsCollector: CountSystemctlCalls),
-    });
-
     private static readonly string[] s_states =
     {
         "[***   ]",
@@ -32,6 +27,11 @@ public static class Systemd
 Usage: `/systemctl <command> [unit]`
 Supported commands: *start*, *stop*, *restart*, *reload*\.
 Reply to a message to use the sender's name as the unit\.";
+
+    public static void AddCommands(List<CubicBotCommand> commands)
+    {
+        commands.Add(new("systemctl", "➡️ systemctl <command> [unit]", SystemctlAsync, statsCollector: CountSystemctlCalls));
+    }
 
     public static Task SystemctlAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
     {

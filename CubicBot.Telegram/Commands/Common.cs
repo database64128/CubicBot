@@ -1,7 +1,7 @@
 ﻿using CubicBot.Telegram.Stats;
 using CubicBot.Telegram.Utils;
 using System;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot.Types;
@@ -17,16 +17,16 @@ public static class Common
         "🍺", "🍻", "🥂", "🧉", "🏺", "🚰", "🧋", "🧃",
     };
 
-    public static readonly ReadOnlyCollection<CubicBotCommand> Commands = new(new CubicBotCommand[]
+    public static void AddCommands(List<CubicBotCommand> commands)
     {
-        new("apologize", "🥺 Sorry about last night.", ApologizeAsync, statsCollector: CountApologies),
-        new("chant", "🗣 Say it out loud!", ChantAsync, statsCollector: CountChants),
-        new("drink", "🥤 I'm thirsty!", DrinkAsync, statsCollector: CountDrinks),
-        new("me", "🤳 What the hell am I doing?", MeAsync, statsCollector: CountMes),
-        new("thank", "🦃 Reply to or mention the name of the person you would like to thank.", SayThankAsync, statsCollector: CountThankYous),
-        new("thanks", "😊 Say thanks to me!", SayThanksAsync, statsCollector: CountThanks),
-        new("vax", "💉 Gen Z also got the vax!", VaccinateAsync, statsCollector: CountVaccinations),
-    });
+        commands.Add(new("apologize", "🥺 Sorry about last night.", ApologizeAsync, statsCollector: CountApologies));
+        commands.Add(new("chant", "🗣 Say it out loud!", ChantAsync, statsCollector: CountChants));
+        commands.Add(new("drink", "🥤 I'm thirsty!", DrinkAsync, statsCollector: CountDrinks));
+        commands.Add(new("me", "🤳 What the hell am I doing?", MeAsync, statsCollector: CountMes));
+        commands.Add(new("thank", "🦃 Reply to or mention the name of the person you would like to thank.", SayThankAsync, statsCollector: CountThankYous));
+        commands.Add(new("thanks", "😊 Say thanks to me!", SayThanksAsync, statsCollector: CountThanks));
+        commands.Add(new("vax", "💉 This ain't Space Needle!", VaccinateAsync, statsCollector: CountVaccinations));
+    }
 
     public static Task ApologizeAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
     {

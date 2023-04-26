@@ -26,62 +26,39 @@ public sealed class CommandsDispatch : IDispatch
         var commands = new List<CubicBotCommand>();
 
         if (config.Commands.EnablePersonal)
-        {
-            commands.AddRange(Personal.Commands);
-        }
+            Personal.AddCommands(commands);
 
         if (config.Commands.EnableCommon)
-        {
-            commands.AddRange(Common.Commands);
-        }
+            Common.AddCommands(commands);
 
         if (config.Commands.EnableDice)
-        {
-            commands.AddRange(Dice.Commands);
-        }
+            Dice.AddCommands(commands);
 
         if (config.Commands.EnableConsentNotNeeded)
-        {
-            commands.AddRange(ConsentNotNeeded.Commands);
-        }
+            ConsentNotNeeded.AddCommands(commands);
 
         if (config.Commands.EnableNonVegan)
-        {
-            commands.AddRange(NonVegan.Commands);
-        }
+            NonVegan.AddCommands(commands);
 
         if (config.Commands.EnableLawEnforcement)
-        {
-            commands.AddRange(LawEnforcement.Commands);
-        }
+            LawEnforcement.AddCommands(commands);
 
         if (config.Commands.EnablePublicServices)
-        {
-            commands.AddRange(PublicServices.Commands);
-        }
+            PublicServices.AddCommands(commands);
 
         if (config.Commands.EnableChinese)
-        {
-            commands.AddRange(Chinese.Commands);
-        }
+            Chinese.AddCommands(commands);
 
         if (config.Commands.EnableChineseTasks)
-        {
-            commands.AddRange(ChineseTasks.Commands);
-        }
+            ChineseTasks.AddCommands(commands);
 
         if (config.Commands.EnableSystemd)
-        {
-            commands.AddRange(Systemd.Commands);
-        }
+            Systemd.AddCommands(commands);
 
         if (config.EnableStats)
         {
-            var queryStats = new QueryStats(config);
-            commands.AddRange(queryStats.Commands);
-
-            var controls = new Controls(config);
-            commands.AddRange(controls.Commands);
+            _ = new QueryStats(config, commands);
+            _ = new Controls(config, commands);
         }
 
         Commands = commands.AsReadOnly();

@@ -1,7 +1,7 @@
 ﻿using CubicBot.Telegram.Stats;
 using CubicBot.Telegram.Utils;
 using System;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -35,10 +35,10 @@ public static class Chinese
         "你要打倒谁？",
     };
 
-    public static readonly ReadOnlyCollection<CubicBotCommand> Commands = new(new CubicBotCommand[]
+    public static void AddCommands(List<CubicBotCommand> commands)
     {
-        new("interrogate", "🔫 开门，查水表！", InterrogateAsync, statsCollector: CountInterrogations),
-    });
+        commands.Add(new("interrogate", "🔫 开门，查水表！", InterrogateAsync, statsCollector: CountInterrogations));
+    }
 
     public static Task InterrogateAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
     {

@@ -1,7 +1,7 @@
 ﻿using CubicBot.Telegram.Stats;
 using CubicBot.Telegram.Utils;
 using System;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -34,11 +34,11 @@ public static class PublicServices
         "🚒", "🧯", "🔥", "❤️‍🔥", "💥", "🚨", "⛑",
     };
 
-    public static readonly ReadOnlyCollection<CubicBotCommand> Commands = new(new CubicBotCommand[]
+    public static void AddCommands(List<CubicBotCommand> commands)
     {
-        new("call_ambulance", "🚑 Busy saving lives?", CallAmbulance, statsCollector: CountAmbulanceCalls),
-        new("call_fire_dept", "🚒 The flames! Beautiful, aren't they?", CallFireDeptAsync, statsCollector: CountFireCalls),
-    });
+        commands.Add(new("call_ambulance", "🚑 Busy saving lives?", CallAmbulance, statsCollector: CountAmbulanceCalls));
+        commands.Add(new("call_fire_dept", "🚒 The flames! Beautiful, aren't they?", CallFireDeptAsync, statsCollector: CountFireCalls));
+    }
 
     public static Task CallAmbulance(CommandContext commandContext, CancellationToken cancellationToken = default)
     {

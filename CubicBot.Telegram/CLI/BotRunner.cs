@@ -59,8 +59,7 @@ public static class BotRunner
                 throw new Exception("Bot username is null or empty.");
 
             var updateHandler = new UpdateHandler(me.Username, config, data);
-            await bot.SetMyCommandsAsync(updateHandler.Commands, null, null, cancellationToken);
-            Console.WriteLine($"Registered {updateHandler.Commands.Count} bot commands.");
+            await updateHandler.RegisterCommandsAsync(bot, cancellationToken);
             Console.WriteLine($"Started Telegram bot: @{me.Username} ({me.Id}).");
 
             var updateReceiver = new QueuedUpdateReceiver(bot, null, UpdateHandler.HandleErrorAsync);

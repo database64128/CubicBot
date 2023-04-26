@@ -1,7 +1,7 @@
 ﻿using CubicBot.Telegram.Stats;
 using CubicBot.Telegram.Utils;
 using System;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot.Types.Enums;
@@ -10,15 +10,15 @@ namespace CubicBot.Telegram.Commands;
 
 public static class Dice
 {
-    public static readonly ReadOnlyCollection<CubicBotCommand> Commands = new(new CubicBotCommand[]
+    public static void AddCommands(List<CubicBotCommand> commands)
     {
-        new("dice", "🎲 Dice it!", SendDiceAsync, statsCollector: CountDices),
-        new("dart", "🎯 Oh shoot!", SendDartAsync, statsCollector: CountDarts),
-        new("basketball", "🏀 404 Basket Not Found", SendBasketballAsync, statsCollector: CountBasketballsThrown),
-        new("soccer", "⚽ It's your goal!", SendSoccerBallAsync, statsCollector: CountSoccerGoals),
-        new("roll", "🎰 Feeling unlucky as hell?", SendSlotMachineAsync, statsCollector: CountSlotRolls),
-        new("bowl", "🎳 Can you knock them all down?", SendBowlingBallAsync, statsCollector: CountBowlingBalls),
-    });
+        commands.Add(new("dice", "🎲 Dice it!", SendDiceAsync, statsCollector: CountDices));
+        commands.Add(new("dart", "🎯 Oh shoot!", SendDartAsync, statsCollector: CountDarts));
+        commands.Add(new("basketball", "🏀 404 Basket Not Found", SendBasketballAsync, statsCollector: CountBasketballsThrown));
+        commands.Add(new("soccer", "⚽ It's your goal!", SendSoccerBallAsync, statsCollector: CountSoccerGoals));
+        commands.Add(new("roll", "🎰 Feeling unlucky as hell?", SendSlotMachineAsync, statsCollector: CountSlotRolls));
+        commands.Add(new("bowl", "🎳 Can you knock them all down?", SendBowlingBallAsync, statsCollector: CountBowlingBalls));
+    }
 
     private static int GetCountFromArgument(string? argument = null)
     {

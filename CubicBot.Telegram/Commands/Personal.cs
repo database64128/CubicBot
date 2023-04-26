@@ -1,6 +1,6 @@
 ﻿using CubicBot.Telegram.Stats;
 using CubicBot.Telegram.Utils;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -11,14 +11,14 @@ namespace CubicBot.Telegram.Commands;
 
 public static class Personal
 {
-    public static readonly ReadOnlyCollection<CubicBotCommand> Commands = new(new CubicBotCommand[]
+    public static void AddCommands(List<CubicBotCommand> commands)
     {
-        new("add_pronouns", "➕ Add pronouns.", AddPronounsAsync),
-        new("remove_pronouns", "➖ Remove pronouns.", RemovePronounsAsync),
-        new("get_pronouns", "❤️ Get someone's pronouns by replying to someone's message, or display your own pronoun settings.", GetPronounsAsync),
-        new("set_default_pronouns", "📛 Set or unset default pronouns for all chats.", SetDefaultPronounsAsync),
-        new("set_preferred_pronouns", "🕶️ Set or unset preferred pronouns for this chat.", SetPreferredPronounsAsync),
-    });
+        commands.Add(new("add_pronouns", "➕ Add pronouns.", AddPronounsAsync));
+        commands.Add(new("remove_pronouns", "➖ Remove pronouns.", RemovePronounsAsync));
+        commands.Add(new("get_pronouns", "❤️ Get someone's pronouns by replying to someone's message, or display your own pronoun settings.", GetPronounsAsync));
+        commands.Add(new("set_default_pronouns", "📛 Set or unset default pronouns for all chats.", SetDefaultPronounsAsync));
+        commands.Add(new("set_preferred_pronouns", "🕶️ Set or unset preferred pronouns for this chat.", SetPreferredPronounsAsync));
+    }
 
     public static Task AddPronounsAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
     {

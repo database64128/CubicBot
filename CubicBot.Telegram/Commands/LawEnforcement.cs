@@ -1,7 +1,7 @@
 ﻿using CubicBot.Telegram.Stats;
 using CubicBot.Telegram.Utils;
 using System;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -33,13 +33,13 @@ public static class LawEnforcement
         "making too much noise during sex 💋",
     };
 
-    public static readonly ReadOnlyCollection<CubicBotCommand> Commands = new(new CubicBotCommand[]
+    public static void AddCommands(List<CubicBotCommand> commands)
     {
-        new("call_cops", "📞 Hello, this is 911. What's your emergency?", CallCopsAsync, statsCollector: CountCopCalls),
-        new("arrest", "🚓 Do I still have the right to remain silent?", ArrestAsync, statsCollector: CountArrests),
-        new("guilty_or_not", "🧑‍⚖️ Yes, your honor.", GuiltyOrNotAsync, statsCollector: CountLawsuits),
-        new("overthrow", "🏛️ Welcome to Capitol Hill!", OverthrowAsync, statsCollector: CountOverthrows),
-    });
+        commands.Add(new("call_cops", "📞 Hello, this is 911. What's your emergency?", CallCopsAsync, statsCollector: CountCopCalls));
+        commands.Add(new("arrest", "🚓 Do I still have the right to remain silent?", ArrestAsync, statsCollector: CountArrests));
+        commands.Add(new("guilty_or_not", "🧑‍⚖️ Yes, your honor.", GuiltyOrNotAsync, statsCollector: CountLawsuits));
+        commands.Add(new("overthrow", "🏛️ Welcome to Capitol Hill!", OverthrowAsync, statsCollector: CountOverthrows));
+    }
 
     public static Task CallCopsAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
     {

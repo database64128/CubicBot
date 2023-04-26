@@ -1,7 +1,7 @@
 ﻿using CubicBot.Telegram.Stats;
 using CubicBot.Telegram.Utils;
 using System;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot.Types;
@@ -23,15 +23,15 @@ public static class ConsentNotNeeded
         "strip naked",
     };
 
-    public static readonly ReadOnlyCollection<CubicBotCommand> Commands = new(new CubicBotCommand[]
+    public static void AddCommands(List<CubicBotCommand> commands)
     {
-        new("cook", "😋 Who cooks the best food in the world? Me!", CookAsync, statsCollector: CountCooks),
-        new("throw", "🥺 Throw me a bone.", ThrowAsync, statsCollector: CountThrows),
-        new("catch", "😏 Catch me if you can.", CatchAsync, statsCollector: CountCatches),
-        new("force", "☮️ Use of force not recommended.", ForceAsync, statsCollector: CountForceUsed),
-        new("touch", "🥲 No touching.", TouchAsync, statsCollector: CountTouches),
-        new("fuck", "😍 Feeling horny as fuck?", FuckAsync, statsCollector: CountSex),
-    });
+        commands.Add(new("cook", "😋 Who cooks the best food in the world? Me!", CookAsync, statsCollector: CountCooks));
+        commands.Add(new("throw", "🥺 Throw me a bone.", ThrowAsync, statsCollector: CountThrows));
+        commands.Add(new("catch", "😏 Catch me if you can.", CatchAsync, statsCollector: CountCatches));
+        commands.Add(new("force", "☮️ Use of force not recommended.", ForceAsync, statsCollector: CountForceUsed));
+        commands.Add(new("touch", "🥲 No touching.", TouchAsync, statsCollector: CountTouches));
+        commands.Add(new("fuck", "😍 Feeling horny as fuck?", FuckAsync, statsCollector: CountSex));
+    }
 
     public static Task CookAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
     {
