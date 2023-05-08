@@ -9,7 +9,6 @@ using Telegram.Bot;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
-using Telegram.Bot.Types.InputFiles;
 using Telegram.Bot.Types.ReplyMarkups;
 
 namespace CubicBot.Telegram.Utils;
@@ -23,6 +22,7 @@ public static class ChatHelper
     public static Task<Message> SendTextMessageWithRetryAsync(
         this MessageContext messageContext,
         string text,
+        int? messageThreadId = null,
         ParseMode? parseMode = null,
         IEnumerable<MessageEntity>? entities = null,
         bool? disableWebPagePreview = null,
@@ -36,6 +36,7 @@ public static class ChatHelper
             (messageContext, cancellationToken) => messageContext.BotClient.SendTextMessageAsync(
                 messageContext.Message.Chat.Id,
                 text,
+                messageThreadId,
                 parseMode,
                 entities,
                 disableWebPagePreview,
@@ -54,6 +55,7 @@ public static class ChatHelper
     public static Task<Message> ReplyWithTextMessageAndRetryAsync(
         this MessageContext messageContext,
         string text,
+        int? messageThreadId = null,
         ParseMode? parseMode = null,
         IEnumerable<MessageEntity>? entities = null,
         bool? disableWebPagePreview = null,
@@ -66,6 +68,7 @@ public static class ChatHelper
             (messageContext, cancellationToken) => messageContext.BotClient.SendTextMessageAsync(
                 messageContext.Message.Chat.Id,
                 text,
+                messageThreadId,
                 parseMode,
                 entities,
                 disableWebPagePreview,
@@ -83,8 +86,9 @@ public static class ChatHelper
     /// <inheritdoc cref="TelegramBotClientExtensions.SendDocumentAsync(ITelegramBotClient, ChatId, InputOnlineFile, InputMedia?, string?, ParseMode?, IEnumerable{MessageEntity}?, bool?, bool?, bool?, int?, bool?, IReplyMarkup?, CancellationToken)"/>
     public static Task<Message> SendDocumentWithRetryAsync(
         this MessageContext messageContext,
-        InputOnlineFile document,
-        InputMedia? thumb = null,
+        InputFile document,
+        int? messageThreadId = null,
+        InputFile? thumbnail = default,
         string? caption = null,
         ParseMode? parseMode = null,
         IEnumerable<MessageEntity>? captionEntities = null,
@@ -99,7 +103,8 @@ public static class ChatHelper
             (messageContext, cancellationToken) => messageContext.BotClient.SendDocumentAsync(
                 messageContext.Message.Chat.Id,
                 document,
-                thumb,
+                messageThreadId,
+                thumbnail,
                 caption,
                 parseMode,
                 captionEntities,
@@ -144,6 +149,7 @@ public static class ChatHelper
     public static Task<Message> SendDiceWithRetryAsync(
         this MessageContext messageContext,
         Emoji emoji,
+        int? messageThreadId = null,
         bool? disableNotification = null,
         bool? protectContent = null,
         int? replyToMessageId = null,
@@ -153,6 +159,7 @@ public static class ChatHelper
         => messageContext.RetryAsync(
             (messageContext, cancellationToken) => messageContext.BotClient.SendDiceAsync(
                 messageContext.Message.Chat.Id,
+                messageThreadId,
                 emoji,
                 disableNotification,
                 protectContent,
@@ -172,6 +179,7 @@ public static class ChatHelper
     public static Task<Message> SendPossiblyLongTextMessageWithRetryAsync(
         this MessageContext messageContext,
         string text,
+        int? messageThreadId = null,
         ParseMode? parseMode = null,
         IEnumerable<MessageEntity>? entities = null,
         bool? disableWebPagePreview = null,
@@ -185,6 +193,7 @@ public static class ChatHelper
         {
             <= 4096 => messageContext.SendTextMessageWithRetryAsync(
                 text,
+                messageThreadId,
                 parseMode,
                 entities,
                 disableWebPagePreview,
@@ -203,6 +212,7 @@ public static class ChatHelper
                     _ => "long-message.txt",
                 },
                 text,
+                messageThreadId,
                 null,
                 null,
                 parseMode,
@@ -227,7 +237,8 @@ public static class ChatHelper
         this MessageContext messageContext,
         string filename,
         string text,
-        InputMedia? thumb = null,
+        int? messageThreadId = null,
+        InputFile? thumbnail = default,
         string? caption = null,
         ParseMode? parseMode = null,
         IEnumerable<MessageEntity>? captionEntities = null,
@@ -241,8 +252,9 @@ public static class ChatHelper
     {
         await using var stream = new MemoryStream(Encoding.UTF8.GetBytes(text));
         return await messageContext.SendDocumentWithRetryAsync(
-            new(stream, filename),
-            thumb,
+            InputFile.FromStream(stream, filename),
+            messageThreadId,
+            thumbnail,
             caption,
             parseMode,
             captionEntities,

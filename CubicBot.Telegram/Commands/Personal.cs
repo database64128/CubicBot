@@ -50,7 +50,7 @@ public static class Personal
             responseMarkdownV2 = helpMarkdownV2;
         }
 
-        return commandContext.ReplyWithTextMessageAndRetryAsync(responseMarkdownV2, ParseMode.MarkdownV2, cancellationToken: cancellationToken);
+        return commandContext.ReplyWithTextMessageAndRetryAsync(responseMarkdownV2, parseMode: ParseMode.MarkdownV2, cancellationToken: cancellationToken);
     }
 
     public static Task RemovePronounsAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
@@ -88,7 +88,7 @@ public static class Personal
             responseMarkdownV2 = $@"❌ Failed to parse *{ChatHelper.EscapeMarkdownV2Plaintext(argument)}*\. Please follow the same format requirements as `/add\_pronouns`\.";
         }
 
-        return commandContext.ReplyWithTextMessageAndRetryAsync(responseMarkdownV2, ParseMode.MarkdownV2, cancellationToken: cancellationToken);
+        return commandContext.ReplyWithTextMessageAndRetryAsync(responseMarkdownV2, parseMode: ParseMode.MarkdownV2, cancellationToken: cancellationToken);
     }
 
     public static Task GetPronounsAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
@@ -104,11 +104,11 @@ public static class Personal
 
             var responseMarkdownV2 = pronouns.Length switch
             {
-                0 => $@"*{firstnameEscaped}* has not set any pronouns yet\. You may address *{firstnameEscaped}* by *{Pronouns.Neutral.ToString()}*\.",
+                0 => $@"*{firstnameEscaped}* has not set any pronouns yet\. You may address *{firstnameEscaped}* by *{Pronouns.Neutral}*\.",
                 _ => $@"You may address *{firstnameEscaped}* by *{pronouns}*\.",
             };
 
-            return commandContext.ReplyWithTextMessageAndRetryAsync(responseMarkdownV2, ParseMode.MarkdownV2, cancellationToken: cancellationToken);
+            return commandContext.ReplyWithTextMessageAndRetryAsync(responseMarkdownV2, parseMode: ParseMode.MarkdownV2, cancellationToken: cancellationToken);
         }
 
         // self query
@@ -180,7 +180,7 @@ public static class Personal
             responseMarkdownV2 = $@"❌ Failed to parse *{ChatHelper.EscapeMarkdownV2Plaintext(argument)}*\. Please follow the same format requirements as `/add\_pronouns`\.";
         }
 
-        return commandContext.ReplyWithTextMessageAndRetryAsync(responseMarkdownV2, ParseMode.MarkdownV2, cancellationToken: cancellationToken);
+        return commandContext.ReplyWithTextMessageAndRetryAsync(responseMarkdownV2, parseMode: ParseMode.MarkdownV2, cancellationToken: cancellationToken);
     }
 
     public static Task SetPreferredPronounsAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
@@ -221,6 +221,6 @@ public static class Personal
             responseMarkdownV2 = $@"❌ Failed to parse *{ChatHelper.EscapeMarkdownV2Plaintext(argument)}*\. Please follow the same format requirements as `/add\_pronouns`\.";
         }
 
-        return commandContext.ReplyWithTextMessageAndRetryAsync(responseMarkdownV2, ParseMode.MarkdownV2, cancellationToken: cancellationToken);
+        return commandContext.ReplyWithTextMessageAndRetryAsync(responseMarkdownV2, parseMode: ParseMode.MarkdownV2, cancellationToken: cancellationToken);
     }
 }

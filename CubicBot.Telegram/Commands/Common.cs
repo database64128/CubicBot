@@ -103,7 +103,7 @@ public static class Common
         // Apply bold format and repeat
         argument = $"*{argument}*{Environment.NewLine}*{argument}*{Environment.NewLine}*{argument}*";
 
-        return commandContext.SendTextMessageWithRetryAsync(argument, ParseMode.MarkdownV2, cancellationToken: cancellationToken);
+        return commandContext.SendTextMessageWithRetryAsync(argument, parseMode: ParseMode.MarkdownV2, cancellationToken: cancellationToken);
     }
 
     public static void CountChants(CommandContext commandContext) => commandContext.MemberOrUserData.ChantsUsed++;
