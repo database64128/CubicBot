@@ -11,16 +11,14 @@ namespace CubicBot.Telegram.Commands;
 public sealed class CommandsDispatch : IDispatch
 {
     private readonly Config _config;
-    private readonly Data _data;
     private readonly string _botUsername;
     private readonly Dictionary<string, CubicBotCommand> _commandDict;
 
     public ReadOnlyCollection<CubicBotCommand> Commands { get; }
 
-    public CommandsDispatch(Config config, Data data, string botUsername)
+    public CommandsDispatch(Config config, string botUsername)
     {
         _config = config;
-        _data = data;
         _botUsername = botUsername;
 
         var commands = new List<CubicBotCommand>();
@@ -94,7 +92,7 @@ public sealed class CommandsDispatch : IDispatch
         return Task.CompletedTask;
     }
 
-    private void CountCommandsHandled(CommandContext commandContext)
+    private static void CountCommandsHandled(CommandContext commandContext)
     {
         commandContext.MemberOrUserData.CommandsHandled++;
 

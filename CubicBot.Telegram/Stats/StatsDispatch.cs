@@ -7,13 +7,10 @@ namespace CubicBot.Telegram.Stats;
 
 public sealed class StatsDispatch : IDispatch
 {
-    private readonly Data _data;
     private readonly List<IStatsCollector> _collectors = new();
 
-    public StatsDispatch(StatsConfig config, Data data)
+    public StatsDispatch(StatsConfig config)
     {
-        _data = data;
-
         if (config.EnableGrass)
         {
             var grass = new Grass();

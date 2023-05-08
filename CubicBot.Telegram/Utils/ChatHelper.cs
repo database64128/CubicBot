@@ -13,7 +13,7 @@ using Telegram.Bot.Types.ReplyMarkups;
 
 namespace CubicBot.Telegram.Utils;
 
-public static class ChatHelper
+public static partial class ChatHelper
 {
     /// <summary>
     /// Sends a text message with auto retry to work around Telegram API's rate limit.
@@ -311,6 +311,12 @@ public static class ChatHelper
         }
     }
 
+    [GeneratedRegex("[_*[\\]()~`>#+\\-=|{}.!]")]
+    private static partial Regex EscapeMarkdownV2PlaintextRegex();
+
+    [GeneratedRegex("[`\\\\]")]
+    private static partial Regex EscapeMarkdownV2CodeBlockRegex();
+
     /// <summary>
     /// Escapes the plaintext per the MarkdownV2 requirements.
     /// This method does not handle markdown entities.
@@ -318,7 +324,7 @@ public static class ChatHelper
     /// <param name="plaintext">The plaintext to be escaped.</param>
     /// <returns>An escaped string.</returns>
     public static string EscapeMarkdownV2Plaintext(string plaintext)
-        => Regex.Replace(plaintext, @"[_*[\]()~`>#+\-=|{}.!]", @"\$&");
+        => EscapeMarkdownV2PlaintextRegex().Replace(plaintext, @"\$&");
 
     /// <summary>
     /// Escapes the code per the MarkdownV2 requirements.
@@ -326,7 +332,7 @@ public static class ChatHelper
     /// <param name="code">The code to be escaped.</param>
     /// <returns>The escaped code.</returns>
     public static string EscapeMarkdownV2CodeBlock(string code)
-        => Regex.Replace(code, @"[`\\]", @"\$&");
+        => EscapeMarkdownV2CodeBlockRegex().Replace(code, @"\$&");
 
     /// <summary>
     /// Parses a text message into a command and an argument if applicable.
