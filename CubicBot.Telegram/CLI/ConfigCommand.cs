@@ -39,6 +39,7 @@ public static class ConfigCommand
         Console.WriteLine($"{"Enable Grass Stats",-36}{config.Stats.EnableGrass}");
         Console.WriteLine($"{"Enable Command Stats",-36}{config.Stats.EnableCommandStats}");
         Console.WriteLine($"{"Enable Message Counter",-36}{config.Stats.EnableMessageCounter}");
+        Console.WriteLine($"{"Enable Parenthesis Enclosure",-36}{config.Stats.EnableParenthesisEnclosure}");
 
         return 0;
     }
@@ -60,6 +61,7 @@ public static class ConfigCommand
         bool? enableGrassStats,
         bool? enableCommandStats,
         bool? enableMessageCounter,
+        bool? enableParenthesisEnclosure,
         CancellationToken cancellationToken = default)
     {
         Config config;
@@ -108,6 +110,8 @@ public static class ConfigCommand
             config.Stats.EnableCommandStats = eCS;
         if (enableMessageCounter is bool eMC)
             config.Stats.EnableMessageCounter = eMC;
+        if (enableParenthesisEnclosure is bool ePE)
+            config.Stats.EnableParenthesisEnclosure = ePE;
 
         try
         {

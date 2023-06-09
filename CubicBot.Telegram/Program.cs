@@ -76,6 +76,10 @@ internal class Program
         {
             Description = "Whether to enable message counter.",
         };
+        var enableParenthesisEnclosureOption = new CliOption<bool?>("--enable-parenthesis-enclosure")
+        {
+            Description = "Whether to enable parenthesis enclosure.",
+        };
 
         var configGetCommand = new CliCommand("get", "Print config.");
 
@@ -97,6 +101,7 @@ internal class Program
             enableGrassStatsOption,
             enableCommandStatsOption,
             enableMessageCounterOption,
+            enableParenthesisEnclosureOption,
         };
 
         configGetCommand.SetAction((_, cancellationToken) => ConfigCommand.GetAsync(cancellationToken));
@@ -118,6 +123,7 @@ internal class Program
             var enableGrassStats = parseResult.GetValue(enableGrassStatsOption);
             var enableCommandStats = parseResult.GetValue(enableCommandStatsOption);
             var enableMessageCounter = parseResult.GetValue(enableMessageCounterOption);
+            var enableParenthesisEnclosure = parseResult.GetValue(enableParenthesisEnclosureOption);
             return ConfigCommand.SetAsync(
                 botToken,
                 enableCommandsModule,
@@ -135,6 +141,7 @@ internal class Program
                 enableGrassStats,
                 enableCommandStats,
                 enableMessageCounter,
+                enableParenthesisEnclosure,
                 cancellationToken);
         });
 
