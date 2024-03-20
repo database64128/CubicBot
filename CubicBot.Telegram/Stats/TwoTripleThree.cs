@@ -1,25 +1,25 @@
 ﻿using CubicBot.Telegram.Utils;
-using System;
 using System.Numerics;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace CubicBot.Telegram.Stats;
 
-public sealed class TwoTripleThree : IStatsCollector
+public sealed partial class TwoTripleThree : IStatsCollector
 {
-    private const string TwoDoubleThree = "233";
+    [GeneratedRegex("^233+|233+$")]
+    private static partial Regex LeadingAndTrailingTwoDoubleThreeRegex();
 
     /// <summary>
-    /// Checks whether the message starts with or ends with "233".
+    /// Checks whether the message starts with or ends with the pattern "233+".
     /// </summary>
     /// <param name="msg">The text message to check.</param>
     /// <returns>
-    /// True if the message starts with or ends with "233".
+    /// True if the message starts with or ends with the pattern "233+".
     /// Otherwise, false.
     /// </returns>
-    private static bool ContainsTwoDoubleThree(ReadOnlySpan<char> msg) => msg.Length >= TwoDoubleThree.Length &&
-        (msg[..TwoDoubleThree.Length] == TwoDoubleThree || msg[(msg.Length - TwoDoubleThree.Length)..] == TwoDoubleThree);
+    private static bool ContainsTwoDoubleThree(string msg) => LeadingAndTrailingTwoDoubleThreeRegex().IsMatch(msg);
 
     public Task CollectAsync(MessageContext messageContext, CancellationToken cancellationToken = default)
     {
