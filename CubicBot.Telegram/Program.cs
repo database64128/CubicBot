@@ -8,7 +8,7 @@ namespace CubicBot.Telegram;
 
 internal class Program
 {
-    private static Task Main(string[] args)
+    private static Task<int> Main(string[] args)
     {
         var botTokenOption = new CliOption<string?>("--bot-token")
         {

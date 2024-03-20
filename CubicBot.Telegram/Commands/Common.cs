@@ -12,10 +12,10 @@ namespace CubicBot.Telegram.Commands;
 public static class Common
 {
     private static readonly string[] s_beverages =
-    {
+    [
         "🍼", "🥛", "☕️", "🫖", "🍵", "🍶", "🍾", "🍷", "🍸", "🍹",
         "🍺", "🍻", "🥂", "🥃", "🧉", "🏺", "🚰", "🥤", "🧋", "🧃",
-    };
+    ];
 
     public static void AddCommands(List<CubicBotCommand> commands)
     {

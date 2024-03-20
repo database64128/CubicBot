@@ -10,14 +10,14 @@ namespace CubicBot.Telegram.Commands;
 public static class Systemd
 {
     private static readonly string[] s_states =
-    {
+    [
         "[***   ]",
         "[ ***  ]",
         "[  *** ]",
         "[   ***]",
         "[*   **]",
         "[**   *]",
-    };
+    ];
 
     private const string WaitState = "[ WAIT ]";
 

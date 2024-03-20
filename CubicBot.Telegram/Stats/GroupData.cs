@@ -4,7 +4,7 @@ namespace CubicBot.Telegram.Stats;
 
 public sealed class GroupData : ChatData
 {
-    public Dictionary<long, UserData> Members { get; set; } = new();
+    public Dictionary<long, UserData> Members { get; set; } = [];
 
     /// <summary>
     /// Gets the member's stats object.

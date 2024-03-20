@@ -15,7 +15,7 @@ namespace CubicBot.Telegram;
 public sealed class UpdateHandler
 {
     private readonly Data _data;
-    private readonly List<IDispatch> _dispatches = new();
+    private readonly List<IDispatch> _dispatches = [];
     private readonly IReadOnlyList<CubicBotCommand> _commands;
 
     public UpdateHandler(string botUsername, Config config, Data data)

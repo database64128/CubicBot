@@ -7,7 +7,7 @@ namespace CubicBot.Telegram.Stats;
 
 public sealed class StatsDispatch : IDispatch
 {
-    private readonly List<IStatsCollector> _collectors = new();
+    private readonly List<IStatsCollector> _collectors = [];
 
     public StatsDispatch(StatsConfig config)
     {

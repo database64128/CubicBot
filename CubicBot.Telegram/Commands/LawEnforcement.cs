@@ -13,25 +13,25 @@ namespace CubicBot.Telegram.Commands;
 public static class LawEnforcement
 {
     private static readonly string[] s_policeOfficers =
-    {
+    [
         "👮‍♀️", "👮🏻‍♀️", "👮🏼‍♀️", "👮🏽‍♀️", "👮🏾‍♀️", "👮🏿‍♀️",
         "👮", "👮🏻", "👮🏼", "👮🏽", "👮🏾", "👮🏿",
         "👮‍♂️", "👮🏻‍♂️", "👮🏼‍♂️", "👮🏽‍♂️", "👮🏾‍♂️", "👮🏿‍♂️",
-    };
+    ];
 
     private static readonly string[] s_policePresence =
-    {
+    [
         "🚓", "🚔", "🚨",
-    };
+    ];
 
     private static readonly string[] s_reasonsForArrest =
-    {
+    [
         "trespassing ⛔",
         "shoplifting 🛍️",
         "stealing a vibrator 📳",
         "masturbating in public 💦",
         "making too much noise during sex 💋",
-    };
+    ];
 
     public static void AddCommands(List<CubicBotCommand> commands)
     {

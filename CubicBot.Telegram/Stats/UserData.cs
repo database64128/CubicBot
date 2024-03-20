@@ -5,7 +5,7 @@ namespace CubicBot.Telegram.Stats;
 public sealed class UserData : ChatData
 {
     #region 0. Personal
-    public List<Pronouns> PronounList { get; set; } = new();
+    public List<Pronouns> PronounList { get; set; } = [];
     public Pronouns? DefaultPronouns { get; set; }
     public Pronouns? PreferredPronouns { get; set; }
     #endregion

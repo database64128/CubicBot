@@ -10,7 +10,7 @@ namespace CubicBot.Telegram.Commands;
 public static class ChineseTasks
 {
     private static readonly string[] s_okAnswers =
-    {
+    [
         "ok",
         "okay",
         "nice",
@@ -41,7 +41,7 @@ public static class ChineseTasks
         "🉑",
         "👌",
         "🆗",
-    };
+    ];
 
     public static void AddCommands(List<CubicBotCommand> commands)
     {

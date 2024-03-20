@@ -8,9 +8,9 @@ namespace CubicBot.Telegram.Stats;
 public sealed class Grass : IStatsCollector
 {
     private static readonly string[] s_grassSeeds =
-    {
+    [
         "cao", "艹", "草", "c奥", "c嗷",
-    };
+    ];
 
     private static bool IsGrowingGrass(string msg) => msg.Length > 0 && s_grassSeeds.Any(seed => msg.Contains(seed));
 

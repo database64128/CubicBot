@@ -10,7 +10,7 @@ namespace CubicBot.Telegram.Commands;
 public static class Chinese
 {
     private static readonly string[] s_questions =
-    {
+    [
         "你发这些什么目的？",
         "谁指使你的？",
         "你的动机是什么？",
@@ -33,7 +33,7 @@ public static class Chinese
         "我劝你谨言慎行！",
         "谁让你发的？",
         "你要打倒谁？",
-    };
+    ];
 
     public static void AddCommands(List<CubicBotCommand> commands)
     {

@@ -25,14 +25,14 @@ public sealed class Data
     /// Key is user ID.
     /// Value is user stats object.
     /// </summary>
-    public Dictionary<long, UserData> Users { get; set; } = new();
+    public Dictionary<long, UserData> Users { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the dictionary that stores group stats.
     /// Key is group ID.
     /// Value is group stats object.
     /// </summary>
-    public Dictionary<long, GroupData> Groups { get; set; } = new();
+    public Dictionary<long, GroupData> Groups { get; set; } = [];
 
     /// <summary>
     /// Gets the user's stats object.

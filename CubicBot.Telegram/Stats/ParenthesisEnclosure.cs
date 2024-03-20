@@ -9,7 +9,7 @@ namespace CubicBot.Telegram.Stats;
 
 public sealed class ParenthesisEnclosure : IStatsCollector
 {
-    private readonly List<char> _compensation = new();
+    private readonly List<char> _compensation = [];
 
     private static readonly Dictionary<char, char> s_enclosureDict = new()
     {

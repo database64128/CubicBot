@@ -11,17 +11,17 @@ namespace CubicBot.Telegram.Commands;
 public static class ConsentNotNeeded
 {
     private static readonly string[] s_cooksAndFood =
-    {
+    [
         "👩‍🍳", "🧑‍🍳", "👨‍🍳", "🍳", "🥘", "🍕",
-    };
+    ];
 
     private static readonly string[] s_forcedToDo =
-    {
+    [
         "give up",
         "eat 💩",
         "surrender",
         "strip naked",
-    };
+    ];
 
     public static void AddCommands(List<CubicBotCommand> commands)
     {
