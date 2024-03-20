@@ -20,27 +20,29 @@ public static class ConfigCommand
             return 1;
         }
 
-        Console.WriteLine($"{"Version",-36}{config.Version}");
-        Console.WriteLine($"{"Bot Token",-36}{config.BotToken}");
-        Console.WriteLine($"{"Enable Commands",-36}{config.EnableCommands}");
-        Console.WriteLine($"{"Enable Stats",-36}{config.EnableStats}");
+        const int columnAlignment = -40;
+
+        Console.WriteLine($"{"Version",columnAlignment}{config.Version}");
+        Console.WriteLine($"{"Bot Token",columnAlignment}{config.BotToken}");
+        Console.WriteLine($"{"Enable Commands",columnAlignment}{config.EnableCommands}");
+        Console.WriteLine($"{"Enable Stats",columnAlignment}{config.EnableStats}");
         Console.WriteLine();
-        Console.WriteLine($"{"Enable Personal Commands",-36}{config.Commands.EnablePersonal}");
-        Console.WriteLine($"{"Enable Common Commands",-36}{config.Commands.EnableCommon}");
-        Console.WriteLine($"{"Enable Dice Commands",-36}{config.Commands.EnableDice}");
-        Console.WriteLine($"{"Enable Consent Not Needed Commands",-36}{config.Commands.EnableConsentNotNeeded}");
-        Console.WriteLine($"{"Enable Non-vegan Commands",-36}{config.Commands.EnableNonVegan}");
-        Console.WriteLine($"{"Enable Law Enforcement Commands",-36}{config.Commands.EnableLawEnforcement}");
-        Console.WriteLine($"{"Enable Public Services Commands",-36}{config.Commands.EnablePublicServices}");
-        Console.WriteLine($"{"Enable Chinese Commands",-36}{config.Commands.EnableChinese}");
-        Console.WriteLine($"{"Enable Chinese Tasks Commands",-36}{config.Commands.EnableChineseTasks}");
-        Console.WriteLine($"{"Enable Systemd Commands",-36}{config.Commands.EnableSystemd}");
+        Console.WriteLine($"{"Enable Personal Commands",columnAlignment}{config.Commands.EnablePersonal}");
+        Console.WriteLine($"{"Enable Common Commands",columnAlignment}{config.Commands.EnableCommon}");
+        Console.WriteLine($"{"Enable Dice Commands",columnAlignment}{config.Commands.EnableDice}");
+        Console.WriteLine($"{"Enable Consent Not Needed Commands",columnAlignment}{config.Commands.EnableConsentNotNeeded}");
+        Console.WriteLine($"{"Enable Non-vegan Commands",columnAlignment}{config.Commands.EnableNonVegan}");
+        Console.WriteLine($"{"Enable Law Enforcement Commands",columnAlignment}{config.Commands.EnableLawEnforcement}");
+        Console.WriteLine($"{"Enable Public Services Commands",columnAlignment}{config.Commands.EnablePublicServices}");
+        Console.WriteLine($"{"Enable Chinese Commands",columnAlignment}{config.Commands.EnableChinese}");
+        Console.WriteLine($"{"Enable Chinese Tasks Commands",columnAlignment}{config.Commands.EnableChineseTasks}");
+        Console.WriteLine($"{"Enable Systemd Commands",columnAlignment}{config.Commands.EnableSystemd}");
         Console.WriteLine();
-        Console.WriteLine($"{"Enable Grass Stats",-36}{config.Stats.EnableGrass}");
-        Console.WriteLine($"{"Enable Command Stats",-36}{config.Stats.EnableCommandStats}");
-        Console.WriteLine($"{"Enable Message Counter",-36}{config.Stats.EnableMessageCounter}");
-        Console.WriteLine($"{"Enable Two Triple Three (2333) Counter",-36}{config.Stats.EnableTwoTripleThree}");
-        Console.WriteLine($"{"Enable Parenthesis Enclosure",-36}{config.Stats.EnableParenthesisEnclosure}");
+        Console.WriteLine($"{"Enable Grass Stats",columnAlignment}{config.Stats.EnableGrass}");
+        Console.WriteLine($"{"Enable Command Stats",columnAlignment}{config.Stats.EnableCommandStats}");
+        Console.WriteLine($"{"Enable Message Counter",columnAlignment}{config.Stats.EnableMessageCounter}");
+        Console.WriteLine($"{"Enable Two Triple Three (2333) Counter",columnAlignment}{config.Stats.EnableTwoTripleThree}");
+        Console.WriteLine($"{"Enable Parenthesis Enclosure",columnAlignment}{config.Stats.EnableParenthesisEnclosure}");
 
         return 0;
     }
