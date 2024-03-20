@@ -1,34 +1,45 @@
 ﻿using CubicBot.Telegram.Utils;
-using System.Linq;
+using System.Numerics;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace CubicBot.Telegram.Stats;
 
-public sealed class Grass : IStatsCollector
+public sealed partial class Grass : IStatsCollector
 {
-    private static readonly string[] s_grassSeeds =
-    [
-        "cao", "艹", "草", "c奥", "c嗷",
-    ];
+    [GeneratedRegex("(cao|c奥|c嗷|艹|草)")]
+    private static partial Regex GrassSeedsRegex();
 
-    private static bool IsGrowingGrass(string msg) => msg.Length > 0 && s_grassSeeds.Any(msg.Contains);
+    private static bool IsGrowingGrass(string msg) => GrassSeedsRegex().IsMatch(msg);
 
     public Task CollectAsync(MessageContext messageContext, CancellationToken cancellationToken = default)
     {
-        if (IsGrowingGrass(messageContext.Text))
+        if (!IsGrowingGrass(messageContext.Text))
+            return Task.CompletedTask;
+
+        var grassGrown = messageContext.MemberOrUserData.GrassGrown;
+        grassGrown++;
+        messageContext.MemberOrUserData.GrassGrown = grassGrown;
+
+        if (messageContext.GroupData is GroupData groupData)
+            groupData.GrassGrown++;
+
+        // Assign achievement on 8, 16, 32...
+        if (!BitOperations.IsPow2(grassGrown) || grassGrown <= 4UL)
+            return Task.CompletedTask;
+
+        const string msgPrefix = "🏆 Achievement Unlocked: ";
+        const string herb = "🌿";
+        var herbCount = BitOperations.TrailingZeroCount(grassGrown);
+        var msg = string.Create(msgPrefix.Length + herb.Length * herbCount, herbCount, (buf, _) =>
         {
-            var grassGrown = messageContext.MemberOrUserData.GrassGrown;
-            grassGrown++;
-            messageContext.MemberOrUserData.GrassGrown = grassGrown;
-
-            if (messageContext.GroupData is GroupData groupData)
-                groupData.GrassGrown++;
-
-            if ((grassGrown & (grassGrown - 1UL)) == 0UL && grassGrown > 4UL) // 8, 16, 32...
-                return messageContext.ReplyWithTextMessageAndRetryAsync($"🏆 Achievement Unlocked: {grassGrown} Grass Grown", cancellationToken: cancellationToken);
-        }
-
-        return Task.CompletedTask;
+            msgPrefix.CopyTo(buf);
+            for (var i = msgPrefix.Length; i < buf.Length; i += herb.Length)
+            {
+                herb.CopyTo(buf[i..]);
+            }
+        });
+        return messageContext.ReplyWithTextMessageAndRetryAsync(msg, cancellationToken: cancellationToken);
     }
 }

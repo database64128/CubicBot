@@ -23,31 +23,30 @@ public sealed partial class TwoTripleThree : IStatsCollector
 
     public Task CollectAsync(MessageContext messageContext, CancellationToken cancellationToken = default)
     {
-        if (ContainsTwoDoubleThree(messageContext.Text))
+        if (!ContainsTwoDoubleThree(messageContext.Text))
+            return Task.CompletedTask;
+
+        var twoTripleThreesUsed = messageContext.MemberOrUserData.TwoTripleThreesUsed;
+        twoTripleThreesUsed++;
+        messageContext.MemberOrUserData.TwoTripleThreesUsed = twoTripleThreesUsed;
+
+        if (messageContext.GroupData is GroupData groupData)
+            groupData.TwoTripleThreesUsed++;
+
+        // Assign achievement on 8, 16, 32...
+        if (!BitOperations.IsPow2(twoTripleThreesUsed) || twoTripleThreesUsed <= 4UL)
+            return Task.CompletedTask;
+
+        const string msgPrefix = "🏆 Achievement Unlocked: 2";
+        var threes = BitOperations.TrailingZeroCount(twoTripleThreesUsed);
+        var msg = string.Create(msgPrefix.Length + threes, threes, (buf, _) =>
         {
-            var twoTripleThreesUsed = messageContext.MemberOrUserData.TwoTripleThreesUsed;
-            twoTripleThreesUsed++;
-            messageContext.MemberOrUserData.TwoTripleThreesUsed = twoTripleThreesUsed;
-
-            if (messageContext.GroupData is GroupData groupData)
-                groupData.TwoTripleThreesUsed++;
-
-            if ((twoTripleThreesUsed & (twoTripleThreesUsed - 1UL)) == 0UL && twoTripleThreesUsed > 4UL) // 8, 16, 32...
+            msgPrefix.CopyTo(buf);
+            for (var i = msgPrefix.Length; i < buf.Length; i++)
             {
-                const string msgPrefix = "🏆 Achievement Unlocked: 2";
-                var threes = BitOperations.Log2(twoTripleThreesUsed);
-                var msg = string.Create(msgPrefix.Length + threes, threes, (buf, _) =>
-                {
-                    msgPrefix.CopyTo(buf);
-                    for (var i = msgPrefix.Length; i < buf.Length; i++)
-                    {
-                        buf[i] = '3';
-                    }
-                });
-                return messageContext.ReplyWithTextMessageAndRetryAsync(msg, cancellationToken: cancellationToken);
+                buf[i] = '3';
             }
-        }
-
-        return Task.CompletedTask;
+        });
+        return messageContext.ReplyWithTextMessageAndRetryAsync(msg, cancellationToken: cancellationToken);
     }
 }
