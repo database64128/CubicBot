@@ -30,7 +30,7 @@ public sealed class UpdateHandler
         }
         else
         {
-            _commands = Array.Empty<CubicBotCommand>();
+            _commands = [];
         }
 
         if (config.EnableStats)

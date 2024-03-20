@@ -241,7 +241,7 @@ public static class ConsentNotNeeded
             replyToMemberOrUserData.SexReceived++;
     }
 
-    private static Task DoActionAsync(CommandContext commandContext, string actionMiddle, string actionEnd, string selfEmoji, CancellationToken cancellationToken = default)
+    private static Task<Message> DoActionAsync(CommandContext commandContext, string actionMiddle, string actionEnd, string selfEmoji, CancellationToken cancellationToken = default)
     {
         if (commandContext.ReplyToMessageContext is MessageContext replyToMessageContext)
         {
