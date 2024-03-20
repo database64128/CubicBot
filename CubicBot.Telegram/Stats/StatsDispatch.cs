@@ -23,6 +23,12 @@ public sealed class StatsDispatch : IDispatch
             _collectors.Add(messageCounter);
         }
 
+        if (config.EnableTwoTripleThree)
+        {
+            var twoTripleThree = new TwoTripleThree();
+            _collectors.Add(twoTripleThree);
+        }
+
         if (config.EnableParenthesisEnclosure)
         {
             var parenthesisEnclosure = new ParenthesisEnclosure();

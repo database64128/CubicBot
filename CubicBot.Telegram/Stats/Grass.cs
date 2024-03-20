@@ -12,9 +12,9 @@ public sealed class Grass : IStatsCollector
         "cao", "艹", "草", "c奥", "c嗷",
     ];
 
-    private static bool IsGrowingGrass(string msg) => msg.Length > 0 && s_grassSeeds.Any(seed => msg.Contains(seed));
+    private static bool IsGrowingGrass(string msg) => msg.Length > 0 && s_grassSeeds.Any(msg.Contains);
 
-    public Task CollectAsync(MessageContext messageContext, CancellationToken cancellationToken)
+    public Task CollectAsync(MessageContext messageContext, CancellationToken cancellationToken = default)
     {
         if (IsGrowingGrass(messageContext.Text))
         {
@@ -26,7 +26,7 @@ public sealed class Grass : IStatsCollector
                 groupData.GrassGrown++;
 
             if ((grassGrown & (grassGrown - 1UL)) == 0UL && grassGrown > 4UL) // 8, 16, 32...
-                return messageContext.ReplyWithTextMessageAndRetryAsync($"🏆 Achievement Unlocked: {grassGrown} Grass Grown", cancellationToken: cancellationToken); ;
+                return messageContext.ReplyWithTextMessageAndRetryAsync($"🏆 Achievement Unlocked: {grassGrown} Grass Grown", cancellationToken: cancellationToken);
         }
 
         return Task.CompletedTask;

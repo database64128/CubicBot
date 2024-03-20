@@ -85,7 +85,7 @@ public sealed class ParenthesisEnclosure : IStatsCollector
         return compensation;
     }
 
-    public Task CollectAsync(MessageContext messageContext, CancellationToken cancellationToken)
+    public Task CollectAsync(MessageContext messageContext, CancellationToken cancellationToken = default)
     {
         var task = Task.CompletedTask;
 

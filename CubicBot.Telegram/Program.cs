@@ -76,6 +76,10 @@ internal class Program
         {
             Description = "Whether to enable message counter.",
         };
+        var enableTwoTripleThreeOption = new CliOption<bool?>("--enable-two-triple-three")
+        {
+            Description = "Whether to enable two triple three (2333) counter.",
+        };
         var enableParenthesisEnclosureOption = new CliOption<bool?>("--enable-parenthesis-enclosure")
         {
             Description = "Whether to enable parenthesis enclosure.",
@@ -123,6 +127,7 @@ internal class Program
             var enableGrassStats = parseResult.GetValue(enableGrassStatsOption);
             var enableCommandStats = parseResult.GetValue(enableCommandStatsOption);
             var enableMessageCounter = parseResult.GetValue(enableMessageCounterOption);
+            var enableTwoTripleThree = parseResult.GetValue(enableTwoTripleThreeOption);
             var enableParenthesisEnclosure = parseResult.GetValue(enableParenthesisEnclosureOption);
             return ConfigCommand.SetAsync(
                 botToken,
@@ -141,6 +146,7 @@ internal class Program
                 enableGrassStats,
                 enableCommandStats,
                 enableMessageCounter,
+                enableTwoTripleThree,
                 enableParenthesisEnclosure,
                 cancellationToken);
         });

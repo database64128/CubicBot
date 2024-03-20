@@ -81,6 +81,11 @@ public sealed class QueryStats
             commands.Add(new("leaderboard_talkative", "🗣️ Who's the most talkative person in this chat?", SendTalkativeLeaderboardAsync));
         }
 
+        if (config.Stats.EnableTwoTripleThree)
+        {
+            commands.Add(new("leaderboard_2333", "🥈 2333 排行榜", SendTwoTripleThreeLeaderboardAsync));
+        }
+
         if (config.Stats.EnableParenthesisEnclosure)
         {
             commands.Add(new("leaderboard_half_parentheses", "🌓 括号发一半排行榜", SendParenthesesUnenclosedLeaderboardAsync));
@@ -106,6 +111,11 @@ public sealed class QueryStats
         if (_config.Stats.EnableGrass)
         {
             responseSB.AppendLine($"生草数量: {targetUserData.GrassGrown}");
+        }
+
+        if (_config.Stats.EnableTwoTripleThree)
+        {
+            responseSB.AppendLine($"2333 发送数量: {targetUserData.TwoTripleThreesUsed}");
         }
 
         if (_config.Stats.EnableParenthesisEnclosure)
@@ -399,6 +409,13 @@ public sealed class QueryStats
                                 "🗣️ Who's the most talkative person in this chat?",
                                 x => x.MessagesProcessed,
                                 x => x.MessagesProcessed,
+                                cancellationToken);
+
+    public static Task SendTwoTripleThreeLeaderboardAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
+        => SendLeaderboardAsync(commandContext,
+                                "🥈 2333 排行榜",
+                                x => x.TwoTripleThreesUsed,
+                                x => x.TwoTripleThreesUsed,
                                 cancellationToken);
 
     public static Task SendParenthesesUnenclosedLeaderboardAsync(CommandContext commandContext, CancellationToken cancellationToken = default)

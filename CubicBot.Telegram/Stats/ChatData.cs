@@ -48,4 +48,6 @@ public abstract class ChatData
     public bool EnsureParenthesisEnclosure { get; set; }
 
     public ulong ParenthesesUnenclosed { get; set; }
+
+    public ulong TwoTripleThreesUsed { get; set; }
 }

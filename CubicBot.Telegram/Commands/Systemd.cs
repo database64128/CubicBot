@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
 namespace CubicBot.Telegram.Commands;
@@ -134,7 +135,7 @@ Reply to a message to use the sender's name as the unit\.";
             cancellationToken: cancellationToken);
     }
 
-    private static Task SendHelpAsync(CommandContext commandContext, string errMsgMarkdownV2, CancellationToken cancellationToken = default)
+    private static Task<Message> SendHelpAsync(CommandContext commandContext, string errMsgMarkdownV2, CancellationToken cancellationToken = default)
         => commandContext.ReplyWithTextMessageAndRetryAsync(errMsgMarkdownV2 + HelpMarkdownV2, parseMode: ParseMode.MarkdownV2, cancellationToken: cancellationToken);
 
     public static void CountSystemctlCalls(CommandContext commandContext) => commandContext.MemberOrUserData.SystemctlCommandsUsed++;

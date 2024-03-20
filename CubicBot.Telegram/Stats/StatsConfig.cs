@@ -8,5 +8,7 @@ public sealed class StatsConfig
 
     public bool EnableMessageCounter { get; set; } = true;
 
+    public bool EnableTwoTripleThree { get; set; } = true;
+
     public bool EnableParenthesisEnclosure { get; set; } = true;
 }
