@@ -59,7 +59,7 @@ jobs:
           ZSTD_NBTHREADS: 2
         run: |
           # CubicBot.Telegram
-          cd CubicBot.Telegram/bin/Release/net7.0/publish
+          cd CubicBot.Telegram/bin/Release/net8.0/publish
           tar -acf ../cubic-bot-telegram-${{ github.ref_name }}-linux.tar.zst .
           cd ../linux-arm64/publish
           tar -acf ../../cubic-bot-telegram-${{ github.ref_name }}-linux-arm64.tar.zst .
@@ -70,7 +70,7 @@ jobs:
         if: matrix.os == 'windows-latest'
         run: |
           # CubicBot.Telegram
-          cd CubicBot.Telegram/bin/Release/net7.0/publish
+          cd CubicBot.Telegram/bin/Release/net8.0/publish
           7z a -tzip -mx=9 -mfb=128 ../cubic-bot-telegram-${{ github.ref_name }}-windows.zip .
           7z a -t7z -m0=lzma2 -mx=9 -mfb=64 -md=64m -ms=on ../cubic-bot-telegram-${{ github.ref_name }}-windows.7z .
           cd ../win-arm64/publish
@@ -86,7 +86,7 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: CubicBot.Telegram/bin/Release/net7.0/*.tar.zst
+          file: CubicBot.Telegram/bin/Release/net8.0/*.tar.zst
           tag: ${{ github.ref }}
           file_glob: true
           prerelease: true
@@ -96,7 +96,7 @@ jobs:
         if: matrix.os == 'windows-latest'
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: CubicBot.Telegram/bin/Release/net7.0/cubic-bot-telegram-*-windows*.*
+          file: CubicBot.Telegram/bin/Release/net8.0/cubic-bot-telegram-*-windows*.*
           tag: ${{ github.ref }}
           file_glob: true
           prerelease: true
