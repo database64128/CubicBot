@@ -29,6 +29,13 @@ Usage: `/systemctl <command> [unit]`
 Supported commands: *start*, *stop*, *restart*, *reload*\.
 Reply to a message to use the sender's name as the unit\.";
 
+    private enum SystemdUnitType
+    {
+        Service,
+        Timer,
+        Target,
+    }
+
     public static void AddCommands(List<CubicBotCommand> commands)
     {
         commands.Add(new("systemctl", "➡️ systemctl <command> [unit]", SystemctlAsync, statsCollector: CountSystemctlCalls));
@@ -41,29 +48,32 @@ Reply to a message to use the sender's name as the unit\.";
             return SendHelpAsync(commandContext, @"Missing command\.", cancellationToken);
         }
 
-        string command, unit;
-        SystemdUnitType unitType = SystemdUnitType.Service;
+        ReadOnlySpan<char> command;
+        string unit;
+        SystemdUnitType unitType;
 
         var spacePos = argument.IndexOf(' ');
         if (spacePos == -1 && commandContext.Message.ReplyToMessage?.From?.FirstName is string firstname)
         {
             command = argument;
             unit = firstname;
+            unitType = SystemdUnitType.Service;
         }
         else if (spacePos > 0 && spacePos < argument.Length - 1)
         {
-            command = argument[..spacePos];
+            command = argument.AsSpan()[..spacePos];
             unit = argument[(spacePos + 1)..];
             var dotPos = unit.LastIndexOf('.');
-            if (dotPos != -1)
+            unitType = dotPos switch
             {
-                unitType = unit[dotPos..] switch
+                -1 => SystemdUnitType.Service,
+                _ => unit.AsSpan()[dotPos..] switch
                 {
                     ".timer" => SystemdUnitType.Timer,
                     ".target" => SystemdUnitType.Target,
                     _ => SystemdUnitType.Service,
-                };
-            }
+                },
+            };
         }
         else
         {
