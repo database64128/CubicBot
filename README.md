@@ -109,7 +109,7 @@ Counts text messages and generates the talkative leaderboard.
 
 ## Build
 
-Prerequisites: .NET 7 SDK
+Prerequisites: .NET 8 SDK
 
 Note for packagers: The application by default uses executable directory as config directory.
 To use user's config directory, define the constant `PACKAGED` when building.
@@ -180,4 +180,4 @@ $ cubic-bot-telegram
 - `System.Linq.Async` and `System.Interactive.Async` are from [dotnet/reactive](https://github.com/dotnet/reactive). They are licensed under the MIT license.
 - [`Telegram.Bot`](https://github.com/TelegramBots/Telegram.Bot) and [`Telegram.Bot.Extensions.Polling`](https://github.com/TelegramBots/Telegram.Bot.Extensions.Polling) are licensed under the MIT license.
 
-© 2022 database64128
+© 2024 database64128
