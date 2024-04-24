@@ -29,27 +29,32 @@ jobs:
 
       - name: Publish framework-dependent
         run: |
-          dotnet publish CubicBot.Telegram -c Release --no-restore
+          dotnet publish CubicBot.Telegram.App -c Release --no-restore
+          dotnet publish CubicBot.Telegram.Tool -c Release --no-restore
 
       - name: Publish self-contained for Linux ARM64
         if: matrix.os == 'ubuntu-latest'
         run: |
-          dotnet publish CubicBot.Telegram -c Release $MSBUILD_PROPS -r linux-arm64 --self-contained
+          dotnet publish CubicBot.Telegram.App -c Release $MSBUILD_PROPS -r linux-arm64 --self-contained
+          dotnet publish CubicBot.Telegram.Tool -c Release $MSBUILD_PROPS -r linux-arm64 --self-contained
 
       - name: Publish self-contained for Linux x64
         if: matrix.os == 'ubuntu-latest'
         run: |
-          dotnet publish CubicBot.Telegram -c Release $MSBUILD_PROPS -r linux-x64 --self-contained
+          dotnet publish CubicBot.Telegram.App -c Release $MSBUILD_PROPS -r linux-x64 --self-contained
+          dotnet publish CubicBot.Telegram.Tool -c Release $MSBUILD_PROPS -r linux-x64 --self-contained
 
       - name: Publish self-contained for Windows ARM64
         if: matrix.os == 'windows-latest'
         run: |
-          dotnet publish CubicBot.Telegram -c Release $MSBUILD_PROPS -r win-arm64 --self-contained
+          dotnet publish CubicBot.Telegram.App -c Release $MSBUILD_PROPS -r win-arm64 --self-contained
+          dotnet publish CubicBot.Telegram.Tool -c Release $MSBUILD_PROPS -r win-arm64 --self-contained
 
       - name: Publish self-contained for Windows x64
         if: matrix.os == 'windows-latest'
         run: |
-          dotnet publish CubicBot.Telegram -c Release $MSBUILD_PROPS -r win-x64 --self-contained
+          dotnet publish CubicBot.Telegram.App -c Release $MSBUILD_PROPS -r win-x64 --self-contained
+          dotnet publish CubicBot.Telegram.Tool -c Release $MSBUILD_PROPS -r win-x64 --self-contained
 
       # Package
       - name: Package for Linux
@@ -58,27 +63,44 @@ jobs:
           ZSTD_CLEVEL: 19
           ZSTD_NBTHREADS: 2
         run: |
-          # CubicBot.Telegram
-          cd CubicBot.Telegram/bin/Release/net8.0/publish
-          tar -acf ../cubic-bot-telegram-${{ github.ref_name }}-linux.tar.zst .
+          # CubicBot.Telegram.App
+          cd CubicBot.Telegram.App/bin/Release/net8.0/publish
+          tar -acf ../cubic-bot-telegram-app-${{ github.ref_name }}-linux.tar.zst .
           cd ../linux-arm64/publish
-          tar -acf ../../cubic-bot-telegram-${{ github.ref_name }}-linux-arm64.tar.zst .
+          tar -acf ../../cubic-bot-telegram-app-${{ github.ref_name }}-linux-arm64.tar.zst .
           cd ../../linux-x64/publish
-          tar -acf ../../cubic-bot-telegram-${{ github.ref_name }}-linux-x64.tar.zst .
+          tar -acf ../../cubic-bot-telegram-app-${{ github.ref_name }}-linux-x64.tar.zst .
+          # CubicBot.Telegram.Tool
+          cd ../../../../../../CubicBot.Telegram.Tool/bin/Release/net8.0/publish
+          tar -acf ../cubic-bot-telegram-tool-${{ github.ref_name }}-linux.tar.zst .
+          cd ../linux-arm64/publish
+          tar -acf ../../cubic-bot-telegram-tool-${{ github.ref_name }}-linux-arm64.tar.zst .
+          cd ../../linux-x64/publish
+          tar -acf ../../cubic-bot-telegram-tool-${{ github.ref_name }}-linux-x64.tar.zst .
 
       - name: Package for Windows
         if: matrix.os == 'windows-latest'
         run: |
-          # CubicBot.Telegram
-          cd CubicBot.Telegram/bin/Release/net8.0/publish
-          7z a -tzip -mx=9 -mfb=128 ../cubic-bot-telegram-${{ github.ref_name }}-windows.zip .
-          7z a -t7z -m0=lzma2 -mx=9 -mfb=64 -md=64m -ms=on ../cubic-bot-telegram-${{ github.ref_name }}-windows.7z .
+          # CubicBot.Telegram.App
+          cd CubicBot.Telegram.App/bin/Release/net8.0/publish
+          7z a -tzip -mx=9 -mfb=128 ../cubic-bot-telegram-app-${{ github.ref_name }}-windows.zip .
+          7z a -t7z -m0=lzma2 -mx=9 -mfb=64 -md=64m -ms=on ../cubic-bot-telegram-app-${{ github.ref_name }}-windows.7z .
           cd ../win-arm64/publish
-          7z a -tzip -mx=9 -mfb=128 ../../cubic-bot-telegram-${{ github.ref_name }}-windows-arm64.zip .
-          7z a -t7z -m0=lzma2 -mx=9 -mfb=64 -md=64m -ms=on ../../cubic-bot-telegram-${{ github.ref_name }}-windows-arm64.7z .
+          7z a -tzip -mx=9 -mfb=128 ../../cubic-bot-telegram-app-${{ github.ref_name }}-windows-arm64.zip .
+          7z a -t7z -m0=lzma2 -mx=9 -mfb=64 -md=64m -ms=on ../../cubic-bot-telegram-app-${{ github.ref_name }}-windows-arm64.7z .
           cd ../../win-x64/publish
-          7z a -tzip -mx=9 -mfb=128 ../../cubic-bot-telegram-${{ github.ref_name }}-windows-x64.zip .
-          7z a -t7z -m0=lzma2 -mx=9 -mfb=64 -md=64m -ms=on ../../cubic-bot-telegram-${{ github.ref_name }}-windows-x64.7z .
+          7z a -tzip -mx=9 -mfb=128 ../../cubic-bot-telegram-app-${{ github.ref_name }}-windows-x64.zip .
+          7z a -t7z -m0=lzma2 -mx=9 -mfb=64 -md=64m -ms=on ../../cubic-bot-telegram-app-${{ github.ref_name }}-windows-x64.7z .
+          # CubicBot.Telegram.Tool
+          cd ../../../../../../CubicBot.Telegram.Tool/bin/Release/net8.0/publish
+          7z a -tzip -mx=9 -mfb=128 ../cubic-bot-telegram-tool-${{ github.ref_name }}-windows.zip .
+          7z a -t7z -m0=lzma2 -mx=9 -mfb=64 -md=64m -ms=on ../cubic-bot-telegram-tool-${{ github.ref_name }}-windows.7z .
+          cd ../win-arm64/publish
+          7z a -tzip -mx=9 -mfb=128 ../../cubic-bot-telegram-tool-${{ github.ref_name }}-windows-arm64.zip .
+          7z a -t7z -m0=lzma2 -mx=9 -mfb=64 -md=64m -ms=on ../../cubic-bot-telegram-tool-${{ github.ref_name }}-windows-arm64.7z .
+          cd ../../win-x64/publish
+          7z a -tzip -mx=9 -mfb=128 ../../cubic-bot-telegram-tool-${{ github.ref_name }}-windows-x64.zip .
+          7z a -t7z -m0=lzma2 -mx=9 -mfb=64 -md=64m -ms=on ../../cubic-bot-telegram-tool-${{ github.ref_name }}-windows-x64.7z .
 
       # Release
       - name: Upload release assets for Linux
@@ -86,7 +108,7 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: CubicBot.Telegram/bin/Release/net8.0/*.tar.zst
+          file: CubicBot.Telegram.*/bin/Release/net8.0/*.tar.zst
           tag: ${{ github.ref }}
           file_glob: true
           prerelease: true
@@ -96,7 +118,7 @@ jobs:
         if: matrix.os == 'windows-latest'
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: CubicBot.Telegram/bin/Release/net8.0/cubic-bot-telegram-*-windows*.*
+          file: CubicBot.Telegram.*/bin/Release/net8.0/cubic-bot-telegram-*-windows*.*
           tag: ${{ github.ref }}
           file_glob: true
           prerelease: true

@@ -1,30 +1,27 @@
 ﻿using CubicBot.Telegram.Commands;
 using CubicBot.Telegram.Stats;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Telegram.Bot;
-using Telegram.Bot.Exceptions;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
 namespace CubicBot.Telegram;
 
-public sealed class UpdateHandler
+public sealed partial class UpdateHandler
 {
     private readonly Data _data;
+    private readonly ILogger _logger;
     private readonly List<IDispatch> _dispatches = [];
     private readonly IReadOnlyList<CubicBotCommand> _commands;
 
-    public UpdateHandler(string botUsername, Config config, Data data)
+    public UpdateHandler(string botUsername, Config config, Data data, ILogger logger)
     {
         _data = data;
+        _logger = logger;
 
         if (config.EnableCommands)
         {
-            var commandsDispatch = new CommandsDispatch(config, botUsername);
+            var commandsDispatch = new CommandsDispatch(config, botUsername, logger);
             _commands = commandsDispatch.Commands;
             _dispatches.Add(commandsDispatch);
         }
@@ -45,14 +42,19 @@ public sealed class UpdateHandler
         if (_commands.Count > 0)
         {
             await botClient.SetMyCommandsAsync(_commands, null, null, cancellationToken);
-            Console.WriteLine($"Registered {_commands.Count} bot commands.");
+            LogRegisteredCommands(_commands.Count);
         }
     }
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Registered {CommandCount} bot commands")]
+    private partial void LogRegisteredCommands(int commandCount);
 
     public async Task HandleUpdateStreamAsync(ITelegramBotClient botClient, IAsyncEnumerable<Update> updates, CancellationToken cancellationToken = default)
     {
         await foreach (var update in updates.WithCancellation(cancellationToken))
         {
+            LogReceivedUpdate(update.Id, update.Type);
+
             if (update.Type == UpdateType.Message && update.Message is not null)
             {
                 var messageContext = new MessageContext(botClient, update.Message, _data);
@@ -72,20 +74,15 @@ public sealed class UpdateHandler
         }
     }
 
-    public static void HandleError(Exception ex)
-    {
-        var errorMessage = ex switch
-        {
-            ApiRequestException apiRequestException => $"Telegram API Error: [{apiRequestException.ErrorCode}] {apiRequestException.Message}",
-            _ => ex.ToString(),
-        };
+    [LoggerMessage(Level = LogLevel.Trace, Message = "Received update with ID {UpdateId} and type {UpdateType}")]
+    private partial void LogReceivedUpdate(int updateId, UpdateType updateType);
 
-        Console.WriteLine(errorMessage);
-    }
-
-    public static Task HandleErrorAsync(Exception ex, CancellationToken _ = default)
+    public Task HandleErrorAsync(Exception ex, CancellationToken _ = default)
     {
         HandleError(ex);
         return Task.CompletedTask;
     }
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Failed to handle update")]
+    private partial void HandleError(Exception ex);
 }

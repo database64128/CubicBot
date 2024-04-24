@@ -1,7 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-
-namespace CubicBot.Telegram;
+﻿namespace CubicBot.Telegram;
 
 public interface IDispatch
 {

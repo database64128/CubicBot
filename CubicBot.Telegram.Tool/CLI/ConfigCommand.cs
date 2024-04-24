@@ -1,8 +1,4 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace CubicBot.Telegram.CLI;
+namespace CubicBot.Telegram.Tool.CLI;
 
 public static class ConfigCommand
 {

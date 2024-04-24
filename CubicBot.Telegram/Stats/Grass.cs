@@ -1,8 +1,6 @@
 ﻿using CubicBot.Telegram.Utils;
 using System.Numerics;
 using System.Text.RegularExpressions;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace CubicBot.Telegram.Stats;
 

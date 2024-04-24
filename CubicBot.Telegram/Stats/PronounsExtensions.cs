@@ -1,6 +1,4 @@
-﻿using System.Linq;
-
-namespace CubicBot.Telegram.Stats;
+﻿namespace CubicBot.Telegram.Stats;
 
 public static class PronounsExtensions
 {

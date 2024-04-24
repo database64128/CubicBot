@@ -7,6 +7,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CubicBot.Telegram", "CubicB
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CubicBot.Telegram.Tests", "CubicBot.Telegram.Tests\CubicBot.Telegram.Tests.csproj", "{A4BCE05E-2876-459D-936C-B2A99F074AF7}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CubicBot.Telegram.App", "CubicBot.Telegram.App\CubicBot.Telegram.App.csproj", "{F3B1FECC-3043-4AC1-B9EE-11AEE793AFB6}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CubicBot.Telegram.Tool", "CubicBot.Telegram.Tool\CubicBot.Telegram.Tool.csproj", "{FC4BB7A0-9AD8-4989-A5BA-7A4780D0E32E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{A4BCE05E-2876-459D-936C-B2A99F074AF7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A4BCE05E-2876-459D-936C-B2A99F074AF7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A4BCE05E-2876-459D-936C-B2A99F074AF7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F3B1FECC-3043-4AC1-B9EE-11AEE793AFB6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F3B1FECC-3043-4AC1-B9EE-11AEE793AFB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F3B1FECC-3043-4AC1-B9EE-11AEE793AFB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F3B1FECC-3043-4AC1-B9EE-11AEE793AFB6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FC4BB7A0-9AD8-4989-A5BA-7A4780D0E32E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FC4BB7A0-9AD8-4989-A5BA-7A4780D0E32E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FC4BB7A0-9AD8-4989-A5BA-7A4780D0E32E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FC4BB7A0-9AD8-4989-A5BA-7A4780D0E32E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,25 +1,24 @@
 ﻿using CubicBot.Telegram.Stats;
 using CubicBot.Telegram.Utils;
-using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace CubicBot.Telegram.Commands;
 
-public sealed class CommandsDispatch : IDispatch
+public sealed partial class CommandsDispatch : IDispatch
 {
     private readonly Config _config;
     private readonly string _botUsername;
+    private readonly ILogger _logger;
     private readonly Dictionary<string, CubicBotCommand> _commandDict;
 
     public ReadOnlyCollection<CubicBotCommand> Commands { get; }
 
-    public CommandsDispatch(Config config, string botUsername)
+    public CommandsDispatch(Config config, string botUsername, ILogger logger)
     {
         _config = config;
         _botUsername = botUsername;
+        _logger = logger;
 
         var commands = new List<CubicBotCommand>();
 
@@ -71,6 +70,8 @@ public sealed class CommandsDispatch : IDispatch
             return Task.CompletedTask;
         }
 
+        LogHandlingCommand(command, argument);
+
         if (_commandDict.TryGetValue(command, out var botCommand))
         {
             var commandContext = new CommandContext(messageContext, command, argument);
@@ -99,4 +100,7 @@ public sealed class CommandsDispatch : IDispatch
         if (commandContext.GroupData is GroupData groupData)
             groupData.CommandsHandled++;
     }
+
+    [LoggerMessage(Level = LogLevel.Trace, Message = "Handling command {Command} with argument {Argument}")]
+    private partial void LogHandlingCommand(string command, string? argument);
 }

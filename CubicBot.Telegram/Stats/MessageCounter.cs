@@ -1,7 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-
-namespace CubicBot.Telegram.Stats;
+﻿namespace CubicBot.Telegram.Stats;
 
 public sealed class MessageCounter : IStatsCollector
 {

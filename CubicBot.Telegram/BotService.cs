@@ -1,15 +1,28 @@
-﻿using System;
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Telegram.Bot;
 using Telegram.Bot.Polling;
 
-namespace CubicBot.Telegram.CLI;
+namespace CubicBot.Telegram;
 
-public static class BotRunner
+public sealed class BotService(ILogger<BotService> logger) : IHostedService
 {
-    public static async Task<int> RunBotAsync(string? botToken, CancellationToken cancellationToken = default)
+    private readonly CancellationTokenSource _cts = new();
+    private Task _botTask = Task.CompletedTask;
+
+    public Task StartAsync(CancellationToken _ = default)
+    {
+        _botTask = RunBotAsync(null, _cts.Token);
+        return Task.CompletedTask;
+    }
+
+    public Task StopAsync(CancellationToken _ = default)
+    {
+        _cts.Cancel();
+        return _botTask;
+    }
+
+    public async Task<int> RunBotAsync(string? botToken, CancellationToken cancellationToken = default)
     {
         Config config;
 
@@ -19,7 +32,7 @@ public static class BotRunner
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Failed to load config: {ex.Message}");
+            logger.LogCritical(ex, "Failed to load config");
             return 1;
         }
 
@@ -30,7 +43,7 @@ public static class BotRunner
             botToken = config.BotToken;
         if (string.IsNullOrEmpty(botToken))
         {
-            Console.WriteLine("Please provide a bot token with command line option `--bot-token`, environment variable `TELEGRAM_BOT_TOKEN`, or in the config file.");
+            logger.LogCritical("Please provide a bot token with command line option `--bot-token`, environment variable `TELEGRAM_BOT_TOKEN`, or in the config file.");
             return 1;
         }
 
@@ -42,7 +55,7 @@ public static class BotRunner
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Failed to load data: {ex.Message}");
+            logger.LogCritical(ex, "Failed to load data");
             return 1;
         }
 
@@ -53,16 +66,16 @@ public static class BotRunner
             using var httpClient = new HttpClient();
             var bot = new TelegramBotClient(botToken, httpClient);
             var me = await bot.GetMeAsync(cancellationToken);
-            if (me.CanReadAllGroupMessages is not true)
-                config.EnableStats = false;
+
             if (string.IsNullOrEmpty(me.Username))
                 throw new Exception("Bot username is null or empty.");
 
-            var updateHandler = new UpdateHandler(me.Username, config, data);
+            var updateHandler = new UpdateHandler(me.Username, config, data, logger);
             await updateHandler.RegisterCommandsAsync(bot, cancellationToken);
-            Console.WriteLine($"Started Telegram bot: @{me.Username} ({me.Id}).");
 
-            var updateReceiver = new QueuedUpdateReceiver(bot, null, UpdateHandler.HandleErrorAsync);
+            logger.LogInformation("Started Telegram bot: @{BotUsername} ({BotId})", me.Username, me.Id);
+
+            var updateReceiver = new QueuedUpdateReceiver(bot, null, updateHandler.HandleErrorAsync);
             await updateHandler.HandleUpdateStreamAsync(bot, updateReceiver, cancellationToken);
         }
         catch (OperationCanceledException)
@@ -70,7 +83,7 @@ public static class BotRunner
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Failed to start Telegram bot: {ex.Message}");
+            logger.LogError(ex, "Failed to start Telegram bot");
             return 1;
         }
 
@@ -78,7 +91,7 @@ public static class BotRunner
         return 0;
     }
 
-    private static async Task SaveDataHourlyAsync(Data data, CancellationToken cancellationToken = default)
+    private async Task SaveDataHourlyAsync(Data data, CancellationToken cancellationToken = default)
     {
         while (!cancellationToken.IsCancellationRequested)
         {
@@ -93,10 +106,11 @@ public static class BotRunner
             try
             {
                 await data.SaveAsync(CancellationToken.None);
+                logger.LogDebug("Saved data");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Failed to save data: {ex.Message}");
+                logger.LogError(ex, "Failed to save data");
             }
         }
     }

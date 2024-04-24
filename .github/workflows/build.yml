@@ -42,67 +42,115 @@ jobs:
 
       - name: Publish framework-dependent
         run: |
-          dotnet publish CubicBot.Telegram -c Release --no-restore
+          dotnet publish CubicBot.Telegram.App -c Release --no-restore
+          dotnet publish CubicBot.Telegram.Tool -c Release --no-restore
 
       - name: Publish self-contained for Linux ARM64
         if: matrix.os == 'ubuntu-latest'
         run: |
-          dotnet publish CubicBot.Telegram -c Release $MSBUILD_PROPS -r linux-arm64 --self-contained
+          dotnet publish CubicBot.Telegram.App -c Release $MSBUILD_PROPS -r linux-arm64 --self-contained
+          dotnet publish CubicBot.Telegram.Tool -c Release $MSBUILD_PROPS -r linux-arm64 --self-contained
 
       - name: Publish self-contained for Linux x64
         if: matrix.os == 'ubuntu-latest'
         run: |
-          dotnet publish CubicBot.Telegram -c Release $MSBUILD_PROPS -r linux-x64 --self-contained
+          dotnet publish CubicBot.Telegram.App -c Release $MSBUILD_PROPS -r linux-x64 --self-contained
+          dotnet publish CubicBot.Telegram.Tool -c Release $MSBUILD_PROPS -r linux-x64 --self-contained
 
       - name: Publish self-contained for Windows ARM64
         if: matrix.os == 'windows-latest'
         run: |
-          dotnet publish CubicBot.Telegram -c Release $MSBUILD_PROPS -r win-arm64 --self-contained
+          dotnet publish CubicBot.Telegram.App -c Release $MSBUILD_PROPS -r win-arm64 --self-contained
+          dotnet publish CubicBot.Telegram.Tool -c Release $MSBUILD_PROPS -r win-arm64 --self-contained
 
       - name: Publish self-contained for Windows x64
         if: matrix.os == 'windows-latest'
         run: |
-          dotnet publish CubicBot.Telegram -c Release $MSBUILD_PROPS -r win-x64 --self-contained
+          dotnet publish CubicBot.Telegram.App -c Release $MSBUILD_PROPS -r win-x64 --self-contained
+          dotnet publish CubicBot.Telegram.Tool -c Release $MSBUILD_PROPS -r win-x64 --self-contained
 
-      # Upload CubicBot.Telegram
-      - name: Upload CubicBot.Telegram artifacts for Linux ARM64
+      # Upload CubicBot.Telegram.App
+      - name: Upload CubicBot.Telegram.App artifacts for Linux ARM64
         if: matrix.os == 'ubuntu-latest'
         uses: actions/upload-artifact@v4
         with:
-          name: cubic-bot-telegram-${{ github.sha }}-linux-arm64
-          path: CubicBot.Telegram/bin/Release/net8.0/linux-arm64/publish/
+          name: cubic-bot-telegram-app-${{ github.sha }}-linux-arm64
+          path: CubicBot.Telegram.App/bin/Release/net8.0/linux-arm64/publish/
 
-      - name: Upload CubicBot.Telegram artifacts for Linux x64
+      - name: Upload CubicBot.Telegram.App artifacts for Linux x64
         if: matrix.os == 'ubuntu-latest'
         uses: actions/upload-artifact@v4
         with:
-          name: cubic-bot-telegram-${{ github.sha }}-linux-x64
-          path: CubicBot.Telegram/bin/Release/net8.0/linux-x64/publish/
+          name: cubic-bot-telegram-app-${{ github.sha }}-linux-x64
+          path: CubicBot.Telegram.App/bin/Release/net8.0/linux-x64/publish/
 
-      - name: Upload CubicBot.Telegram artifacts for Linux framework-dependent
+      - name: Upload CubicBot.Telegram.App artifacts for Linux framework-dependent
         if: matrix.os == 'ubuntu-latest'
         uses: actions/upload-artifact@v4
         with:
-          name: cubic-bot-telegram-${{ github.sha }}-linux
-          path: CubicBot.Telegram/bin/Release/net8.0/publish/
+          name: cubic-bot-telegram-app-${{ github.sha }}-linux
+          path: CubicBot.Telegram.App/bin/Release/net8.0/publish/
 
-      - name: Upload CubicBot.Telegram artifacts for Windows ARM64
+      - name: Upload CubicBot.Telegram.App artifacts for Windows ARM64
         if: matrix.os == 'windows-latest'
         uses: actions/upload-artifact@v4
         with:
-          name: cubic-bot-telegram-${{ github.sha }}-windows-arm64
-          path: CubicBot.Telegram/bin/Release/net8.0/win-arm64/publish/
+          name: cubic-bot-telegram-app-${{ github.sha }}-windows-arm64
+          path: CubicBot.Telegram.App/bin/Release/net8.0/win-arm64/publish/
 
-      - name: Upload CubicBot.Telegram artifacts for Windows x64
+      - name: Upload CubicBot.Telegram.App artifacts for Windows x64
         if: matrix.os == 'windows-latest'
         uses: actions/upload-artifact@v4
         with:
-          name: cubic-bot-telegram-${{ github.sha }}-windows-x64
-          path: CubicBot.Telegram/bin/Release/net8.0/win-x64/publish/
+          name: cubic-bot-telegram-app-${{ github.sha }}-windows-x64
+          path: CubicBot.Telegram.App/bin/Release/net8.0/win-x64/publish/
 
-      - name: Upload CubicBot.Telegram artifacts for Windows framework-dependent
+      - name: Upload CubicBot.Telegram.App artifacts for Windows framework-dependent
         if: matrix.os == 'windows-latest'
         uses: actions/upload-artifact@v4
         with:
-          name: cubic-bot-telegram-${{ github.sha }}-windows
-          path: CubicBot.Telegram/bin/Release/net8.0/publish/
+          name: cubic-bot-telegram-app-${{ github.sha }}-windows
+          path: CubicBot.Telegram.App/bin/Release/net8.0/publish/
+
+      # Upload CubicBot.Telegram.Tool
+      - name: Upload CubicBot.Telegram.Tool artifacts for Linux ARM64
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: cubic-bot-telegram-tool-${{ github.sha }}-linux-arm64
+          path: CubicBot.Telegram.Tool/bin/Release/net8.0/linux-arm64/publish/
+
+      - name: Upload CubicBot.Telegram.Tool artifacts for Linux x64
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: cubic-bot-telegram-tool-${{ github.sha }}-linux-x64
+          path: CubicBot.Telegram.Tool/bin/Release/net8.0/linux-x64/publish/
+
+      - name: Upload CubicBot.Telegram.Tool artifacts for Linux framework-dependent
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: cubic-bot-telegram-tool-${{ github.sha }}-linux
+          path: CubicBot.Telegram.Tool/bin/Release/net8.0/publish/
+
+      - name: Upload CubicBot.Telegram.Tool artifacts for Windows ARM64
+        if: matrix.os == 'windows-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: cubic-bot-telegram-tool-${{ github.sha }}-windows-arm64
+          path: CubicBot.Telegram.Tool/bin/Release/net8.0/win-arm64/publish/
+
+      - name: Upload CubicBot.Telegram.Tool artifacts for Windows x64
+        if: matrix.os == 'windows-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: cubic-bot-telegram-tool-${{ github.sha }}-windows-x64
+          path: CubicBot.Telegram.Tool/bin/Release/net8.0/win-x64/publish/
+
+      - name: Upload CubicBot.Telegram.Tool artifacts for Windows framework-dependent
+        if: matrix.os == 'windows-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: cubic-bot-telegram-tool-${{ github.sha }}-windows
+          path: CubicBot.Telegram.Tool/bin/Release/net8.0/publish/

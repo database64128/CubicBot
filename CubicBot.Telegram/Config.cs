@@ -1,9 +1,6 @@
 ﻿using CubicBot.Telegram.Commands;
 using CubicBot.Telegram.Stats;
 using CubicBot.Telegram.Utils;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace CubicBot.Telegram;
 

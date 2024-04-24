@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace CubicBot.Telegram.Stats;
+﻿namespace CubicBot.Telegram.Stats;
 
 public sealed class GroupData : ChatData
 {

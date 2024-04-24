@@ -1,8 +1,4 @@
 ﻿using CubicBot.Telegram.Utils;
-using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
