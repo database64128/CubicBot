@@ -1,7 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <AssemblyName>cubic-bot-telegram</AssemblyName>
     <Authors>database64128</Authors>
     <Copyright>© 2024 database64128</Copyright>
     <Description>A stupid and annoying chatbot for your group chats.</Description>

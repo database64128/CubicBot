@@ -8,6 +8,8 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>cubic-bot-telegram-app</AssemblyName>
+    <Version>1.2.0</Version>
   </PropertyGroup>
 
 </Project>

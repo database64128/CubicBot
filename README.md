@@ -111,9 +111,6 @@ Counts text messages and generates the talkative leaderboard.
 
 Prerequisites: .NET 8 SDK
 
-Note for packagers: The application by default uses executable directory as config directory.
-To use user's config directory, define the constant `PACKAGED` when building.
-
 ### Build with Release configuration
 
 ```bash
@@ -123,13 +120,14 @@ dotnet build -c Release
 ### Publish as framework-dependent
 
 ```bash
-dotnet publish CubicBot.Telegram -c Release
+dotnet publish CubicBot.Telegram.App -c Release
+dotnet publish CubicBot.Telegram.Tool -c Release
 ```
 
 ### Publish as self-contained for Linux x64
 
 ```bash
-dotnet publish CubicBot.Telegram -c Release \
+dotnet publish CubicBot.Telegram.App -c Release \
     -p:PublishSingleFile=true \
     -p:PublishTrimmed=true \
     -p:DebuggerSupport=false \
@@ -137,13 +135,7 @@ dotnet publish CubicBot.Telegram -c Release \
     -p:EnableUnsafeUTF7Encoding=false \
     -p:InvariantGlobalization=true \
     -r linux-x64 --self-contained
-```
-
-### Publish as self-contained for packaging on Linux x64
-
-```bash
-dotnet publish CubicBot.Telegram -c Release \
-    -p:DefineConstants=PACKAGED \
+dotnet publish CubicBot.Telegram.Tool -c Release \
     -p:PublishSingleFile=true \
     -p:PublishTrimmed=true \
     -p:DebuggerSupport=false \
@@ -157,19 +149,19 @@ dotnet publish CubicBot.Telegram -c Release \
 
 ```bash
 # See usage guide.
-$ cubic-bot-telegram --help
+$ cubic-bot-telegram-tool --help
 
 # Set bot token in config.
-$ cubic-bot-telegram config set --bot-token "1234567:4TT8bAc8GHUspu3ERYn-KGcvsvGB9u_n4ddy"
+$ cubic-bot-telegram-tool config set --bot-token "1234567:4TT8bAc8GHUspu3ERYn-KGcvsvGB9u_n4ddy"
 
 # Disable all stats.
-$ cubic-bot-telegram config set --enable-stats-mod false
+$ cubic-bot-telegram-tool config set --enable-stats-mod false
 
 # Check config.
-$ cubic-bot-telegram config get
+$ cubic-bot-telegram-tool config get
 
 # Start bot.
-$ cubic-bot-telegram
+$ cubic-bot-telegram-app
 ```
 
 ## License
