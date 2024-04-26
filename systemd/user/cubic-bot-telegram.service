@@ -1,10 +1,11 @@
 [Unit]
-Description=Cubic Telegram bot service
+Description=Cubic Telegram Bot
 Wants=network-online.target
 After=network-online.target
 
 [Service]
-ExecStart=/usr/bin/cubic-bot-telegram
+WorkingDirectory=%h/.config/cubic-bot-telegram
+ExecStart=/usr/bin/cubic-bot-telegram-app
 
 [Install]
-WantedBy=multi-user.target default.target
+WantedBy=default.target
