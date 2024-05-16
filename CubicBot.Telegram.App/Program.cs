@@ -1,9 +1,7 @@
 using CubicBot.Telegram;
 
-var builder = WebApplication.CreateBuilder(args);
-
+var builder = Host.CreateApplicationBuilder(args);
 builder.Services.AddHostedService<BotService>();
 
-var app = builder.Build();
-
-await app.RunAsync();
+var host = builder.Build();
+host.Run();
