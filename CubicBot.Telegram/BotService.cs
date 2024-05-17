@@ -5,24 +5,11 @@ using Telegram.Bot.Polling;
 
 namespace CubicBot.Telegram;
 
-public sealed class BotService(ILogger<BotService> logger) : IHostedService
+public sealed class BotService(ILogger<BotService> logger) : BackgroundService
 {
-    private readonly CancellationTokenSource _cts = new();
-    private Task _botTask = Task.CompletedTask;
+    protected override Task ExecuteAsync(CancellationToken stoppingToken) => RunBotAsync(stoppingToken);
 
-    public Task StartAsync(CancellationToken _ = default)
-    {
-        _botTask = RunBotAsync(null, _cts.Token);
-        return Task.CompletedTask;
-    }
-
-    public Task StopAsync(CancellationToken _ = default)
-    {
-        _cts.Cancel();
-        return _botTask;
-    }
-
-    public async Task<int> RunBotAsync(string? botToken, CancellationToken cancellationToken = default)
+    private async Task RunBotAsync(CancellationToken cancellationToken = default)
     {
         Config config;
 
@@ -32,20 +19,15 @@ public sealed class BotService(ILogger<BotService> logger) : IHostedService
         }
         catch (Exception ex)
         {
-            logger.LogCritical(ex, "Failed to load config");
-            return 1;
+            throw new Exception("Failed to load config", ex);
         }
 
         // Priority: commandline option > environment variable > config file
-        if (string.IsNullOrEmpty(botToken))
-            botToken = Environment.GetEnvironmentVariable("TELEGRAM_BOT_TOKEN");
+        var botToken = Environment.GetEnvironmentVariable("TELEGRAM_BOT_TOKEN");
         if (string.IsNullOrEmpty(botToken))
             botToken = config.BotToken;
         if (string.IsNullOrEmpty(botToken))
-        {
-            logger.LogCritical("Please provide a bot token with command line option `--bot-token`, environment variable `TELEGRAM_BOT_TOKEN`, or in the config file.");
-            return 1;
-        }
+            throw new Exception("Please provide a bot token with environment variable `TELEGRAM_BOT_TOKEN`, or in the config file.");
 
         Data data;
 
@@ -55,8 +37,7 @@ public sealed class BotService(ILogger<BotService> logger) : IHostedService
         }
         catch (Exception ex)
         {
-            logger.LogCritical(ex, "Failed to load data");
-            return 1;
+            throw new Exception("Failed to load data", ex);
         }
 
         var saveDataTask = SaveDataHourlyAsync(data, cancellationToken);
@@ -83,12 +64,10 @@ public sealed class BotService(ILogger<BotService> logger) : IHostedService
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Failed to start Telegram bot");
-            return 1;
+            throw new Exception("Failed to start Telegram bot", ex);
         }
 
         await saveDataTask;
-        return 0;
     }
 
     private async Task SaveDataHourlyAsync(Data data, CancellationToken cancellationToken = default)
