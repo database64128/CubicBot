@@ -1,7 +1,9 @@
 ﻿using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Telegram.Bot;
+using Telegram.Bot.Exceptions;
 using Telegram.Bot.Polling;
+using Telegram.Bot.Types;
 
 namespace CubicBot.Telegram;
 
@@ -42,30 +44,51 @@ public sealed class BotService(ILogger<BotService> logger) : BackgroundService
 
         var saveDataTask = SaveDataHourlyAsync(data, cancellationToken);
 
-        try
+        TelegramBotClientOptions options = new(botToken)
         {
-            using var httpClient = new HttpClient();
-            var bot = new TelegramBotClient(botToken, httpClient);
-            var me = await bot.GetMe(cancellationToken);
+            RetryCount = 7,
+        };
+        using HttpClient httpClient = new();
+        TelegramBotClient bot = new(options, httpClient);
+        User me;
 
-            if (string.IsNullOrEmpty(me.Username))
-                throw new Exception("Bot username is null or empty.");
-
-            var updateHandler = new UpdateHandler(me.Username, config, data, logger);
-            await updateHandler.RegisterCommandsAsync(bot, cancellationToken);
-
-            logger.LogInformation("Started Telegram bot: @{BotUsername} ({BotId})", me.Username, me.Id);
-
-            var updateReceiver = new QueuedUpdateReceiver(bot, null, updateHandler.HandleErrorAsync);
-            await updateHandler.HandleUpdateStreamAsync(bot, updateReceiver, cancellationToken);
-        }
-        catch (OperationCanceledException)
+        while (true)
         {
+            try
+            {
+                me = await bot.GetMe(cancellationToken);
+                break;
+            }
+            catch (RequestException ex)
+            {
+                logger.LogWarning(ex, "Failed to get bot info, retrying in 30 seconds");
+                await Task.Delay(30000, cancellationToken);
+            }
         }
-        catch (Exception ex)
+
+        if (string.IsNullOrEmpty(me.Username))
+            throw new Exception("Bot username is null or empty.");
+
+        var updateHandler = new UpdateHandler(me.Username, config, data, logger);
+
+        while (true)
         {
-            throw new Exception("Failed to start Telegram bot", ex);
+            try
+            {
+                await updateHandler.RegisterCommandsAsync(bot, cancellationToken);
+                break;
+            }
+            catch (RequestException ex)
+            {
+                logger.LogWarning(ex, "Failed to register commands, retrying in 30 seconds");
+                await Task.Delay(30000, cancellationToken);
+            }
         }
+
+        logger.LogInformation("Started Telegram bot: @{BotUsername} ({BotId})", me.Username, me.Id);
+
+        var updateReceiver = new QueuedUpdateReceiver(bot, null, updateHandler.HandleErrorAsync);
+        await updateHandler.HandleUpdateStreamAsync(bot, updateReceiver, cancellationToken);
 
         await saveDataTask;
     }
