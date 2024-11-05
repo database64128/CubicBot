@@ -119,7 +119,7 @@ Reply to a message to use the sender's name as the unit\.";
     {
         unit = ChatHelper.EscapeMarkdownV2CodeBlock(unit);
         var rounds = Random.Shared.Next(roundsMin, roundsMax);
-        var sent = await commandContext.SendTextMessageWithRetryAsync(
+        var sent = await commandContext.SendTextMessageAsync(
             $"`{WaitState}{ing}{unit}...`",
             parseMode: ParseMode.MarkdownV2,
             cancellationToken: cancellationToken);
@@ -142,7 +142,7 @@ Reply to a message to use the sender's name as the unit\.";
     }
 
     private static Task<Message> SendHelpAsync(CommandContext commandContext, string errMsgMarkdownV2, CancellationToken cancellationToken = default)
-        => commandContext.ReplyWithTextMessageAndRetryAsync(errMsgMarkdownV2 + HelpMarkdownV2, parseMode: ParseMode.MarkdownV2, cancellationToken: cancellationToken);
+        => commandContext.ReplyWithTextMessageAsync(errMsgMarkdownV2 + HelpMarkdownV2, parseMode: ParseMode.MarkdownV2, cancellationToken: cancellationToken);
 
     public static void CountSystemctlCalls(CommandContext commandContext) => commandContext.MemberOrUserData.SystemctlCommandsUsed++;
 }

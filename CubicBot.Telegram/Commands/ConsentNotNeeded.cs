@@ -93,7 +93,7 @@ public static class ConsentNotNeeded
             9 => $"{firstname} was thrown into a pit of crocodiles and died from a crocodile bite. 🐊",
             _ => $"{firstname} was thrown into a pit of sharks and died from a shark bite. 🦈",
         };
-        return commandContext.SendTextMessageWithRetryAsync(text, cancellationToken: cancellationToken);
+        return commandContext.SendTextMessageAsync(text, cancellationToken: cancellationToken);
     }
 
     public static void CountThrows(CommandContext commandContext)
@@ -125,7 +125,7 @@ public static class ConsentNotNeeded
             _ => $"masturbating to {pronouns.PossessiveDeterminer} profile picture. 💦",
         };
 
-        return commandContext.SendTextMessageWithRetryAsync($"{message.From?.FirstName} {catchPhrase} {argument}", cancellationToken: cancellationToken);
+        return commandContext.SendTextMessageAsync($"{message.From?.FirstName} {catchPhrase} {argument}", cancellationToken: cancellationToken);
     }
 
     public static void CountCatches(CommandContext commandContext)
@@ -144,11 +144,11 @@ public static class ConsentNotNeeded
 
         if (commandContext.ReplyToMessageContext is MessageContext replyToMessageContext)
         {
-            return replyToMessageContext.ReplyWithTextMessageAndRetryAsync($"{message.From?.FirstName} forced {replyToMessageContext.Message.From?.FirstName} to {forcedToDo}.", cancellationToken: cancellationToken);
+            return replyToMessageContext.ReplyWithTextMessageAsync($"{message.From?.FirstName} forced {replyToMessageContext.Message.From?.FirstName} to {forcedToDo}.", cancellationToken: cancellationToken);
         }
         else
         {
-            return commandContext.SendTextMessageWithRetryAsync($"{message.From?.FirstName} was forced to {forcedToDo}.", cancellationToken: cancellationToken);
+            return commandContext.SendTextMessageAsync($"{message.From?.FirstName} was forced to {forcedToDo}.", cancellationToken: cancellationToken);
         }
     }
 
@@ -214,15 +214,15 @@ public static class ConsentNotNeeded
 
         if (commandContext.ReplyToMessageContext is MessageContext replyToMessageContext)
         {
-            return replyToMessageContext.ReplyWithTextMessageAndRetryAsync(symbol, cancellationToken: cancellationToken);
+            return replyToMessageContext.ReplyWithTextMessageAsync(symbol, cancellationToken: cancellationToken);
         }
         else if (commandContext.Argument is string targetName)
         {
-            return commandContext.SendTextMessageWithRetryAsync($"🖕 {targetName}", cancellationToken: cancellationToken);
+            return commandContext.SendTextMessageAsync($"🖕 {targetName}", cancellationToken: cancellationToken);
         }
         else
         {
-            return commandContext.ReplyWithTextMessageAndRetryAsync(symbol, cancellationToken: cancellationToken);
+            return commandContext.ReplyWithTextMessageAsync(symbol, cancellationToken: cancellationToken);
         }
     }
 
@@ -241,15 +241,15 @@ public static class ConsentNotNeeded
     {
         if (commandContext.ReplyToMessageContext is MessageContext replyToMessageContext)
         {
-            return replyToMessageContext.ReplyWithTextMessageAndRetryAsync($"{commandContext.Message.From?.FirstName}{actionMiddle}{replyToMessageContext.Message.From?.FirstName}{actionEnd}", cancellationToken: cancellationToken);
+            return replyToMessageContext.ReplyWithTextMessageAsync($"{commandContext.Message.From?.FirstName}{actionMiddle}{replyToMessageContext.Message.From?.FirstName}{actionEnd}", cancellationToken: cancellationToken);
         }
         else if (commandContext.Argument is string targetName)
         {
-            return commandContext.SendTextMessageWithRetryAsync($"{commandContext.Message.From?.FirstName}{actionMiddle}{targetName}{actionEnd}", cancellationToken: cancellationToken);
+            return commandContext.SendTextMessageAsync($"{commandContext.Message.From?.FirstName}{actionMiddle}{targetName}{actionEnd}", cancellationToken: cancellationToken);
         }
         else
         {
-            return commandContext.ReplyWithTextMessageAndRetryAsync(selfEmoji, cancellationToken: cancellationToken);
+            return commandContext.ReplyWithTextMessageAsync(selfEmoji, cancellationToken: cancellationToken);
         }
     }
 }

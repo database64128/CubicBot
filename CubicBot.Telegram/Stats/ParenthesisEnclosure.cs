@@ -96,7 +96,7 @@ public sealed class ParenthesisEnclosure : IStatsCollector
 
             if (messageContext.ChatData.EnsureParenthesisEnclosure)
             {
-                task = messageContext.ReplyWithTextMessageAndRetryAsync(GetCompensationString(), cancellationToken: cancellationToken);
+                task = messageContext.ReplyWithTextMessageAsync(GetCompensationString(), cancellationToken: cancellationToken);
             }
 
             _compensation.Clear();

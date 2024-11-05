@@ -38,6 +38,6 @@ public sealed partial class Grass : IStatsCollector
                 herb.CopyTo(buf[i..]);
             }
         });
-        return messageContext.ReplyWithTextMessageAndRetryAsync(msg, cancellationToken: cancellationToken);
+        return messageContext.ReplyWithTextMessageAsync(msg, cancellationToken: cancellationToken);
     }
 }

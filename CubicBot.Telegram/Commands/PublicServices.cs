@@ -59,7 +59,7 @@ public static class PublicServices
             }
         }
 
-        return commandContext.SendTextMessageWithRetryAsync(sb.ToString(), cancellationToken: cancellationToken);
+        return commandContext.SendTextMessageAsync(sb.ToString(), cancellationToken: cancellationToken);
     }
 
     public static void CountAmbulanceCalls(CommandContext commandContext)
@@ -94,7 +94,7 @@ public static class PublicServices
             }
         }
 
-        return commandContext.SendTextMessageWithRetryAsync(sb.ToString(), cancellationToken: cancellationToken);
+        return commandContext.SendTextMessageAsync(sb.ToString(), cancellationToken: cancellationToken);
     }
 
     public static void CountFireCalls(CommandContext commandContext)

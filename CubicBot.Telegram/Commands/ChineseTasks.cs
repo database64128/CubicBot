@@ -50,10 +50,7 @@ public static class ChineseTasks
     {
         var randomIndex = Random.Shared.Next(s_okAnswers.Length);
         var randomOKAnswer = s_okAnswers[randomIndex];
-        return commandContext.SendTextMessageWithRetryAsync(
-            randomOKAnswer,
-            replyParameters: commandContext.Message.ReplyToMessage?.Id,
-            cancellationToken: cancellationToken);
+        return commandContext.ReplyToGrandparentWithTextMessageAsync(randomOKAnswer, cancellationToken: cancellationToken);
     }
 
     public static void CountOKs(CommandContext commandContext)
@@ -69,16 +66,16 @@ public static class ChineseTasks
         var replyToMessageContext = commandContext.ReplyToMessageContext;
         if (replyToMessageContext is null) // self assign
         {
-            await commandContext.SendTextMessageWithRetryAsync($"{commandContext.Message.From?.FirstName}: 交  给  我  了", cancellationToken: cancellationToken);
+            await commandContext.SendTextMessageAsync($"{commandContext.Message.From?.FirstName}: 交  给  我  了", cancellationToken: cancellationToken);
         }
         else // assign to someone else
         {
-            await replyToMessageContext.ReplyWithTextMessageAndRetryAsync("交  给  你  了", cancellationToken: cancellationToken);
+            await replyToMessageContext.ReplyWithTextMessageAsync("交  给  你  了", cancellationToken: cancellationToken);
 
             var randomIndex = Random.Shared.Next(s_okAnswers.Length);
             var randomOKAnswer = s_okAnswers[randomIndex];
 
-            await commandContext.ReplyWithTextMessageAndRetryAsync($"{replyToMessageContext.Message.From?.FirstName}: {randomOKAnswer}", cancellationToken: cancellationToken);
+            await commandContext.ReplyWithTextMessageAsync($"{replyToMessageContext.Message.From?.FirstName}: {randomOKAnswer}", cancellationToken: cancellationToken);
         }
     }
 
@@ -94,7 +91,7 @@ public static class ChineseTasks
     {
         var message = commandContext.Message;
         var targetName = message.ReplyToMessage?.From?.FirstName ?? message.From?.FirstName;
-        return commandContext.ReplyWithTextMessageAndRetryAsync($"{targetName}: 不  干  了", cancellationToken: cancellationToken);
+        return commandContext.ReplyWithTextMessageAsync($"{targetName}: 不  干  了", cancellationToken: cancellationToken);
     }
 
     public static void CountUnassign(CommandContext commandContext)

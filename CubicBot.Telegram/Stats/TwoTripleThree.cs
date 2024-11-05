@@ -45,6 +45,6 @@ public sealed partial class TwoTripleThree : IStatsCollector
                 buf[i] = '3';
             }
         });
-        return messageContext.ReplyWithTextMessageAndRetryAsync(msg, cancellationToken: cancellationToken);
+        return messageContext.ReplyWithTextMessageAsync(msg, cancellationToken: cancellationToken);
     }
 }

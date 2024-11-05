@@ -1,41 +1,10 @@
 ﻿using CubicBot.Telegram.Utils;
-using Telegram.Bot.Exceptions;
 using Xunit;
 
 namespace CubicBot.Telegram.Tests;
 
 public class ChatHelperTests
 {
-    [Fact]
-    public void Get_Retry_Wait_Time_Normal()
-    {
-        for (var i = 1; i <= 30; i++)
-        {
-            Test_Get_Retry_Wait_Time(i);
-        }
-    }
-
-    private static void Test_Get_Retry_Wait_Time(int seconds)
-    {
-        var ex = new ApiRequestException($"Too Many Requests: retry after {seconds}", 429);
-
-        var waitTimeSec = ChatHelper.GetRetryWaitTimeMs(ex) / 1000;
-
-        Assert.InRange(waitTimeSec, seconds + 1, seconds + 5);
-    }
-
-    [Theory]
-    [InlineData("💩")]
-    [InlineData("Super super super super super super super long error message.")]
-    public void Get_Retry_Wait_Time_Bad_Message(string message)
-    {
-        var ex = new ApiRequestException(message, 429);
-
-        var waitTimeMs = ChatHelper.GetRetryWaitTimeMs(ex);
-
-        Assert.Equal(15 * 1000, waitTimeMs);
-    }
-
     [Theory]
     [InlineData(null, "fakename", null, null)]
     [InlineData("lol", "fakename", null, null)]

@@ -25,6 +25,6 @@ public sealed class Controls
             false => @"❌ *Parenthesis Enclosure Assurance* is now _disabled_ in this chat\.",
         };
 
-        return commandContext.ReplyWithTextMessageAndRetryAsync(responseMarkdownV2, parseMode: ParseMode.MarkdownV2, cancellationToken: cancellationToken);
+        return commandContext.ReplyWithTextMessageAsync(responseMarkdownV2, parseMode: ParseMode.MarkdownV2, cancellationToken: cancellationToken);
     }
 }

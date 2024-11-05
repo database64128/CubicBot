@@ -244,7 +244,7 @@ public sealed class QueryStats
             responseSB.Append("No stats.");
         }
 
-        return commandContext.ReplyWithTextMessageAndRetryAsync(responseSB.ToString(), cancellationToken: cancellationToken);
+        return commandContext.ReplyWithTextMessageAsync(responseSB.ToString(), cancellationToken: cancellationToken);
     }
 
     #region 1. Common
@@ -430,11 +430,11 @@ public sealed class QueryStats
         var groupData = commandContext.GroupData;
         if (groupData is null)
         {
-            await commandContext.ReplyWithTextMessageAndRetryAsync("This command can only be used in group chats.", cancellationToken: cancellationToken);
+            await commandContext.ReplyWithTextMessageAsync("This command can only be used in group chats.", cancellationToken: cancellationToken);
             return;
         }
 
-        var sendDummyReplyTask = commandContext.ReplyWithTextMessageAndRetryAsync("Querying user information...", cancellationToken: cancellationToken);
+        var sendDummyReplyTask = commandContext.ReplyWithTextMessageAsync("Querying user information...", cancellationToken: cancellationToken);
 
         var generateLeaderboardTasks = groupData.Members.OrderByDescending(x => getStats(x.Value))
                                                         .Take(10)

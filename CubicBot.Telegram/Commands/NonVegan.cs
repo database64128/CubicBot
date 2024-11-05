@@ -29,17 +29,17 @@ public static class NonVegan
     {
         if (commandContext.ReplyToMessageContext is MessageContext replyToMessageContext)
         {
-            return replyToMessageContext.ReplyWithTextMessageAndRetryAsync($"{commandContext.Message.From?.FirstName} ate {replyToMessageContext.Message.From?.FirstName}! 🍴😋", cancellationToken: cancellationToken);
+            return replyToMessageContext.ReplyWithTextMessageAsync($"{commandContext.Message.From?.FirstName} ate {replyToMessageContext.Message.From?.FirstName}! 🍴😋", cancellationToken: cancellationToken);
         }
         else if (commandContext.Argument is string targetName)
         {
-            return commandContext.SendTextMessageWithRetryAsync($"{commandContext.Message.From?.FirstName} ate {targetName}! 🍴😋", cancellationToken: cancellationToken);
+            return commandContext.SendTextMessageAsync($"{commandContext.Message.From?.FirstName} ate {targetName}! 🍴😋", cancellationToken: cancellationToken);
         }
         else
         {
             var foodIndex = Random.Shared.Next(s_food.Length);
             var food = s_food[foodIndex];
-            return commandContext.ReplyWithTextMessageAndRetryAsync(food, cancellationToken: cancellationToken);
+            return commandContext.ReplyWithTextMessageAsync(food, cancellationToken: cancellationToken);
         }
     }
 

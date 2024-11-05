@@ -41,10 +41,7 @@ public static class Chinese
         var randomIndex = Random.Shared.Next(s_questions.Length);
         var randomQuestion = s_questions[randomIndex];
 
-        return commandContext.SendTextMessageWithRetryAsync(
-            randomQuestion,
-            replyParameters: commandContext.Message.ReplyToMessage?.Id,
-            cancellationToken: cancellationToken);
+        return commandContext.ReplyToGrandparentWithTextMessageAsync(randomQuestion, cancellationToken: cancellationToken);
     }
 
     public static void CountInterrogations(CommandContext commandContext)

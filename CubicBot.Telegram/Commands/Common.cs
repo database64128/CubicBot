@@ -44,15 +44,15 @@ public static class Common
                 _ => $" for {commandContext.Argument}",
             };
 
-            return replyToMessageContext.ReplyWithTextMessageAndRetryAsync($"{message.From?.FirstName}: {apologyStart}{argument}, {replyToMessageContext.Message.From?.FirstName}. 🥺", cancellationToken: cancellationToken);
+            return replyToMessageContext.ReplyWithTextMessageAsync($"{message.From?.FirstName}: {apologyStart}{argument}, {replyToMessageContext.Message.From?.FirstName}. 🥺", cancellationToken: cancellationToken);
         }
         else if (commandContext.Argument is string targetName)
         {
-            return commandContext.SendTextMessageWithRetryAsync($"{message.From?.FirstName}: {apologyStart}, {targetName}. 🥺", cancellationToken: cancellationToken);
+            return commandContext.SendTextMessageAsync($"{message.From?.FirstName}: {apologyStart}, {targetName}. 🥺", cancellationToken: cancellationToken);
         }
         else
         {
-            return commandContext.ReplyWithTextMessageAndRetryAsync($"{apologyStart}, {message.From?.FirstName}. 🥺", cancellationToken: cancellationToken);
+            return commandContext.ReplyWithTextMessageAsync($"{apologyStart}, {message.From?.FirstName}. 🥺", cancellationToken: cancellationToken);
         }
     }
 
@@ -99,7 +99,7 @@ public static class Common
         // Apply bold format and repeat
         argument = $"*{argument}*{Environment.NewLine}*{argument}*{Environment.NewLine}*{argument}*";
 
-        return commandContext.SendTextMessageWithRetryAsync(argument, parseMode: ParseMode.MarkdownV2, cancellationToken: cancellationToken);
+        return commandContext.SendTextMessageAsync(argument, parseMode: ParseMode.MarkdownV2, cancellationToken: cancellationToken);
     }
 
     public static void CountChants(CommandContext commandContext) => commandContext.MemberOrUserData.ChantsUsed++;
@@ -108,13 +108,13 @@ public static class Common
     {
         if (commandContext.ReplyToMessageContext is MessageContext replyToMessageContext)
         {
-            return commandContext.ReplyWithTextMessageAndRetryAsync(
+            return commandContext.ReplyWithTextMessageAsync(
                 $"{commandContext.Message.From?.FirstName} drank {replyToMessageContext.Message.From?.FirstName}! 🥤🤤",
                 cancellationToken: cancellationToken);
         }
         else if (commandContext.Argument is string targetName)
         {
-            return commandContext.SendTextMessageWithRetryAsync(
+            return commandContext.SendTextMessageAsync(
                 $"{commandContext.Message.From?.FirstName} drank {targetName}! 🥤🤤",
                 cancellationToken: cancellationToken);
         }
@@ -122,7 +122,7 @@ public static class Common
         {
             var beverageIndex = Random.Shared.Next(s_beverages.Length);
             var beverage = s_beverages[beverageIndex];
-            return commandContext.ReplyWithTextMessageAndRetryAsync(beverage, cancellationToken: cancellationToken);
+            return commandContext.ReplyWithTextMessageAsync(beverage, cancellationToken: cancellationToken);
         }
     }
 
@@ -160,7 +160,7 @@ public static class Common
             },
         };
 
-        return commandContext.SendTextMessageWithRetryAsync(text, entities: entities, cancellationToken: cancellationToken);
+        return commandContext.SendTextMessageAsync(text, entities: entities, cancellationToken: cancellationToken);
     }
 
     public static void CountMes(CommandContext commandContext) => commandContext.MemberOrUserData.MesUsed++;
@@ -169,15 +169,15 @@ public static class Common
     {
         if (commandContext.ReplyToMessageContext is MessageContext replyToMessageContext)
         {
-            return replyToMessageContext.ReplyWithTextMessageAndRetryAsync($"Thank you so much, {replyToMessageContext.Message.From?.FirstName}! 😊", cancellationToken: cancellationToken);
+            return replyToMessageContext.ReplyWithTextMessageAsync($"Thank you so much, {replyToMessageContext.Message.From?.FirstName}! 😊", cancellationToken: cancellationToken);
         }
         else if (commandContext.Argument is string targetName)
         {
-            return commandContext.SendTextMessageWithRetryAsync($"Thank you so much, {targetName}! 😊", cancellationToken: cancellationToken);
+            return commandContext.SendTextMessageAsync($"Thank you so much, {targetName}! 😊", cancellationToken: cancellationToken);
         }
         else
         {
-            return commandContext.ReplyWithTextMessageAndRetryAsync("You must either reply to a message or specify someone to thank!", cancellationToken: cancellationToken);
+            return commandContext.ReplyWithTextMessageAsync("You must either reply to a message or specify someone to thank!", cancellationToken: cancellationToken);
         }
     }
 
@@ -190,15 +190,12 @@ public static class Common
     }
 
     public static Task SayThanksAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
-        => commandContext.ReplyWithTextMessageAndRetryAsync("You're welcome! 🦾", cancellationToken: cancellationToken);
+        => commandContext.ReplyWithTextMessageAsync("You're welcome! 🦾", cancellationToken: cancellationToken);
 
     public static void CountThanks(CommandContext commandContext) => commandContext.MemberOrUserData.ThanksSaid++;
 
     public static Task VaccinateAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
-        => commandContext.SendTextMessageWithRetryAsync(
-            "💉",
-            replyParameters: commandContext.Message.ReplyToMessage?.Id,
-            cancellationToken: cancellationToken);
+        => commandContext.ReplyToGrandparentWithTextMessageAsync("💉", cancellationToken: cancellationToken);
 
     public static void CountVaccinations(CommandContext commandContext)
     {

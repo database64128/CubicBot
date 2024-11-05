@@ -60,7 +60,7 @@ public static class LawEnforcement
             }
         }
 
-        return commandContext.SendTextMessageWithRetryAsync(sb.ToString(), cancellationToken: cancellationToken);
+        return commandContext.SendTextMessageAsync(sb.ToString(), cancellationToken: cancellationToken);
     }
 
     public static void CountCopCalls(CommandContext commandContext)
@@ -78,11 +78,11 @@ public static class LawEnforcement
 
         if (commandContext.ReplyToMessageContext is MessageContext replyToMessageContext)
         {
-            return replyToMessageContext.ReplyWithTextMessageAndRetryAsync($"{replyToMessageContext.Message.From?.FirstName} has been arrested for {reason}.", cancellationToken: cancellationToken);
+            return replyToMessageContext.ReplyWithTextMessageAsync($"{replyToMessageContext.Message.From?.FirstName} has been arrested for {reason}.", cancellationToken: cancellationToken);
         }
         else
         {
-            return commandContext.SendTextMessageWithRetryAsync($"{commandContext.Message.From?.FirstName} has been arrested for {reason}.", cancellationToken: cancellationToken);
+            return commandContext.SendTextMessageAsync($"{commandContext.Message.From?.FirstName} has been arrested for {reason}.", cancellationToken: cancellationToken);
         }
     }
 
@@ -106,10 +106,7 @@ public static class LawEnforcement
             _ => "The jury failed to reach a consensus.",
         };
 
-        return commandContext.SendTextMessageWithRetryAsync(
-            verdict,
-            replyParameters: commandContext.Message.ReplyToMessage?.Id,
-            cancellationToken: cancellationToken);
+        return commandContext.ReplyToGrandparentWithTextMessageAsync(verdict, cancellationToken: cancellationToken);
     }
 
     public static void CountLawsuits(CommandContext commandContext)
@@ -152,7 +149,7 @@ public static class LawEnforcement
             _ => $"{message.From?.FirstName} failed to overthrow {targetMessage.From?.FirstName} and was taken into custody by the FBI. {s_policeOfficers[Random.Shared.Next(s_policeOfficers.Length)]}",
         };
 
-        await commandContext.SendTextMessageWithRetryAsync(text, cancellationToken: cancellationToken);
+        await commandContext.SendTextMessageAsync(text, cancellationToken: cancellationToken);
     }
 
     public static void CountOverthrows(CommandContext commandContext)
