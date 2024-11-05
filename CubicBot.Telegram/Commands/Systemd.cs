@@ -128,14 +128,14 @@ Reply to a message to use the sender's name as the unit\.";
         {
             await Task.Delay(2000, cancellationToken);
             await commandContext.EditMessageTextWithRetryAsync(
-                sent.MessageId,
+                sent.Id,
                 $"`{s_states[i % s_states.Length]}{ing}{unit}...`",
                 ParseMode.MarkdownV2,
                 cancellationToken: cancellationToken);
         }
 
         await commandContext.EditMessageTextWithRetryAsync(
-            sent.MessageId,
+            sent.Id,
             $"`{OkState}{ed}{unit}.`",
             ParseMode.MarkdownV2,
             cancellationToken: cancellationToken);

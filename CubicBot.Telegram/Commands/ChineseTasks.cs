@@ -52,7 +52,7 @@ public static class ChineseTasks
         var randomOKAnswer = s_okAnswers[randomIndex];
         return commandContext.SendTextMessageWithRetryAsync(
             randomOKAnswer,
-            replyToMessageId: commandContext.Message.ReplyToMessage?.MessageId,
+            replyParameters: commandContext.Message.ReplyToMessage?.Id,
             cancellationToken: cancellationToken);
     }
 

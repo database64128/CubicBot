@@ -195,7 +195,10 @@ public static class Common
     public static void CountThanks(CommandContext commandContext) => commandContext.MemberOrUserData.ThanksSaid++;
 
     public static Task VaccinateAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
-        => commandContext.SendTextMessageWithRetryAsync("💉", replyToMessageId: commandContext.Message.ReplyToMessage?.MessageId, cancellationToken: cancellationToken);
+        => commandContext.SendTextMessageWithRetryAsync(
+            "💉",
+            replyParameters: commandContext.Message.ReplyToMessage?.Id,
+            cancellationToken: cancellationToken);
 
     public static void CountVaccinations(CommandContext commandContext)
     {

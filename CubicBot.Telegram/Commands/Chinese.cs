@@ -43,7 +43,7 @@ public static class Chinese
 
         return commandContext.SendTextMessageWithRetryAsync(
             randomQuestion,
-            replyToMessageId: commandContext.Message.ReplyToMessage?.MessageId,
+            replyParameters: commandContext.Message.ReplyToMessage?.Id,
             cancellationToken: cancellationToken);
     }
 

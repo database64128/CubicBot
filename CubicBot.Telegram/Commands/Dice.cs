@@ -24,14 +24,14 @@ public static class Dice
             return Random.Shared.Next(1, 4);
     }
 
-    private static Task SendAnimatedEmojiAsync(CommandContext commandContext, Emoji emoji, CancellationToken cancellationToken = default)
+    private static Task SendAnimatedEmojiAsync(CommandContext commandContext, string emoji, CancellationToken cancellationToken = default)
     {
         var count = GetCountFromArgument(commandContext.Argument);
         var tasks = new Task[count];
 
         for (var i = 0; i < tasks.Length; i++)
         {
-            tasks[i] = (commandContext.SendDiceWithRetryAsync(emoji, disableNotification: true, cancellationToken: cancellationToken));
+            tasks[i] = commandContext.SendDiceWithRetryAsync(emoji, disableNotification: true, cancellationToken: cancellationToken);
         }
 
         return Task.WhenAll(tasks);

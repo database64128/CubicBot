@@ -41,7 +41,7 @@ public sealed partial class UpdateHandler
     {
         if (_commands.Count > 0)
         {
-            await botClient.SetMyCommandsAsync(_commands, null, null, cancellationToken);
+            await botClient.SetMyCommands(_commands, cancellationToken: cancellationToken);
             LogRegisteredCommands(_commands.Count);
         }
     }

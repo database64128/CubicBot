@@ -13,154 +13,169 @@ public static partial class ChatHelper
     /// <summary>
     /// Sends a text message with auto retry to work around Telegram API's rate limit.
     /// </summary>
-    /// <inheritdoc cref="TelegramBotClientExtensions.SendTextMessageAsync(ITelegramBotClient, ChatId, string, ParseMode?, IEnumerable{MessageEntity}?, bool?, bool?, bool?, int?, bool?, IReplyMarkup?, CancellationToken)"/>
+    /// <inheritdoc cref="TelegramBotClientExtensions.SendMessage"/>
     public static Task<Message> SendTextMessageWithRetryAsync(
         this MessageContext messageContext,
         string text,
-        int? messageThreadId = null,
-        ParseMode? parseMode = null,
-        IEnumerable<MessageEntity>? entities = null,
-        bool? disableWebPagePreview = null,
-        bool? disableNotification = null,
-        bool? protectContent = null,
-        int? replyToMessageId = null,
-        bool? allowSendingWithoutReply = null,
-        IReplyMarkup? replyMarkup = null,
+        ParseMode parseMode = default,
+        ReplyParameters? replyParameters = default,
+        IReplyMarkup? replyMarkup = default,
+        LinkPreviewOptions? linkPreviewOptions = default,
+        int? messageThreadId = default,
+        IEnumerable<MessageEntity>? entities = default,
+        bool disableNotification = default,
+        bool protectContent = default,
+        string? messageEffectId = default,
+        string? businessConnectionId = default,
+        bool allowPaidBroadcast = default,
         CancellationToken cancellationToken = default)
         => messageContext.RetryAsync(
-            (messageContext, cancellationToken) => messageContext.BotClient.SendTextMessageAsync(
+            (messageContext, cancellationToken) => messageContext.BotClient.SendMessage(
                 messageContext.Message.Chat.Id,
                 text,
-                messageThreadId,
                 parseMode,
+                replyParameters,
+                replyMarkup,
+                linkPreviewOptions,
+                messageThreadId,
                 entities,
-                disableWebPagePreview,
                 disableNotification,
                 protectContent,
-                replyToMessageId,
-                allowSendingWithoutReply,
-                replyMarkup,
+                messageEffectId,
+                businessConnectionId,
+                allowPaidBroadcast,
                 cancellationToken),
             cancellationToken);
 
     /// <summary>
     /// Replies with a text message and auto retry to work around Telegram API's rate limit.
     /// </summary>
-    /// <inheritdoc cref="SendTextMessageWithRetryAsync(MessageContext, string, ParseMode?, IEnumerable{MessageEntity}?, bool?, bool?, bool?, int?, bool?, IReplyMarkup?, CancellationToken)"/>
+    /// <inheritdoc cref="SendTextMessageWithRetryAsync"/>
     public static Task<Message> ReplyWithTextMessageAndRetryAsync(
         this MessageContext messageContext,
         string text,
-        int? messageThreadId = null,
-        ParseMode? parseMode = null,
-        IEnumerable<MessageEntity>? entities = null,
-        bool? disableWebPagePreview = null,
-        bool? disableNotification = null,
-        bool? protectContent = null,
-        bool? allowSendingWithoutReply = null,
-        IReplyMarkup? replyMarkup = null,
+        ParseMode parseMode = default,
+        IReplyMarkup? replyMarkup = default,
+        LinkPreviewOptions? linkPreviewOptions = default,
+        int? messageThreadId = default,
+        IEnumerable<MessageEntity>? entities = default,
+        bool disableNotification = default,
+        bool protectContent = default,
+        string? messageEffectId = default,
+        string? businessConnectionId = default,
+        bool allowPaidBroadcast = default,
         CancellationToken cancellationToken = default)
-        => messageContext.RetryAsync(
-            (messageContext, cancellationToken) => messageContext.BotClient.SendTextMessageAsync(
-                messageContext.Message.Chat.Id,
-                text,
-                messageThreadId,
-                parseMode,
-                entities,
-                disableWebPagePreview,
-                disableNotification,
-                protectContent,
-                messageContext.Message.MessageId,
-                allowSendingWithoutReply,
-                replyMarkup,
-                cancellationToken),
+        => messageContext.SendTextMessageWithRetryAsync(
+            text,
+            parseMode,
+            messageContext.Message.Id,
+            replyMarkup,
+            linkPreviewOptions,
+            messageThreadId,
+            entities,
+            disableNotification,
+            protectContent,
+            messageEffectId,
+            businessConnectionId,
+            allowPaidBroadcast,
             cancellationToken);
 
     /// <summary>
     /// Sends a file with auto retry to work around Telegram API's rate limit.
     /// </summary>
-    /// <inheritdoc cref="TelegramBotClientExtensions.SendDocumentAsync(ITelegramBotClient, ChatId, InputOnlineFile, InputMedia?, string?, ParseMode?, IEnumerable{MessageEntity}?, bool?, bool?, bool?, int?, bool?, IReplyMarkup?, CancellationToken)"/>
+    /// <inheritdoc cref="TelegramBotClientExtensions.SendDocument"/>
     public static Task<Message> SendDocumentWithRetryAsync(
         this MessageContext messageContext,
         InputFile document,
-        int? messageThreadId = null,
+        string? caption = default,
+        ParseMode parseMode = default,
+        ReplyParameters? replyParameters = default,
+        IReplyMarkup? replyMarkup = default,
         InputFile? thumbnail = default,
-        string? caption = null,
-        ParseMode? parseMode = null,
-        IEnumerable<MessageEntity>? captionEntities = null,
-        bool? disableContentTypeDetection = null,
-        bool? disableNotification = null,
-        bool? protectContent = null,
-        int? replyToMessageId = null,
-        bool? allowSendingWithoutReply = null,
-        IReplyMarkup? replyMarkup = null,
+        int? messageThreadId = default,
+        IEnumerable<MessageEntity>? captionEntities = default,
+        bool disableContentTypeDetection = default,
+        bool disableNotification = default,
+        bool protectContent = default,
+        string? messageEffectId = default,
+        string? businessConnectionId = default,
+        bool allowPaidBroadcast = default,
         CancellationToken cancellationToken = default)
         => messageContext.RetryAsync(
-            (messageContext, cancellationToken) => messageContext.BotClient.SendDocumentAsync(
+            (messageContext, cancellationToken) => messageContext.BotClient.SendDocument(
                 messageContext.Message.Chat.Id,
                 document,
-                messageThreadId,
-                thumbnail,
                 caption,
                 parseMode,
+                replyParameters,
+                replyMarkup,
+                thumbnail,
+                messageThreadId,
                 captionEntities,
                 disableContentTypeDetection,
                 disableNotification,
                 protectContent,
-                replyToMessageId,
-                allowSendingWithoutReply,
-                replyMarkup,
+                messageEffectId,
+                businessConnectionId,
+                allowPaidBroadcast,
                 cancellationToken),
             cancellationToken);
 
     /// <summary>
     /// Edits a text message with auto retry to work around Telegram API's rate limit.
     /// </summary>
-    /// <inheritdoc cref="TelegramBotClientExtensions.EditMessageTextAsync(ITelegramBotClient, ChatId, int, string, ParseMode?, IEnumerable{MessageEntity}?, bool?, InlineKeyboardMarkup?, CancellationToken)"/>
+    /// <inheritdoc cref="TelegramBotClientExtensions.EditMessageText"/>
     public static Task<Message> EditMessageTextWithRetryAsync(
         this MessageContext messageContext,
         int messageId,
         string text,
-        ParseMode? parseMode = null,
-        IEnumerable<MessageEntity>? entities = null,
-        bool? disableWebPagePreview = null,
-        InlineKeyboardMarkup? replyMarkup = null,
+        ParseMode parseMode = default,
+        IEnumerable<MessageEntity>? entities = default,
+        LinkPreviewOptions? linkPreviewOptions = default,
+        InlineKeyboardMarkup? replyMarkup = default,
+        string? businessConnectionId = default,
         CancellationToken cancellationToken = default)
         => messageContext.RetryAsync(
-            (messageContext, cancellationToken) => messageContext.BotClient.EditMessageTextAsync(
+            (messageContext, cancellationToken) => messageContext.BotClient.EditMessageText(
                 messageContext.Message.Chat.Id,
                 messageId,
                 text,
                 parseMode,
                 entities,
-                disableWebPagePreview,
+                linkPreviewOptions,
                 replyMarkup,
+                businessConnectionId,
                 cancellationToken),
             cancellationToken);
 
     /// <summary>
     /// Sends an animated emoji with auto retry to work around Telegram API's rate limit.
     /// </summary>
-    /// <inheritdoc cref="TelegramBotClientExtensions.SendDiceAsync(ITelegramBotClient, ChatId, Emoji?, bool?, bool?, int?, bool?, IReplyMarkup?, CancellationToken)"/>
+    /// <inheritdoc cref="TelegramBotClientExtensions.SendDice"/>
     public static Task<Message> SendDiceWithRetryAsync(
         this MessageContext messageContext,
-        Emoji emoji,
-        int? messageThreadId = null,
-        bool? disableNotification = null,
-        bool? protectContent = null,
-        int? replyToMessageId = null,
-        bool? allowSendingWithoutReply = null,
-        IReplyMarkup? replyMarkup = null,
+        string? emoji = default,
+        ReplyParameters? replyParameters = default,
+        IReplyMarkup? replyMarkup = default,
+        int? messageThreadId = default,
+        bool disableNotification = default,
+        bool protectContent = default,
+        string? messageEffectId = default,
+        string? businessConnectionId = default,
+        bool allowPaidBroadcast = default,
         CancellationToken cancellationToken = default)
         => messageContext.RetryAsync(
-            (messageContext, cancellationToken) => messageContext.BotClient.SendDiceAsync(
+            (messageContext, cancellationToken) => messageContext.BotClient.SendDice(
                 messageContext.Message.Chat.Id,
-                messageThreadId,
                 emoji,
+                replyParameters,
+                replyMarkup,
+                messageThreadId,
                 disableNotification,
                 protectContent,
-                replyToMessageId,
-                allowSendingWithoutReply,
-                replyMarkup,
+                messageEffectId,
+                businessConnectionId,
+                allowPaidBroadcast,
                 cancellationToken),
             cancellationToken);
 
@@ -170,33 +185,37 @@ public static partial class ChatHelper
     /// Long messages are sent as text files.
     /// Automatically retries when hitting the rate limit.
     /// </summary>
-    /// <inheritdoc cref="TelegramBotClientExtensions.SendTextMessageAsync(ITelegramBotClient, ChatId, string, ParseMode?, IEnumerable{MessageEntity}?, bool?, bool?, bool?, int?, bool?, IReplyMarkup?, CancellationToken)"/>
+    /// <inheritdoc cref="SendTextMessageWithRetryAsync"/>
     public static Task<Message> SendPossiblyLongTextMessageWithRetryAsync(
         this MessageContext messageContext,
         string text,
-        int? messageThreadId = null,
-        ParseMode? parseMode = null,
-        IEnumerable<MessageEntity>? entities = null,
-        bool? disableWebPagePreview = null,
-        bool? disableNotification = null,
-        bool? protectContent = null,
-        int? replyToMessageId = null,
-        bool? allowSendingWithoutReply = null,
-        IReplyMarkup? replyMarkup = null,
+        ParseMode parseMode = default,
+        ReplyParameters? replyParameters = default,
+        IReplyMarkup? replyMarkup = default,
+        LinkPreviewOptions? linkPreviewOptions = default,
+        int? messageThreadId = default,
+        IEnumerable<MessageEntity>? entities = default,
+        bool disableNotification = default,
+        bool protectContent = default,
+        string? messageEffectId = default,
+        string? businessConnectionId = default,
+        bool allowPaidBroadcast = default,
         CancellationToken cancellationToken = default)
         => text.Length switch
         {
             <= 4096 => messageContext.SendTextMessageWithRetryAsync(
                 text,
-                messageThreadId,
                 parseMode,
+                replyParameters,
+                replyMarkup,
+                linkPreviewOptions,
+                messageThreadId,
                 entities,
-                disableWebPagePreview,
                 disableNotification,
                 protectContent,
-                replyToMessageId,
-                allowSendingWithoutReply,
-                replyMarkup,
+                messageEffectId,
+                businessConnectionId,
+                allowPaidBroadcast,
                 cancellationToken),
             _ => messageContext.SendTextFileFromStringWithRetryAsync(
                 parseMode switch
@@ -207,18 +226,16 @@ public static partial class ChatHelper
                     _ => "long-message.txt",
                 },
                 text,
-                messageThreadId,
-                null,
-                null,
-                parseMode,
-                entities,
-                null,
-                disableNotification,
-                protectContent,
-                replyToMessageId,
-                null,
-                replyMarkup,
-                cancellationToken)
+                parseMode: parseMode,
+                replyParameters: replyParameters,
+                replyMarkup: replyMarkup,
+                messageThreadId: messageThreadId,
+                disableNotification: disableNotification,
+                protectContent: protectContent,
+                messageEffectId: messageEffectId,
+                businessConnectionId: businessConnectionId,
+                allowPaidBroadcast: allowPaidBroadcast,
+                cancellationToken: cancellationToken)
         };
 
     /// <summary>
@@ -227,38 +244,42 @@ public static partial class ChatHelper
     /// </summary>
     /// <param name="filename">Filename.</param>
     /// <param name="text">The string to send.</param>
-    /// <inheritdoc cref="TelegramBotClientExtensions.SendDocumentAsync(ITelegramBotClient, ChatId, InputOnlineFile, InputMedia?, string?, ParseMode?, IEnumerable{MessageEntity}?, bool?, bool?, bool?, int?, bool?, IReplyMarkup?, CancellationToken)"/>
+    /// <inheritdoc cref="SendDocumentWithRetryAsync"/>
     public static async Task<Message> SendTextFileFromStringWithRetryAsync(
         this MessageContext messageContext,
         string filename,
         string text,
-        int? messageThreadId = null,
+        string? caption = default,
+        ParseMode parseMode = default,
+        ReplyParameters? replyParameters = default,
+        IReplyMarkup? replyMarkup = default,
         InputFile? thumbnail = default,
-        string? caption = null,
-        ParseMode? parseMode = null,
-        IEnumerable<MessageEntity>? captionEntities = null,
-        bool? disableContentTypeDetection = null,
-        bool? disableNotification = null,
-        bool? protectContent = null,
-        int? replyToMessageId = null,
-        bool? allowSendingWithoutReply = null,
-        IReplyMarkup? replyMarkup = null,
+        int? messageThreadId = default,
+        IEnumerable<MessageEntity>? captionEntities = default,
+        bool disableContentTypeDetection = default,
+        bool disableNotification = default,
+        bool protectContent = default,
+        string? messageEffectId = default,
+        string? businessConnectionId = default,
+        bool allowPaidBroadcast = default,
         CancellationToken cancellationToken = default)
     {
         await using var stream = new MemoryStream(Encoding.UTF8.GetBytes(text));
         return await messageContext.SendDocumentWithRetryAsync(
             InputFile.FromStream(stream, filename),
-            messageThreadId,
-            thumbnail,
             caption,
             parseMode,
+            replyParameters,
+            replyMarkup,
+            thumbnail,
+            messageThreadId,
             captionEntities,
             disableContentTypeDetection,
             disableNotification,
             protectContent,
-            replyToMessageId,
-            allowSendingWithoutReply,
-            replyMarkup,
+            messageEffectId,
+            businessConnectionId,
+            allowPaidBroadcast,
             cancellationToken);
     }
 

@@ -446,7 +446,7 @@ public sealed class QueryStats
         if (leaderboard.Length == 0 || leaderboard[0].stats == 0UL)
         {
             await commandContext.EditMessageTextWithRetryAsync(
-                dummyReply.MessageId,
+                dummyReply.Id,
                 "No stats.",
                 cancellationToken: cancellationToken);
 
@@ -479,7 +479,7 @@ public sealed class QueryStats
         replyBuilder.AppendLine("```");
 
         await commandContext.EditMessageTextWithRetryAsync(
-            dummyReply.MessageId,
+            dummyReply.Id,
             replyBuilder.ToString(),
             ParseMode.MarkdownV2,
             cancellationToken: cancellationToken);
@@ -491,7 +491,7 @@ public sealed class QueryStats
 
         try
         {
-            var chatMember = await commandContext.BotClient.GetChatMemberAsync(commandContext.Message.Chat.Id, userId, cancellationToken);
+            var chatMember = await commandContext.BotClient.GetChatMember(commandContext.Message.Chat.Id, userId, cancellationToken);
             firstName = chatMember.User.FirstName;
         }
         catch

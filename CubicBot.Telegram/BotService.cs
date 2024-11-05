@@ -46,7 +46,7 @@ public sealed class BotService(ILogger<BotService> logger) : BackgroundService
         {
             using var httpClient = new HttpClient();
             var bot = new TelegramBotClient(botToken, httpClient);
-            var me = await bot.GetMeAsync(cancellationToken);
+            var me = await bot.GetMe(cancellationToken);
 
             if (string.IsNullOrEmpty(me.Username))
                 throw new Exception("Bot username is null or empty.");

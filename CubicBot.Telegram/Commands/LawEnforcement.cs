@@ -108,7 +108,7 @@ public static class LawEnforcement
 
         return commandContext.SendTextMessageWithRetryAsync(
             verdict,
-            replyToMessageId: commandContext.Message.ReplyToMessage?.MessageId,
+            replyParameters: commandContext.Message.ReplyToMessage?.Id,
             cancellationToken: cancellationToken);
     }
 
@@ -134,7 +134,7 @@ public static class LawEnforcement
 
         try
         {
-            title = await commandContext.BotClient.GetChatMemberAsync(message.Chat.Id, targetMessageContext.UserId, cancellationToken) switch
+            title = await commandContext.BotClient.GetChatMember(message.Chat.Id, targetMessageContext.UserId, cancellationToken) switch
             {
                 ChatMemberAdministrator admin => admin.CustomTitle ?? "admin",
                 ChatMemberOwner owner => owner.CustomTitle ?? "owner",
