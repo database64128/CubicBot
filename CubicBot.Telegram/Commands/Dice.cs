@@ -26,8 +26,8 @@ public static class Dice
 
     private static Task SendAnimatedEmojiAsync(CommandContext commandContext, string emoji, CancellationToken cancellationToken = default)
     {
-        var count = GetCountFromArgument(commandContext.Argument);
-        var tasks = new Task[count];
+        int count = GetCountFromArgument(commandContext.Argument);
+        Span<Task> tasks = new Task[count];
 
         for (var i = 0; i < tasks.Length; i++)
         {
