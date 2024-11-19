@@ -1,4 +1,5 @@
-﻿using CubicBot.Telegram.Commands;
+﻿using System.Collections.ObjectModel;
+using CubicBot.Telegram.Commands;
 using CubicBot.Telegram.Stats;
 using Microsoft.Extensions.Logging;
 using Telegram.Bot;
@@ -12,7 +13,7 @@ public sealed partial class UpdateHandler
     private readonly Data _data;
     private readonly ILogger _logger;
     private readonly List<IDispatch> _dispatches = [];
-    private readonly IReadOnlyList<CubicBotCommand> _commands;
+    private readonly ReadOnlyCollection<CubicBotCommand> _commands;
 
     public UpdateHandler(string botUsername, Config config, Data data, ILogger logger)
     {
@@ -27,7 +28,7 @@ public sealed partial class UpdateHandler
         }
         else
         {
-            _commands = [];
+            _commands = ReadOnlyCollection<CubicBotCommand>.Empty;
         }
 
         if (config.EnableStats)
