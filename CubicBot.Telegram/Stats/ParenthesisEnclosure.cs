@@ -1,4 +1,5 @@
 ﻿using CubicBot.Telegram.Utils;
+using System.Collections.Frozen;
 using System.Runtime.InteropServices;
 
 namespace CubicBot.Telegram.Stats;
@@ -7,7 +8,7 @@ public sealed class ParenthesisEnclosure : IStatsCollector
 {
     private readonly List<char> _compensation = [];
 
-    private static readonly Dictionary<char, char> s_enclosureDict = new()
+    private static readonly FrozenDictionary<char, char> s_enclosureDict = FrozenDictionary.ToFrozenDictionary(new Dictionary<char, char>
     {
         // bi-directional
         ['"'] = '"',
@@ -33,7 +34,7 @@ public sealed class ParenthesisEnclosure : IStatsCollector
         ['」'] = '「',
         ['》'] = '《',
         ['”'] = '“',
-    };
+    });
 
     public bool AnalyzeMessage(ReadOnlySpan<char> msg)
     {

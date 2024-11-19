@@ -1,6 +1,7 @@
 ﻿using CubicBot.Telegram.Stats;
 using CubicBot.Telegram.Utils;
 using Microsoft.Extensions.Logging;
+using System.Collections.Frozen;
 using System.Collections.ObjectModel;
 
 namespace CubicBot.Telegram.Commands;
@@ -10,7 +11,7 @@ public sealed partial class CommandsDispatch : IDispatch
     private readonly Config _config;
     private readonly string _botUsername;
     private readonly ILogger _logger;
-    private readonly Dictionary<string, CubicBotCommand> _commandDict;
+    private readonly FrozenDictionary<string, CubicBotCommand> _commandDict;
 
     public ReadOnlyCollection<CubicBotCommand> Commands { get; }
 
@@ -59,7 +60,7 @@ public sealed partial class CommandsDispatch : IDispatch
         }
 
         Commands = commands.AsReadOnly();
-        _commandDict = commands.ToDictionary(x => x.Command);
+        _commandDict = commands.ToFrozenDictionary(x => x.Command);
     }
 
     public Task HandleAsync(MessageContext messageContext, CancellationToken cancellationToken = default)
