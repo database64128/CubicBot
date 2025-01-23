@@ -2,84 +2,84 @@
 using System.Text;
 using CubicBot.Telegram.Tool.CLI;
 
-var botTokenOption = new CliOption<string?>("--bot-token")
+var botTokenOption = new Option<string?>("--bot-token")
 {
     Description = "Telegram bot token.",
 };
-var enableCommandsModuleOption = new CliOption<bool?>("--enable-commands-mod")
+var enableCommandsModuleOption = new Option<bool?>("--enable-commands-mod")
 {
     Description = "Whether to enable the commands module.",
 };
-var enableStatsModuleOption = new CliOption<bool?>("--enable-stats-mod")
+var enableStatsModuleOption = new Option<bool?>("--enable-stats-mod")
 {
     Description = "Whether to enable the stats module.",
 };
 
-var enablePersonalCommandsOption = new CliOption<bool?>("--enable-personal-commands")
+var enablePersonalCommandsOption = new Option<bool?>("--enable-personal-commands")
 {
     Description = "Whether to enable personal commands.",
 };
-var enableCommonCommandsOption = new CliOption<bool?>("--enable-common-commands")
+var enableCommonCommandsOption = new Option<bool?>("--enable-common-commands")
 {
     Description = "Whether to enable common commands.",
 };
-var enableDiceCommandsOption = new CliOption<bool?>("--enable-dice-commands")
+var enableDiceCommandsOption = new Option<bool?>("--enable-dice-commands")
 {
     Description = "Whether to enable dice commands.",
 };
-var enableConsentNotNeededCommandsOption = new CliOption<bool?>("--enable-consent-not-needed-commands")
+var enableConsentNotNeededCommandsOption = new Option<bool?>("--enable-consent-not-needed-commands")
 {
     Description = "Whether to enable consent not needed commands.",
 };
-var enableNonVeganCommandsOption = new CliOption<bool?>("--enable-non-vegan-commands")
+var enableNonVeganCommandsOption = new Option<bool?>("--enable-non-vegan-commands")
 {
     Description = "Whether to enable non-vegan commands.",
 };
-var enableLawEnforcementCommandsOption = new CliOption<bool?>("--enable-law-enforcement-commands")
+var enableLawEnforcementCommandsOption = new Option<bool?>("--enable-law-enforcement-commands")
 {
     Description = "Whether to enable law enforcement commands.",
 };
-var enablePublicServicesCommandsOption = new CliOption<bool?>("--enable-public-services-commands")
+var enablePublicServicesCommandsOption = new Option<bool?>("--enable-public-services-commands")
 {
     Description = "Whether to enable public services commands.",
 };
-var enableChineseCommandsOption = new CliOption<bool?>("--enable-chinese-commands")
+var enableChineseCommandsOption = new Option<bool?>("--enable-chinese-commands")
 {
     Description = "Whether to enable Chinese commands.",
 };
-var enableChineseTasksCommandsOption = new CliOption<bool?>("--enable-chinese-tasks-commands")
+var enableChineseTasksCommandsOption = new Option<bool?>("--enable-chinese-tasks-commands")
 {
     Description = "Whether to enable Chinese tasks commands.",
 };
-var enableSystemdCommandsOption = new CliOption<bool?>("--enable-systemd-commands")
+var enableSystemdCommandsOption = new Option<bool?>("--enable-systemd-commands")
 {
     Description = "Whether to enable systemd commands.",
 };
 
-var enableGrassStatsOption = new CliOption<bool?>("--enable-grass-stats")
+var enableGrassStatsOption = new Option<bool?>("--enable-grass-stats")
 {
     Description = "Whether to enable grass stats.",
 };
-var enableCommandStatsOption = new CliOption<bool?>("--enable-command-stats")
+var enableCommandStatsOption = new Option<bool?>("--enable-command-stats")
 {
     Description = "Whether to enable command stats.",
 };
-var enableMessageCounterOption = new CliOption<bool?>("--enable-message-counter")
+var enableMessageCounterOption = new Option<bool?>("--enable-message-counter")
 {
     Description = "Whether to enable message counter.",
 };
-var enableTwoTripleThreeOption = new CliOption<bool?>("--enable-two-triple-three")
+var enableTwoTripleThreeOption = new Option<bool?>("--enable-two-triple-three")
 {
     Description = "Whether to enable two triple three (2333) counter.",
 };
-var enableParenthesisEnclosureOption = new CliOption<bool?>("--enable-parenthesis-enclosure")
+var enableParenthesisEnclosureOption = new Option<bool?>("--enable-parenthesis-enclosure")
 {
     Description = "Whether to enable parenthesis enclosure.",
 };
 
-var configGetCommand = new CliCommand("get", "Print config.");
+var configGetCommand = new Command("get", "Print config.");
 
-var configSetCommand = new CliCommand("set", "Change config.")
+var configSetCommand = new Command("set", "Change config.")
 {
     botTokenOption,
     enableCommandsModuleOption,
@@ -143,13 +143,13 @@ configSetCommand.SetAction((parseResult, cancellationToken) =>
         cancellationToken);
 });
 
-var configCommand = new CliCommand("config", "Print or change config.")
+var configCommand = new Command("config", "Print or change config.")
 {
     configGetCommand,
     configSetCommand,
 };
 
-var rootCommand = new CliRootCommand("A stupid and annoying chatbot for your group chats.")
+var rootCommand = new RootCommand("A stupid and annoying chatbot for your group chats.")
 {
     configCommand,
 };
