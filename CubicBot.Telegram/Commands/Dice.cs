@@ -38,7 +38,7 @@ public static class Dice
     }
 
     public static Task SendDiceAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
-        => SendAnimatedEmojiAsync(commandContext, Emoji.Dice, cancellationToken);
+        => SendAnimatedEmojiAsync(commandContext, DiceEmoji.Dice, cancellationToken);
 
     public static void CountDices(CommandContext commandContext)
     {
@@ -50,7 +50,7 @@ public static class Dice
     }
 
     public static Task SendDartAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
-        => SendAnimatedEmojiAsync(commandContext, Emoji.Darts, cancellationToken);
+        => SendAnimatedEmojiAsync(commandContext, DiceEmoji.Darts, cancellationToken);
 
     public static void CountDarts(CommandContext commandContext)
     {
@@ -62,7 +62,7 @@ public static class Dice
     }
 
     public static Task SendBasketballAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
-        => SendAnimatedEmojiAsync(commandContext, Emoji.Basketball, cancellationToken);
+        => SendAnimatedEmojiAsync(commandContext, DiceEmoji.Basketball, cancellationToken);
 
     public static void CountBasketballsThrown(CommandContext commandContext)
     {
@@ -74,7 +74,7 @@ public static class Dice
     }
 
     public static Task SendSoccerBallAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
-        => SendAnimatedEmojiAsync(commandContext, Emoji.Football, cancellationToken);
+        => SendAnimatedEmojiAsync(commandContext, DiceEmoji.Football, cancellationToken);
 
     public static void CountSoccerGoals(CommandContext commandContext)
     {
@@ -86,7 +86,7 @@ public static class Dice
     }
 
     public static Task SendSlotMachineAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
-        => SendAnimatedEmojiAsync(commandContext, Emoji.SlotMachine, cancellationToken);
+        => SendAnimatedEmojiAsync(commandContext, DiceEmoji.SlotMachine, cancellationToken);
 
     public static void CountSlotRolls(CommandContext commandContext)
     {
@@ -98,7 +98,7 @@ public static class Dice
     }
 
     public static Task SendBowlingBallAsync(CommandContext commandContext, CancellationToken cancellationToken = default)
-        => SendAnimatedEmojiAsync(commandContext, Emoji.Bowling, cancellationToken);
+        => SendAnimatedEmojiAsync(commandContext, DiceEmoji.Bowling, cancellationToken);
 
     public static void CountBowlingBalls(CommandContext commandContext)
     {
