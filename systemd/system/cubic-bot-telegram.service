@@ -4,8 +4,8 @@ Wants=network-online.target
 After=network-online.target
 
 [Service]
-WorkingDirectory=%E/cubic-bot-telegram
+WorkingDirectory=/etc/cubic-bot-telegram
 ExecStart=/usr/bin/cubic-bot-telegram-app
 
 [Install]
-WantedBy=default.target
+WantedBy=multi-user.target
