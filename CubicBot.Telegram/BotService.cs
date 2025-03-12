@@ -42,8 +42,6 @@ public sealed class BotService(ILogger<BotService> logger) : BackgroundService
             throw new Exception("Failed to load data", ex);
         }
 
-        var saveDataTask = SaveDataHourlyAsync(data, cancellationToken);
-
         TelegramBotClientOptions options = new(botToken)
         {
             RetryCount = 7,
@@ -88,9 +86,16 @@ public sealed class BotService(ILogger<BotService> logger) : BackgroundService
         logger.LogInformation("Started Telegram bot: @{BotUsername} ({BotId})", me.Username, me.Id);
 
         var updateReceiver = new QueuedUpdateReceiver(bot, null, updateHandler.HandleErrorAsync);
-        await updateHandler.HandleUpdateStreamAsync(bot, updateReceiver, cancellationToken);
+        var saveDataTask = SaveDataHourlyAsync(data, cancellationToken);
 
-        await saveDataTask;
+        try
+        {
+            await updateHandler.HandleUpdateStreamAsync(bot, updateReceiver, cancellationToken);
+        }
+        finally
+        {
+            await saveDataTask;
+        }
     }
 
     private async Task SaveDataHourlyAsync(Data data, CancellationToken cancellationToken = default)
