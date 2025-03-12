@@ -95,11 +95,13 @@ public sealed class BotService(ILogger<BotService> logger) : BackgroundService
 
     private async Task SaveDataHourlyAsync(Data data, CancellationToken cancellationToken = default)
     {
+        TimeSpan interval = TimeSpan.FromHours(1);
+
         while (!cancellationToken.IsCancellationRequested)
         {
             try
             {
-                await Task.Delay(TimeSpan.FromHours(1.0), cancellationToken);
+                await Task.Delay(interval, cancellationToken);
             }
             catch (TaskCanceledException)
             {

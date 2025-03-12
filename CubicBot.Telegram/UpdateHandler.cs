@@ -1,7 +1,7 @@
-﻿using System.Collections.ObjectModel;
-using CubicBot.Telegram.Commands;
+﻿using CubicBot.Telegram.Commands;
 using CubicBot.Telegram.Stats;
 using Microsoft.Extensions.Logging;
+using System.Collections.ObjectModel;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;

@@ -1,6 +1,6 @@
-﻿using System.CommandLine;
+﻿using CubicBot.Telegram.Tool.CLI;
+using System.CommandLine;
 using System.Text;
-using CubicBot.Telegram.Tool.CLI;
 
 var botTokenOption = new Option<string?>("--bot-token")
 {
