@@ -6,6 +6,7 @@
     <Description>A stupid and annoying chatbot for your group chats.</Description>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <IsAotCompatible>true</IsAotCompatible>
     <PackageId>CubicBot.Telegram</PackageId>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageProjectUrl>https://github.com/database64128/CubicBot</PackageProjectUrl>

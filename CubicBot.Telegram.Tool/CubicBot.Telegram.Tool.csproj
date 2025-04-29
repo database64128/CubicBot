@@ -13,6 +13,7 @@
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <IsAotCompatible>true</IsAotCompatible>
     <AssemblyName>cubic-bot-telegram-tool</AssemblyName>
     <Version>1.2.0</Version>
   </PropertyGroup>

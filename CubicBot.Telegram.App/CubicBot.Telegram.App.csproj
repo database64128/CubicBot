@@ -4,6 +4,7 @@
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <IsAotCompatible>true</IsAotCompatible>
     <UserSecretsId>dotnet-CubicBot.Telegram.App-6b3818c3-5fb6-4bba-91c1-f56f55ecc380</UserSecretsId>
     <ServerGarbageCollection>true</ServerGarbageCollection>
     <AssemblyName>cubic-bot-telegram-app</AssemblyName>
