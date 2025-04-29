@@ -17,7 +17,7 @@ jobs:
     name: Build
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest, windows-latest, macos-latest]
       fail-fast: false
     runs-on: ${{ matrix.os }}
     defaults:
@@ -74,6 +74,18 @@ jobs:
           dotnet publish CubicBot.Telegram.App -c Release $MSBUILD_PROPS -r win-x64 --self-contained
           dotnet publish CubicBot.Telegram.Tool -c Release $MSBUILD_PROPS -r win-x64 --self-contained
 
+      - name: Publish self-contained for macOS ARM64
+        if: matrix.os == 'macos-latest'
+        run: |
+          dotnet publish CubicBot.Telegram.App -c Release $MSBUILD_PROPS -r osx-arm64 --self-contained
+          dotnet publish CubicBot.Telegram.Tool -c Release $MSBUILD_PROPS -r osx-arm64 --self-contained
+
+      - name: Publish self-contained for macOS x64
+        if: matrix.os == 'macos-latest'
+        run: |
+          dotnet publish CubicBot.Telegram.App -c Release $MSBUILD_PROPS -r osx-x64 --self-contained
+          dotnet publish CubicBot.Telegram.Tool -c Release $MSBUILD_PROPS -r osx-x64 --self-contained
+
       # Upload CubicBot.Telegram.App
       - name: Upload CubicBot.Telegram.App artifacts for Linux ARM64
         if: matrix.os == 'ubuntu-latest'
@@ -117,6 +129,27 @@ jobs:
           name: cubic-bot-telegram-app-${{ github.sha }}-windows
           path: CubicBot.Telegram.App/bin/Release/net9.0/publish/
 
+      - name: Upload CubicBot.Telegram.App artifacts for macOS ARM64
+        if: matrix.os == 'macos-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: cubic-bot-telegram-app-${{ github.sha }}-macos-arm64
+          path: CubicBot.Telegram.App/bin/Release/net9.0/osx-arm64/publish/
+
+      - name: Upload CubicBot.Telegram.App artifacts for macOS x64
+        if: matrix.os == 'macos-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: cubic-bot-telegram-app-${{ github.sha }}-macos-x64
+          path: CubicBot.Telegram.App/bin/Release/net9.0/osx-x64/publish/
+
+      - name: Upload CubicBot.Telegram.App artifacts for macOS framework-dependent
+        if: matrix.os == 'macos-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: cubic-bot-telegram-app-${{ github.sha }}-macos
+          path: CubicBot.Telegram.App/bin/Release/net9.0/publish/
+
       # Upload CubicBot.Telegram.Tool
       - name: Upload CubicBot.Telegram.Tool artifacts for Linux ARM64
         if: matrix.os == 'ubuntu-latest'
@@ -158,4 +191,25 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: cubic-bot-telegram-tool-${{ github.sha }}-windows
+          path: CubicBot.Telegram.Tool/bin/Release/net9.0/publish/
+
+      - name: Upload CubicBot.Telegram.Tool artifacts for macOS ARM64
+        if: matrix.os == 'macos-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: cubic-bot-telegram-tool-${{ github.sha }}-macos-arm64
+          path: CubicBot.Telegram.Tool/bin/Release/net9.0/osx-arm64/publish/
+
+      - name: Upload CubicBot.Telegram.Tool artifacts for macOS x64
+        if: matrix.os == 'macos-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: cubic-bot-telegram-tool-${{ github.sha }}-macos-x64
+          path: CubicBot.Telegram.Tool/bin/Release/net9.0/osx-x64/publish/
+
+      - name: Upload CubicBot.Telegram.Tool artifacts for macOS framework-dependent
+        if: matrix.os == 'macos-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: cubic-bot-telegram-tool-${{ github.sha }}-macos
           path: CubicBot.Telegram.Tool/bin/Release/net9.0/publish/
