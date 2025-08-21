@@ -28,6 +28,8 @@ public static partial class ChatHelper
         string? messageEffectId = default,
         string? businessConnectionId = default,
         bool allowPaidBroadcast = default,
+        int? directMessagesTopicId = default,
+        SuggestedPostParameters? suggestedPostParameters = default,
         CancellationToken cancellationToken = default)
         => messageContext.BotClient.SendMessage(
             messageContext.Message.Chat.Id,
@@ -43,6 +45,8 @@ public static partial class ChatHelper
             messageEffectId,
             businessConnectionId,
             allowPaidBroadcast,
+            directMessagesTopicId,
+            suggestedPostParameters,
             cancellationToken);
 
     /// <summary>
@@ -63,6 +67,8 @@ public static partial class ChatHelper
         string? messageEffectId = default,
         string? businessConnectionId = default,
         bool allowPaidBroadcast = default,
+        int? directMessagesTopicId = default,
+        SuggestedPostParameters? suggestedPostParameters = default,
         CancellationToken cancellationToken = default)
         => messageContext.SendTextMessageAsync(
             text,
@@ -77,6 +83,8 @@ public static partial class ChatHelper
             messageEffectId,
             businessConnectionId,
             allowPaidBroadcast,
+            directMessagesTopicId,
+            suggestedPostParameters,
             cancellationToken);
 
     /// <summary>
@@ -100,6 +108,8 @@ public static partial class ChatHelper
         string? messageEffectId = default,
         string? businessConnectionId = default,
         bool allowPaidBroadcast = default,
+        int? directMessagesTopicId = default,
+        SuggestedPostParameters? suggestedPostParameters = default,
         CancellationToken cancellationToken = default)
         => messageContext.SendTextMessageAsync(
             text,
@@ -114,6 +124,8 @@ public static partial class ChatHelper
             messageEffectId,
             businessConnectionId,
             allowPaidBroadcast,
+            directMessagesTopicId,
+            suggestedPostParameters,
             cancellationToken);
 
     /// <summary>
@@ -137,6 +149,8 @@ public static partial class ChatHelper
         string? messageEffectId = default,
         string? businessConnectionId = default,
         bool allowPaidBroadcast = default,
+        int? directMessagesTopicId = default,
+        SuggestedPostParameters? suggestedPostParameters = default,
         CancellationToken cancellationToken = default)
         => messageContext.BotClient.SendDocument(
             messageContext.Message.Chat.Id,
@@ -154,6 +168,8 @@ public static partial class ChatHelper
             messageEffectId,
             businessConnectionId,
             allowPaidBroadcast,
+            directMessagesTopicId,
+            suggestedPostParameters,
             cancellationToken);
 
     /// <summary>
@@ -198,6 +214,8 @@ public static partial class ChatHelper
         string? messageEffectId = default,
         string? businessConnectionId = default,
         bool allowPaidBroadcast = default,
+        int? directMessagesTopicId = default,
+        SuggestedPostParameters? suggestedPostParameters = default,
         CancellationToken cancellationToken = default)
         => messageContext.BotClient.SendDice(
             messageContext.Message.Chat.Id,
@@ -210,6 +228,8 @@ public static partial class ChatHelper
             messageEffectId,
             businessConnectionId,
             allowPaidBroadcast,
+            directMessagesTopicId,
+            suggestedPostParameters,
             cancellationToken);
 
     /// <summary>
@@ -233,6 +253,8 @@ public static partial class ChatHelper
         string? messageEffectId = default,
         string? businessConnectionId = default,
         bool allowPaidBroadcast = default,
+        int? directMessagesTopicId = default,
+        SuggestedPostParameters? suggestedPostParameters = default,
         CancellationToken cancellationToken = default)
         => text.Length switch
         {
@@ -249,6 +271,8 @@ public static partial class ChatHelper
                 messageEffectId,
                 businessConnectionId,
                 allowPaidBroadcast,
+                directMessagesTopicId,
+                suggestedPostParameters,
                 cancellationToken),
             _ => messageContext.SendTextFileFromStringWithRetryAsync(
                 parseMode switch
@@ -259,16 +283,22 @@ public static partial class ChatHelper
                     _ => "long-message.txt",
                 },
                 text,
-                parseMode: parseMode,
-                replyParameters: replyParameters,
-                replyMarkup: replyMarkup,
-                messageThreadId: messageThreadId,
-                disableNotification: disableNotification,
-                protectContent: protectContent,
-                messageEffectId: messageEffectId,
-                businessConnectionId: businessConnectionId,
-                allowPaidBroadcast: allowPaidBroadcast,
-                cancellationToken: cancellationToken)
+                default,
+                parseMode,
+                replyParameters,
+                replyMarkup,
+                default,
+                messageThreadId,
+                default,
+                default,
+                disableNotification,
+                protectContent,
+                messageEffectId,
+                businessConnectionId,
+                allowPaidBroadcast,
+                directMessagesTopicId,
+                suggestedPostParameters,
+                cancellationToken)
         };
 
     /// <summary>
@@ -295,6 +325,8 @@ public static partial class ChatHelper
         string? messageEffectId = default,
         string? businessConnectionId = default,
         bool allowPaidBroadcast = default,
+        int? directMessagesTopicId = default,
+        SuggestedPostParameters? suggestedPostParameters = default,
         CancellationToken cancellationToken = default)
     {
         await using var stream = new MemoryStream(Encoding.UTF8.GetBytes(text));
@@ -313,6 +345,8 @@ public static partial class ChatHelper
             messageEffectId,
             businessConnectionId,
             allowPaidBroadcast,
+            directMessagesTopicId,
+            suggestedPostParameters,
             cancellationToken);
     }
 
