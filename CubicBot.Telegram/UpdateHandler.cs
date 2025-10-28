@@ -50,40 +50,63 @@ public sealed partial class UpdateHandler
     [LoggerMessage(Level = LogLevel.Information, Message = "Registered {CommandCount} bot commands")]
     private partial void LogRegisteredCommands(int commandCount);
 
-    public async Task HandleUpdateStreamAsync(ITelegramBotClient botClient, IAsyncEnumerable<Update> updates, CancellationToken cancellationToken = default)
+    public async Task RunAsync(ITelegramBotClient botClient, CancellationToken cancellationToken = default)
     {
-        await foreach (var update in updates.WithCancellation(cancellationToken))
+        while (!cancellationToken.IsCancellationRequested)
         {
-            LogReceivedUpdate(update.Id, update.Type);
-
-            if (update.Type == UpdateType.Message && update.Message is not null)
+            try
             {
-                var messageContext = new MessageContext(botClient, update.Message, _data);
-
-                foreach (var dispatch in _dispatches)
+                Update[] updates = await botClient.GetUpdates(allowedUpdates: [UpdateType.Message], cancellationToken: cancellationToken);
+                foreach (Update update in updates)
                 {
-                    _ = dispatch.HandleAsync(messageContext, cancellationToken)
-                                .ContinueWith(t =>
-                                {
-                                    if (t?.Exception?.InnerException is not null)
-                                    {
-                                        HandleError(t.Exception.InnerException);
-                                    }
-                                }, TaskContinuationOptions.OnlyOnFaulted);
+                    LogReceivedUpdate(update.Id, update.Type);
+
+                    if (update.Type == UpdateType.Message && update.Message is Message message)
+                    {
+                        var messageContext = new MessageContext(botClient, message, _data);
+
+                        foreach (var dispatch in _dispatches)
+                        {
+                            _ = dispatch.HandleAsync(messageContext, cancellationToken)
+                                        .ContinueWith(t =>
+                                        {
+                                            if (t?.Exception?.InnerException is not null)
+                                            {
+                                                LogFailedToHandleUpdate(t.Exception.InnerException);
+                                            }
+                                        }, TaskContinuationOptions.OnlyOnFaulted);
+                        }
+                    }
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                return;
+            }
+            catch (Exception ex)
+            {
+                LogFailedToReceiveUpdates(ex);
+
+                try
+                {
+                    await Task.Delay(s_delayOnError, cancellationToken);
+                }
+                catch (TaskCanceledException)
+                {
+                    return;
                 }
             }
         }
     }
 
+    private static readonly TimeSpan s_delayOnError = TimeSpan.FromSeconds(5);
+
     [LoggerMessage(Level = LogLevel.Trace, Message = "Received update with ID {UpdateId} and type {UpdateType}")]
     private partial void LogReceivedUpdate(int updateId, UpdateType updateType);
 
-    public Task HandleErrorAsync(Exception ex, CancellationToken _ = default)
-    {
-        HandleError(ex);
-        return Task.CompletedTask;
-    }
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Failed to receive updates")]
+    private partial void LogFailedToReceiveUpdates(Exception ex);
 
     [LoggerMessage(Level = LogLevel.Warning, Message = "Failed to handle update")]
-    private partial void HandleError(Exception ex);
+    private partial void LogFailedToHandleUpdate(Exception ex);
 }

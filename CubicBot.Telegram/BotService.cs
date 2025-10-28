@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Logging;
 using Telegram.Bot;
 using Telegram.Bot.Exceptions;
-using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 
 namespace CubicBot.Telegram;
@@ -85,12 +84,11 @@ public sealed class BotService(ILogger<BotService> logger) : BackgroundService
 
         logger.LogInformation("Started Telegram bot: @{BotUsername} ({BotId})", me.Username, me.Id);
 
-        var updateReceiver = new QueuedUpdateReceiver(bot, null, updateHandler.HandleErrorAsync);
         var saveDataTask = SaveDataHourlyAsync(data, cancellationToken);
 
         try
         {
-            await updateHandler.HandleUpdateStreamAsync(bot, updateReceiver, cancellationToken);
+            await updateHandler.RunAsync(bot, cancellationToken);
         }
         finally
         {
@@ -98,15 +96,15 @@ public sealed class BotService(ILogger<BotService> logger) : BackgroundService
         }
     }
 
+    private static readonly TimeSpan s_saveDataInterval = TimeSpan.FromHours(1);
+
     private async Task SaveDataHourlyAsync(Data data, CancellationToken cancellationToken = default)
     {
-        TimeSpan interval = TimeSpan.FromHours(1);
-
         while (!cancellationToken.IsCancellationRequested)
         {
             try
             {
-                await Task.Delay(interval, cancellationToken);
+                await Task.Delay(s_saveDataInterval, cancellationToken);
             }
             catch (TaskCanceledException)
             {
