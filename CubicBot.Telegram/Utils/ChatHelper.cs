@@ -182,9 +182,9 @@ public static partial class ChatHelper
         int messageId,
         string text,
         ParseMode parseMode = default,
-        IEnumerable<MessageEntity>? entities = default,
-        LinkPreviewOptions? linkPreviewOptions = default,
         InlineKeyboardMarkup? replyMarkup = default,
+        LinkPreviewOptions? linkPreviewOptions = default,
+        IEnumerable<MessageEntity>? entities = default,
         string? businessConnectionId = default,
         CancellationToken cancellationToken = default)
         => messageContext.BotClient.EditMessageText(
@@ -192,9 +192,9 @@ public static partial class ChatHelper
             messageId,
             text,
             parseMode,
-            entities,
-            linkPreviewOptions,
             replyMarkup,
+            linkPreviewOptions,
+            entities,
             businessConnectionId,
             cancellationToken);
 
