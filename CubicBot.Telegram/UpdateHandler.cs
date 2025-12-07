@@ -61,7 +61,7 @@ public sealed partial class UpdateHandler
                 {
                     LogReceivedUpdate(update.Id, update.Type);
 
-                    if (update.Type == UpdateType.Message && update.Message is Message message)
+                    if (update.Message is Message message)
                     {
                         var messageContext = new MessageContext(botClient, message, _data);
 
