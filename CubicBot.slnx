@@ -1,14 +1,21 @@
 <Solution>
-  <Folder Name="/.github/" />
-  <Folder Name="/.github/workflows/">
+  <Folder Name="/Solution Items/">
+    <File Path=".gitignore" />
+    <File Path="LICENSE" />
+    <File Path="nuget.config" />
+    <File Path="README.md" />
+    <File Path="renovate.json" />
+  </Folder>
+  <Folder Name="/Solution Items/.github/" />
+  <Folder Name="/Solution Items/.github/workflows/">
     <File Path=".github/workflows/build.yml" />
     <File Path=".github/workflows/release.yml" />
   </Folder>
-  <Folder Name="/systemd/" />
-  <Folder Name="/systemd/system/">
+  <Folder Name="/Solution Items/systemd/" />
+  <Folder Name="/Solution Items/systemd/system/">
     <File Path="systemd/system/cubic-bot-telegram.service" />
   </Folder>
-  <Folder Name="/systemd/user/">
+  <Folder Name="/Solution Items/systemd/user/">
     <File Path="systemd/user/cubic-bot-telegram.service" />
   </Folder>
   <Project Path="CubicBot.Telegram.App/CubicBot.Telegram.App.csproj" />

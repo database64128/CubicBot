@@ -8,19 +8,20 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <IsAotCompatible>true</IsAotCompatible>
     <PackageId>CubicBot.Telegram</PackageId>
-    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/database64128/CubicBot</PackageProjectUrl>
     <Product>Cubic Telegram Bot</Product>
     <RepositoryType>Public</RepositoryType>
     <RepositoryUrl>https://github.com/database64128/CubicBot</RepositoryUrl>
     <TargetFramework>net10.0</TargetFramework>
     <Version>1.2.0</Version>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="..\LICENSE">
+    <None Include="..\README.md">
       <Pack>True</Pack>
-      <PackagePath></PackagePath>
+      <PackagePath>\</PackagePath>
     </None>
   </ItemGroup>
 
