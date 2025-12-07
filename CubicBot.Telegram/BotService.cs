@@ -6,7 +6,7 @@ using Telegram.Bot.Types;
 
 namespace CubicBot.Telegram;
 
-public sealed class BotService(ILogger<BotService> logger) : BackgroundService
+public sealed partial class BotService(ILogger<BotService> logger) : BackgroundService
 {
     protected override Task ExecuteAsync(CancellationToken stoppingToken) => RunBotAsync(stoppingToken);
 
@@ -82,7 +82,7 @@ public sealed class BotService(ILogger<BotService> logger) : BackgroundService
             }
         }
 
-        logger.LogInformation("Started Telegram bot: @{BotUsername} ({BotId})", me.Username, me.Id);
+        LogStartedBot(me.Username, me.Id);
 
         var saveDataTask = SaveDataHourlyAsync(data, cancellationToken);
 
@@ -95,6 +95,9 @@ public sealed class BotService(ILogger<BotService> logger) : BackgroundService
             await saveDataTask;
         }
     }
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Started Telegram bot: @{BotUsername} ({BotId})")]
+    private partial void LogStartedBot(string botUsername, long botId);
 
     private static readonly TimeSpan s_saveDataInterval = TimeSpan.FromHours(1);
 

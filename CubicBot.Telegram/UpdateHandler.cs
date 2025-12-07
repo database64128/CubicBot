@@ -28,7 +28,7 @@ public sealed partial class UpdateHandler
         }
         else
         {
-            _commands = ReadOnlyCollection<CubicBotCommand>.Empty;
+            _commands = [];
         }
 
         if (config.EnableStats)

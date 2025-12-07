@@ -1,0 +1,18 @@
+<Solution>
+  <Folder Name="/.github/" />
+  <Folder Name="/.github/workflows/">
+    <File Path=".github/workflows/build.yml" />
+    <File Path=".github/workflows/release.yml" />
+  </Folder>
+  <Folder Name="/systemd/" />
+  <Folder Name="/systemd/system/">
+    <File Path="systemd/system/cubic-bot-telegram.service" />
+  </Folder>
+  <Folder Name="/systemd/user/">
+    <File Path="systemd/user/cubic-bot-telegram.service" />
+  </Folder>
+  <Project Path="CubicBot.Telegram.App/CubicBot.Telegram.App.csproj" />
+  <Project Path="CubicBot.Telegram.Tests/CubicBot.Telegram.Tests.csproj" />
+  <Project Path="CubicBot.Telegram.Tool/CubicBot.Telegram.Tool.csproj" />
+  <Project Path="CubicBot.Telegram/CubicBot.Telegram.csproj" />
+</Solution>
