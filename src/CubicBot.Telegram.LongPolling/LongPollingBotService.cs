@@ -1,8 +1,9 @@
 ﻿using Telegram.Bot;
+using Telegram.Bot.Exceptions;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
-namespace CubicBot.Telegram.App;
+namespace CubicBot.Telegram.LongPolling;
 
 public sealed partial class LongPollingBotService(ILogger<LongPollingBotService> logger, IHttpClientFactory httpClientFactory) : BotService(logger, httpClientFactory.CreateClient())
 {
@@ -11,6 +12,22 @@ public sealed partial class LongPollingBotService(ILogger<LongPollingBotService>
     public override async Task StartAsync(CancellationToken cancellationToken)
     {
         (TelegramBotClient bot, CancellationTokenSource cts) = await StartBotAsync(cancellationToken);
+
+        // Disable webhook.
+        while (true)
+        {
+            try
+            {
+                await bot.SetWebhook("", cancellationToken: cancellationToken);
+                break;
+            }
+            catch (RequestException ex)
+            {
+                logger.LogWarning(ex, "Failed to disable webhook, retrying in 30 seconds");
+                await Task.Delay(s_startupRetryInterval, cancellationToken);
+            }
+        }
+
         _pollUpdatesTask = PollUpdatesAsync(bot, cts.Token);
     }
 
@@ -44,7 +61,7 @@ public sealed partial class LongPollingBotService(ILogger<LongPollingBotService>
 
                 try
                 {
-                    await Task.Delay(s_delayOnError, cancellationToken);
+                    await Task.Delay(s_getUpdatesRetryInterval, cancellationToken);
                 }
                 catch (TaskCanceledException)
                 {
@@ -54,7 +71,7 @@ public sealed partial class LongPollingBotService(ILogger<LongPollingBotService>
         }
     }
 
-    private static readonly TimeSpan s_delayOnError = TimeSpan.FromSeconds(5);
+    private static readonly TimeSpan s_getUpdatesRetryInterval = TimeSpan.FromSeconds(5);
 
     [LoggerMessage(Level = LogLevel.Warning, Message = "Failed to get updates")]
     private partial void LogFailedToGetUpdates(Exception ex);

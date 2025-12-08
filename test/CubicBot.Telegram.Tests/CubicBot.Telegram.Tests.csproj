@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CubicBot.Telegram\CubicBot.Telegram.csproj" />
+    <ProjectReference Include="..\..\src\CubicBot.Telegram\CubicBot.Telegram.csproj" />
   </ItemGroup>
 
 </Project>

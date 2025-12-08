@@ -109,7 +109,7 @@ Counts text messages and generates the talkative leaderboard.
 
 ## Build
 
-Prerequisites: .NET 8 SDK
+Prerequisites: .NET 10 SDK
 
 ### Build with Release configuration
 
@@ -120,14 +120,23 @@ dotnet build -c Release
 ### Publish as framework-dependent
 
 ```bash
-dotnet publish CubicBot.Telegram.App -c Release
+dotnet publish CubicBot.Telegram.LongPolling -c Release
+dotnet publish CubicBot.Telegram.Webhook -c Release
 dotnet publish CubicBot.Telegram.Tool -c Release
 ```
 
 ### Publish as self-contained for Linux x64
 
 ```bash
-dotnet publish CubicBot.Telegram.App -c Release \
+dotnet publish CubicBot.Telegram.LongPolling -c Release \
+    -p:PublishSingleFile=true \
+    -p:PublishTrimmed=true \
+    -p:DebuggerSupport=false \
+    -p:EnableUnsafeBinaryFormatterSerialization=false \
+    -p:EnableUnsafeUTF7Encoding=false \
+    -p:InvariantGlobalization=true \
+    -r linux-x64 --self-contained
+dotnet publish CubicBot.Telegram.Webhook -c Release \
     -p:PublishSingleFile=true \
     -p:PublishTrimmed=true \
     -p:DebuggerSupport=false \
@@ -147,7 +156,7 @@ dotnet publish CubicBot.Telegram.Tool -c Release \
 
 ## Usage
 
-```bash
+```console
 # See usage guide.
 $ cubic-bot-telegram-tool --help
 
@@ -160,8 +169,11 @@ $ cubic-bot-telegram-tool config set --enable-stats-mod false
 # Check config.
 $ cubic-bot-telegram-tool config get
 
-# Start bot.
-$ cubic-bot-telegram-app
+# Start bot in long polling mode.
+$ cubic-bot-telegram-long-polling
+
+# Start bot in webhook mode.
+$ cubic-bot-telegram-webhook
 ```
 
 ## License
@@ -169,7 +181,6 @@ $ cubic-bot-telegram-app
 - This project is licensed under [GPLv3](LICENSE).
 - The icons are from [Material Design Icons](https://materialdesignicons.com/) and are licensed under the [Pictogrammers Free License](https://dev.materialdesignicons.com/license).
 - [`System.CommandLine`](https://github.com/dotnet/command-line-api) is licensed under the MIT license.
-- `System.Linq.Async` and `System.Interactive.Async` are from [dotnet/reactive](https://github.com/dotnet/reactive). They are licensed under the MIT license.
 - [`Telegram.Bot`](https://github.com/TelegramBots/Telegram.Bot) and [`Telegram.Bot.Extensions.Polling`](https://github.com/TelegramBots/Telegram.Bot.Extensions.Polling) are licensed under the MIT license.
 
 © 2024 database64128

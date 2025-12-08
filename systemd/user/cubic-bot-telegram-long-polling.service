@@ -1,11 +1,11 @@
 [Unit]
-Description=Cubic Telegram Bot
+Description=Cubic Telegram Bot (Long Polling)
 Wants=network-online.target
 After=network-online.target
 
 [Service]
 WorkingDirectory=%E/cubic-bot-telegram
-ExecStart=/usr/bin/cubic-bot-telegram-app
+ExecStart=/usr/bin/cubic-bot-telegram-long-polling
 
 [Install]
 WantedBy=default.target

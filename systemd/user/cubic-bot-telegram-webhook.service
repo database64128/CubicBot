@@ -1,0 +1,11 @@
+[Unit]
+Description=Cubic Telegram Bot (Webhook)
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+WorkingDirectory=%E/cubic-bot-telegram
+ExecStart=/usr/bin/cubic-bot-telegram-webhook
+
+[Install]
+WantedBy=default.target

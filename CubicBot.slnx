@@ -13,13 +13,16 @@
   </Folder>
   <Folder Name="/Solution Items/systemd/" />
   <Folder Name="/Solution Items/systemd/system/">
-    <File Path="systemd/system/cubic-bot-telegram.service" />
+    <File Path="systemd/system/cubic-bot-telegram-long-polling.service" />
+    <File Path="systemd/system/cubic-bot-telegram-webhook.service" />
   </Folder>
   <Folder Name="/Solution Items/systemd/user/">
-    <File Path="systemd/user/cubic-bot-telegram.service" />
+    <File Path="systemd/user/cubic-bot-telegram-long-polling.service" />
+    <File Path="systemd/user/cubic-bot-telegram-webhook.service" />
   </Folder>
-  <Project Path="CubicBot.Telegram.App/CubicBot.Telegram.App.csproj" />
-  <Project Path="CubicBot.Telegram.Tests/CubicBot.Telegram.Tests.csproj" />
-  <Project Path="CubicBot.Telegram.Tool/CubicBot.Telegram.Tool.csproj" />
-  <Project Path="CubicBot.Telegram/CubicBot.Telegram.csproj" />
+  <Project Path="src/CubicBot.Telegram.LongPolling/CubicBot.Telegram.LongPolling.csproj" />
+  <Project Path="src/CubicBot.Telegram.Tool/CubicBot.Telegram.Tool.csproj" />
+  <Project Path="src/CubicBot.Telegram.Webhook/CubicBot.Telegram.Webhook.csproj" />
+  <Project Path="src/CubicBot.Telegram/CubicBot.Telegram.csproj" />
+  <Project Path="test/CubicBot.Telegram.Tests/CubicBot.Telegram.Tests.csproj" />
 </Solution>

@@ -7,7 +7,7 @@ using Telegram.Bot.Types;
 
 namespace CubicBot.Telegram;
 
-public partial class BotService : IHostedService
+public abstract partial class BotService : IHostedService
 {
     private readonly ILogger<BotService> _logger;
     private readonly HttpClient _httpClient;
@@ -81,7 +81,7 @@ public partial class BotService : IHostedService
             catch (RequestException ex)
             {
                 _logger.LogWarning(ex, "Failed to get bot info, retrying in 30 seconds");
-                await Task.Delay(s_delayOnError, cancellationToken);
+                await Task.Delay(s_startupRetryInterval, cancellationToken);
             }
         }
 
@@ -100,7 +100,7 @@ public partial class BotService : IHostedService
             catch (RequestException ex)
             {
                 _logger.LogWarning(ex, "Failed to register commands, retrying in 30 seconds");
-                await Task.Delay(s_delayOnError, cancellationToken);
+                await Task.Delay(s_startupRetryInterval, cancellationToken);
             }
         }
 
@@ -116,7 +116,7 @@ public partial class BotService : IHostedService
     [LoggerMessage(Level = LogLevel.Information, Message = "Started Telegram bot: @{BotUsername} ({BotId})")]
     private partial void LogStartedBot(string botUsername, long botId);
 
-    private static readonly TimeSpan s_delayOnError = TimeSpan.FromSeconds(30);
+    protected static readonly TimeSpan s_startupRetryInterval = TimeSpan.FromSeconds(30);
     private static readonly TimeSpan s_saveDataInterval = TimeSpan.FromHours(1);
 
     private async Task SaveDataHourlyAsync(Data data, CancellationToken cancellationToken = default)
