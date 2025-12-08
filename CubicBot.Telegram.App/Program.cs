@@ -1,7 +1,8 @@
-using CubicBot.Telegram;
+using CubicBot.Telegram.App;
 
 var builder = Host.CreateApplicationBuilder(args);
-builder.Services.AddHostedService<BotService>();
+builder.Services.AddHttpClient();
+builder.Services.AddHostedService<LongPollingBotService>();
 
 var host = builder.Build();
 host.Run();

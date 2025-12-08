@@ -1,16 +1,39 @@
 ﻿using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using System.Threading.Channels;
 using Telegram.Bot;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Types;
 
 namespace CubicBot.Telegram;
 
-public sealed partial class BotService(ILogger<BotService> logger) : BackgroundService
+public partial class BotService : IHostedService
 {
-    protected override Task ExecuteAsync(CancellationToken stoppingToken) => RunBotAsync(stoppingToken);
+    private readonly ILogger<BotService> _logger;
+    private readonly HttpClient _httpClient;
+    private readonly ChannelReader<Update> _updateReader;
 
-    private async Task RunBotAsync(CancellationToken cancellationToken = default)
+    public BotService(ILogger<BotService> logger, HttpClient httpClient)
+    {
+        _logger = logger;
+        _httpClient = httpClient;
+        Channel<Update> updateChannel = Channel.CreateBounded<Update>(new BoundedChannelOptions(64)
+        {
+            SingleReader = true,
+        });
+        _updateReader = updateChannel.Reader;
+        UpdateWriter = updateChannel.Writer;
+    }
+
+    public ChannelWriter<Update> UpdateWriter { get; }
+
+    protected CancellationTokenSource? Cts { get; private set; }
+    private Task? _saveDataTask;
+    private Task? _handleUpdatesTask;
+
+    public virtual Task StartAsync(CancellationToken cancellationToken) => StartBotAsync(cancellationToken);
+
+    protected async Task<(TelegramBotClient, CancellationTokenSource)> StartBotAsync(CancellationToken cancellationToken = default)
     {
         Config config;
 
@@ -45,8 +68,7 @@ public sealed partial class BotService(ILogger<BotService> logger) : BackgroundS
         {
             RetryCount = 7,
         };
-        using HttpClient httpClient = new();
-        TelegramBotClient bot = new(options, httpClient);
+        TelegramBotClient bot = new(options, _httpClient);
         User me;
 
         while (true)
@@ -58,47 +80,43 @@ public sealed partial class BotService(ILogger<BotService> logger) : BackgroundS
             }
             catch (RequestException ex)
             {
-                logger.LogWarning(ex, "Failed to get bot info, retrying in 30 seconds");
-                await Task.Delay(30000, cancellationToken);
+                _logger.LogWarning(ex, "Failed to get bot info, retrying in 30 seconds");
+                await Task.Delay(s_delayOnError, cancellationToken);
             }
         }
 
         if (string.IsNullOrEmpty(me.Username))
             throw new Exception("Bot username is null or empty.");
 
-        var updateHandler = new UpdateHandler(me.Username, config, data, logger);
+        var updateHandler = new UpdateHandler(me.Username, config, data, _logger, bot);
 
         while (true)
         {
             try
             {
-                await updateHandler.RegisterCommandsAsync(bot, cancellationToken);
+                await updateHandler.RegisterCommandsAsync(cancellationToken);
                 break;
             }
             catch (RequestException ex)
             {
-                logger.LogWarning(ex, "Failed to register commands, retrying in 30 seconds");
-                await Task.Delay(30000, cancellationToken);
+                _logger.LogWarning(ex, "Failed to register commands, retrying in 30 seconds");
+                await Task.Delay(s_delayOnError, cancellationToken);
             }
         }
 
         LogStartedBot(me.Username, me.Id);
 
-        var saveDataTask = SaveDataHourlyAsync(data, cancellationToken);
+        Cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+        _saveDataTask = SaveDataHourlyAsync(data, Cts.Token);
+        _handleUpdatesTask = updateHandler.RunAsync(_updateReader, Cts.Token);
 
-        try
-        {
-            await updateHandler.RunAsync(bot, cancellationToken);
-        }
-        finally
-        {
-            await saveDataTask;
-        }
+        return (bot, Cts);
     }
 
     [LoggerMessage(Level = LogLevel.Information, Message = "Started Telegram bot: @{BotUsername} ({BotId})")]
     private partial void LogStartedBot(string botUsername, long botId);
 
+    private static readonly TimeSpan s_delayOnError = TimeSpan.FromSeconds(30);
     private static readonly TimeSpan s_saveDataInterval = TimeSpan.FromHours(1);
 
     private async Task SaveDataHourlyAsync(Data data, CancellationToken cancellationToken = default)
@@ -116,11 +134,36 @@ public sealed partial class BotService(ILogger<BotService> logger) : BackgroundS
             try
             {
                 await data.SaveAsync(CancellationToken.None);
-                logger.LogDebug("Saved data");
+                _logger.LogDebug("Saved data");
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Failed to save data");
+                _logger.LogError(ex, "Failed to save data");
+            }
+        }
+    }
+
+    public virtual async Task StopAsync(CancellationToken cancellationToken)
+    {
+        if (Cts is null)
+        {
+            return;
+        }
+
+        try
+        {
+            Cts.Cancel();
+        }
+        finally
+        {
+            if (_saveDataTask is not null)
+            {
+                await _saveDataTask.WaitAsync(cancellationToken).ConfigureAwait(ConfigureAwaitOptions.SuppressThrowing);
+            }
+
+            if (_handleUpdatesTask is not null)
+            {
+                await _handleUpdatesTask.WaitAsync(cancellationToken).ConfigureAwait(ConfigureAwaitOptions.SuppressThrowing);
             }
         }
     }
