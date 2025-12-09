@@ -1,6 +1,6 @@
 ﻿namespace CubicBot.Telegram.Webhook;
 
-public class WebhookOptions
+public sealed class WebhookOptions
 {
     public const string SectionName = "Webhook";
 
