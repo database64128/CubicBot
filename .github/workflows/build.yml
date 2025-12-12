@@ -96,63 +96,63 @@ jobs:
       # Upload CubicBot.Telegram.LongPolling
       - name: Upload CubicBot.Telegram.LongPolling artifacts for Linux ARM64
         if: matrix.os == 'ubuntu-latest'
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: cubic-bot-telegram-app-${{ github.sha }}-linux-arm64
           path: src/CubicBot.Telegram.LongPolling/bin/Release/net10.0/linux-arm64/publish/
 
       - name: Upload CubicBot.Telegram.LongPolling artifacts for Linux x64
         if: matrix.os == 'ubuntu-latest'
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: cubic-bot-telegram-app-${{ github.sha }}-linux-x64
           path: src/CubicBot.Telegram.LongPolling/bin/Release/net10.0/linux-x64/publish/
 
       - name: Upload CubicBot.Telegram.LongPolling artifacts for Linux framework-dependent
         if: matrix.os == 'ubuntu-latest'
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: cubic-bot-telegram-app-${{ github.sha }}-linux
           path: src/CubicBot.Telegram.LongPolling/bin/Release/net10.0/publish/
 
       - name: Upload CubicBot.Telegram.LongPolling artifacts for Windows ARM64
         if: matrix.os == 'windows-latest'
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: cubic-bot-telegram-app-${{ github.sha }}-windows-arm64
           path: src/CubicBot.Telegram.LongPolling/bin/Release/net10.0/win-arm64/publish/
 
       - name: Upload CubicBot.Telegram.LongPolling artifacts for Windows x64
         if: matrix.os == 'windows-latest'
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: cubic-bot-telegram-app-${{ github.sha }}-windows-x64
           path: src/CubicBot.Telegram.LongPolling/bin/Release/net10.0/win-x64/publish/
 
       - name: Upload CubicBot.Telegram.LongPolling artifacts for Windows framework-dependent
         if: matrix.os == 'windows-latest'
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: cubic-bot-telegram-app-${{ github.sha }}-windows
           path: src/CubicBot.Telegram.LongPolling/bin/Release/net10.0/publish/
 
       - name: Upload CubicBot.Telegram.LongPolling artifacts for macOS ARM64
         if: matrix.os == 'macos-latest'
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: cubic-bot-telegram-app-${{ github.sha }}-macos-arm64
           path: src/CubicBot.Telegram.LongPolling/bin/Release/net10.0/osx-arm64/publish/
 
       - name: Upload CubicBot.Telegram.LongPolling artifacts for macOS x64
         if: matrix.os == 'macos-latest'
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: cubic-bot-telegram-app-${{ github.sha }}-macos-x64
           path: src/CubicBot.Telegram.LongPolling/bin/Release/net10.0/osx-x64/publish/
 
       - name: Upload CubicBot.Telegram.LongPolling artifacts for macOS framework-dependent
         if: matrix.os == 'macos-latest'
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: cubic-bot-telegram-app-${{ github.sha }}-macos
           path: src/CubicBot.Telegram.LongPolling/bin/Release/net10.0/publish/
@@ -160,63 +160,63 @@ jobs:
       # Upload CubicBot.Telegram.Webhook
       - name: Upload CubicBot.Telegram.Webhook artifacts for Linux ARM64
         if: matrix.os == 'ubuntu-latest'
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: cubic-bot-telegram-webhook-${{ github.sha }}-linux-arm64
           path: src/CubicBot.Telegram.Webhook/bin/Release/net10.0/linux-arm64/publish/
 
       - name: Upload CubicBot.Telegram.Webhook artifacts for Linux x64
         if: matrix.os == 'ubuntu-latest'
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: cubic-bot-telegram-webhook-${{ github.sha }}-linux-x64
           path: src/CubicBot.Telegram.Webhook/bin/Release/net10.0/linux-x64/publish/
 
       - name: Upload CubicBot.Telegram.Webhook artifacts for Linux framework-dependent
         if: matrix.os == 'ubuntu-latest'
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: cubic-bot-telegram-webhook-${{ github.sha }}-linux
           path: src/CubicBot.Telegram.Webhook/bin/Release/net10.0/publish/
 
       - name: Upload CubicBot.Telegram.Webhook artifacts for Windows ARM64
         if: matrix.os == 'windows-latest'
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: cubic-bot-telegram-webhook-${{ github.sha }}-windows-arm64
           path: src/CubicBot.Telegram.Webhook/bin/Release/net10.0/win-arm64/publish/
 
       - name: Upload CubicBot.Telegram.Webhook artifacts for Windows x64
         if: matrix.os == 'windows-latest'
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: cubic-bot-telegram-webhook-${{ github.sha }}-windows-x64
           path: src/CubicBot.Telegram.Webhook/bin/Release/net10.0/win-x64/publish/
 
       - name: Upload CubicBot.Telegram.Webhook artifacts for Windows framework-dependent
         if: matrix.os == 'windows-latest'
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: cubic-bot-telegram-webhook-${{ github.sha }}-windows
           path: src/CubicBot.Telegram.Webhook/bin/Release/net10.0/publish/
 
       - name: Upload CubicBot.Telegram.Webhook artifacts for macOS ARM64
         if: matrix.os == 'macos-latest'
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: cubic-bot-telegram-webhook-${{ github.sha }}-macos-arm64
           path: src/CubicBot.Telegram.Webhook/bin/Release/net10.0/osx-arm64/publish/
 
       - name: Upload CubicBot.Telegram.Webhook artifacts for macOS x64
         if: matrix.os == 'macos-latest'
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: cubic-bot-telegram-webhook-${{ github.sha }}-macos-x64
           path: src/CubicBot.Telegram.Webhook/bin/Release/net10.0/osx-x64/publish/
 
       - name: Upload CubicBot.Telegram.Webhook artifacts for macOS framework-dependent
         if: matrix.os == 'macos-latest'
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: cubic-bot-telegram-webhook-${{ github.sha }}-macos
           path: src/CubicBot.Telegram.Webhook/bin/Release/net10.0/publish/
@@ -224,63 +224,63 @@ jobs:
       # Upload CubicBot.Telegram.Tool
       - name: Upload CubicBot.Telegram.Tool artifacts for Linux ARM64
         if: matrix.os == 'ubuntu-latest'
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: cubic-bot-telegram-tool-${{ github.sha }}-linux-arm64
           path: src/CubicBot.Telegram.Tool/bin/Release/net10.0/linux-arm64/publish/
 
       - name: Upload CubicBot.Telegram.Tool artifacts for Linux x64
         if: matrix.os == 'ubuntu-latest'
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: cubic-bot-telegram-tool-${{ github.sha }}-linux-x64
           path: src/CubicBot.Telegram.Tool/bin/Release/net10.0/linux-x64/publish/
 
       - name: Upload CubicBot.Telegram.Tool artifacts for Linux framework-dependent
         if: matrix.os == 'ubuntu-latest'
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: cubic-bot-telegram-tool-${{ github.sha }}-linux
           path: src/CubicBot.Telegram.Tool/bin/Release/net10.0/publish/
 
       - name: Upload CubicBot.Telegram.Tool artifacts for Windows ARM64
         if: matrix.os == 'windows-latest'
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: cubic-bot-telegram-tool-${{ github.sha }}-windows-arm64
           path: src/CubicBot.Telegram.Tool/bin/Release/net10.0/win-arm64/publish/
 
       - name: Upload CubicBot.Telegram.Tool artifacts for Windows x64
         if: matrix.os == 'windows-latest'
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: cubic-bot-telegram-tool-${{ github.sha }}-windows-x64
           path: src/CubicBot.Telegram.Tool/bin/Release/net10.0/win-x64/publish/
 
       - name: Upload CubicBot.Telegram.Tool artifacts for Windows framework-dependent
         if: matrix.os == 'windows-latest'
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: cubic-bot-telegram-tool-${{ github.sha }}-windows
           path: src/CubicBot.Telegram.Tool/bin/Release/net10.0/publish/
 
       - name: Upload CubicBot.Telegram.Tool artifacts for macOS ARM64
         if: matrix.os == 'macos-latest'
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: cubic-bot-telegram-tool-${{ github.sha }}-macos-arm64
           path: src/CubicBot.Telegram.Tool/bin/Release/net10.0/osx-arm64/publish/
 
       - name: Upload CubicBot.Telegram.Tool artifacts for macOS x64
         if: matrix.os == 'macos-latest'
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: cubic-bot-telegram-tool-${{ github.sha }}-macos-x64
           path: src/CubicBot.Telegram.Tool/bin/Release/net10.0/osx-x64/publish/
 
       - name: Upload CubicBot.Telegram.Tool artifacts for macOS framework-dependent
         if: matrix.os == 'macos-latest'
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: cubic-bot-telegram-tool-${{ github.sha }}-macos
           path: src/CubicBot.Telegram.Tool/bin/Release/net10.0/publish/
