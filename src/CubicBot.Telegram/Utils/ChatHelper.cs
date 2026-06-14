@@ -180,11 +180,12 @@ public static partial class ChatHelper
     public static Task<Message> EditMessageTextWithRetryAsync(
         this MessageContext messageContext,
         int messageId,
-        string text,
+        string? text,
         ParseMode parseMode = default,
         InlineKeyboardMarkup? replyMarkup = default,
         LinkPreviewOptions? linkPreviewOptions = default,
         IEnumerable<MessageEntity>? entities = default,
+        InputRichMessage? richMessage = default,
         string? businessConnectionId = default,
         CancellationToken cancellationToken = default)
         => messageContext.BotClient.EditMessageText(
@@ -195,6 +196,7 @@ public static partial class ChatHelper
             replyMarkup,
             linkPreviewOptions,
             entities,
+            richMessage,
             businessConnectionId,
             cancellationToken);
 
