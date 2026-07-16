@@ -30,6 +30,8 @@ public static partial class ChatHelper
         bool allowPaidBroadcast = default,
         int? directMessagesTopicId = default,
         SuggestedPostParameters? suggestedPostParameters = default,
+        long? receiverUserId = default,
+        string? callbackQueryId = default,
         CancellationToken cancellationToken = default)
         => messageContext.BotClient.SendMessage(
             messageContext.Message.Chat.Id,
@@ -47,6 +49,8 @@ public static partial class ChatHelper
             allowPaidBroadcast,
             directMessagesTopicId,
             suggestedPostParameters,
+            receiverUserId,
+            callbackQueryId,
             cancellationToken);
 
     /// <summary>
@@ -69,6 +73,8 @@ public static partial class ChatHelper
         bool allowPaidBroadcast = default,
         int? directMessagesTopicId = default,
         SuggestedPostParameters? suggestedPostParameters = default,
+        long? receiverUserId = default,
+        string? callbackQueryId = default,
         CancellationToken cancellationToken = default)
         => messageContext.SendTextMessageAsync(
             text,
@@ -85,6 +91,8 @@ public static partial class ChatHelper
             allowPaidBroadcast,
             directMessagesTopicId,
             suggestedPostParameters,
+            receiverUserId,
+            callbackQueryId,
             cancellationToken);
 
     /// <summary>
@@ -110,6 +118,8 @@ public static partial class ChatHelper
         bool allowPaidBroadcast = default,
         int? directMessagesTopicId = default,
         SuggestedPostParameters? suggestedPostParameters = default,
+        long? receiverUserId = default,
+        string? callbackQueryId = default,
         CancellationToken cancellationToken = default)
         => messageContext.SendTextMessageAsync(
             text,
@@ -126,6 +136,8 @@ public static partial class ChatHelper
             allowPaidBroadcast,
             directMessagesTopicId,
             suggestedPostParameters,
+            receiverUserId,
+            callbackQueryId,
             cancellationToken);
 
     /// <summary>
@@ -151,6 +163,8 @@ public static partial class ChatHelper
         bool allowPaidBroadcast = default,
         int? directMessagesTopicId = default,
         SuggestedPostParameters? suggestedPostParameters = default,
+        long? receiverUserId = default,
+        string? callbackQueryId = default,
         CancellationToken cancellationToken = default)
         => messageContext.BotClient.SendDocument(
             messageContext.Message.Chat.Id,
@@ -170,6 +184,8 @@ public static partial class ChatHelper
             allowPaidBroadcast,
             directMessagesTopicId,
             suggestedPostParameters,
+            receiverUserId,
+            callbackQueryId,
             cancellationToken);
 
     /// <summary>
@@ -257,6 +273,8 @@ public static partial class ChatHelper
         bool allowPaidBroadcast = default,
         int? directMessagesTopicId = default,
         SuggestedPostParameters? suggestedPostParameters = default,
+        long? receiverUserId = default,
+        string? callbackQueryId = default,
         CancellationToken cancellationToken = default)
         => text.Length switch
         {
@@ -275,6 +293,8 @@ public static partial class ChatHelper
                 allowPaidBroadcast,
                 directMessagesTopicId,
                 suggestedPostParameters,
+                receiverUserId,
+                callbackQueryId,
                 cancellationToken),
             _ => messageContext.SendTextFileFromStringWithRetryAsync(
                 parseMode switch
@@ -300,6 +320,8 @@ public static partial class ChatHelper
                 allowPaidBroadcast,
                 directMessagesTopicId,
                 suggestedPostParameters,
+                receiverUserId,
+                callbackQueryId,
                 cancellationToken)
         };
 
@@ -329,6 +351,8 @@ public static partial class ChatHelper
         bool allowPaidBroadcast = default,
         int? directMessagesTopicId = default,
         SuggestedPostParameters? suggestedPostParameters = default,
+        long? receiverUserId = default,
+        string? callbackQueryId = default,
         CancellationToken cancellationToken = default)
     {
         await using var stream = new MemoryStream(Encoding.UTF8.GetBytes(text));
@@ -349,6 +373,8 @@ public static partial class ChatHelper
             allowPaidBroadcast,
             directMessagesTopicId,
             suggestedPostParameters,
+            receiverUserId,
+            callbackQueryId,
             cancellationToken);
     }
 
